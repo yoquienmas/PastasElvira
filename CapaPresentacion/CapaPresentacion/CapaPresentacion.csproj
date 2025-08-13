@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\CapaDatos\CapaDatos\CapaDatos.csproj" />
+    <ProjectReference Include="..\..\CapaEntidad\CapaEntidad\CapaEntidad.csproj" />
+    <ProjectReference Include="..\..\CapaNegocio\CapaNegocio\CapaNegocio.csproj" />
+  </ItemGroup>
+</Project>
