@@ -13,3 +13,4 @@ C:\Users\danie\Source\Repos\PastasElvira\CapaDatos\CapaDatos\obj\Debug\net8.0-wi
 C:\Users\danie\Source\Repos\PastasElvira\CapaDatos\CapaDatos\obj\Debug\net8.0-windows\refint\CapaDatos.dll
 C:\Users\danie\Source\Repos\PastasElvira\CapaDatos\CapaDatos\obj\Debug\net8.0-windows\CapaDatos.pdb
 C:\Users\danie\Source\Repos\PastasElvira\CapaDatos\CapaDatos\obj\Debug\net8.0-windows\ref\CapaDatos.dll
+C:\Users\danie\Source\Repos\PastasElvira\CapaDatos\CapaDatos\obj\Debug\net8.0-windows\CapaDatos.sourcelink.json

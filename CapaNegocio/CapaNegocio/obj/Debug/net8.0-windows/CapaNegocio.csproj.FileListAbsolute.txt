@@ -15,3 +15,4 @@ C:\Users\danie\Source\Repos\PastasElvira\CapaNegocio\CapaNegocio\obj\Debug\net8.
 C:\Users\danie\Source\Repos\PastasElvira\CapaNegocio\CapaNegocio\obj\Debug\net8.0-windows\refint\CapaNegocio.dll
 C:\Users\danie\Source\Repos\PastasElvira\CapaNegocio\CapaNegocio\obj\Debug\net8.0-windows\CapaNegocio.pdb
 C:\Users\danie\Source\Repos\PastasElvira\CapaNegocio\CapaNegocio\obj\Debug\net8.0-windows\ref\CapaNegocio.dll
+C:\Users\danie\Source\Repos\PastasElvira\CapaNegocio\CapaNegocio\obj\Debug\net8.0-windows\CapaNegocio.sourcelink.json

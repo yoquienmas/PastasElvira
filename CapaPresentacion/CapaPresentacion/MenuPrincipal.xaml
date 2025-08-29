@@ -26,7 +26,7 @@
                     FontWeight="Bold" Click="btnProductos_Click" Margin="0,10,0,10"/>
             <Button Content="Gestionar Materias Primas" Width="200" Height="40" Background="#e2a42d" Foreground="White"
                     FontWeight="Bold" Click="btnMateriasPrimas_Click" Margin="0,10,0,10"/>
-            <Button Content="Gestionar Materias Primas" Width="200" Height="40" Background="#e2a42d" Foreground="White"
+            <Button Content="Gestionar Ventas" Width="200" Height="40" Background="#e2a42d" Foreground="White"
         FontWeight="Bold" Click="btnVentas_Click" Margin="0,10,0,10"/>
 
             <Button Content="Salir" Width="200" Height="40" Background="#ff6b6b" Foreground="White"

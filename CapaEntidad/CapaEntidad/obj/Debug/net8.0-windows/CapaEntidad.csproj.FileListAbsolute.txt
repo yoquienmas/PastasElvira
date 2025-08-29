@@ -9,3 +9,4 @@ C:\Users\danie\Source\Repos\PastasElvira\CapaEntidad\CapaEntidad\obj\Debug\net8.
 C:\Users\danie\Source\Repos\PastasElvira\CapaEntidad\CapaEntidad\obj\Debug\net8.0-windows\refint\CapaEntidad.dll
 C:\Users\danie\Source\Repos\PastasElvira\CapaEntidad\CapaEntidad\obj\Debug\net8.0-windows\CapaEntidad.pdb
 C:\Users\danie\Source\Repos\PastasElvira\CapaEntidad\CapaEntidad\obj\Debug\net8.0-windows\ref\CapaEntidad.dll
+C:\Users\danie\Source\Repos\PastasElvira\CapaEntidad\CapaEntidad\obj\Debug\net8.0-windows\CapaEntidad.sourcelink.json

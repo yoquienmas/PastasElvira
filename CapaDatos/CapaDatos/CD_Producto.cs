@@ -12,16 +12,15 @@ namespace CapaDatos
         {
             List<Producto> lista = new List<Producto>();
 
-            using (SqlConnection conn = new SqlConnection(Conexion.cadena))
+            using (SqlConnection con = new SqlConnection(Conexion.cadena))
             {
-                conn.Open(); 
+                string query = "SELECT IdProducto, Nombre, Tipo, PrecioVenta, StockActual FROM Producto";
+                SqlCommand cmd = new SqlCommand(query, con);
+                cmd.CommandType = CommandType.Text;
 
-                string query = "SELECT IdProducto, Nombre, Tipo, PrecioVenta, StockActual, StockMinimo, Visible FROM Producto";
-
-                using (SqlCommand cmd = new SqlCommand(query, conn))
+                con.Open();
+                using (SqlDataReader dr = cmd.ExecuteReader())
                 {
-                    SqlDataReader dr = cmd.ExecuteReader();
-
                     while (dr.Read())
                     {
                         lista.Add(new Producto
@@ -30,19 +29,14 @@ namespace CapaDatos
                             Nombre = dr["Nombre"].ToString(),
                             Tipo = dr["Tipo"].ToString(),
                             PrecioVenta = Convert.ToSingle(dr["PrecioVenta"]),
-                            StockActual = Convert.ToInt32(dr["StockActual"]),
-                            StockMinimo = Convert.ToInt32(dr["StockMinimo"]),
-                            Visible = Convert.ToBoolean(dr["Visible"])
+                            StockActual = Convert.ToInt32(dr["StockActual"])
                         });
                     }
-
-                    dr.Close();
                 }
             }
 
             return lista;
         }
-
 
         public int Registrar(Producto obj, out string mensaje)
         {

@@ -9,3 +9,4 @@ C:\Users\danie\Source\Repos\PastasElvira\PastasElvira\PastasElvira\obj\Debug\net
 C:\Users\danie\Source\Repos\PastasElvira\PastasElvira\PastasElvira\obj\Debug\net8.0-windows\refint\PastasElvira.dll
 C:\Users\danie\Source\Repos\PastasElvira\PastasElvira\PastasElvira\obj\Debug\net8.0-windows\PastasElvira.pdb
 C:\Users\danie\Source\Repos\PastasElvira\PastasElvira\PastasElvira\obj\Debug\net8.0-windows\ref\PastasElvira.dll
+C:\Users\danie\Source\Repos\PastasElvira\PastasElvira\PastasElvira\obj\Debug\net8.0-windows\PastasElvira.sourcelink.json
