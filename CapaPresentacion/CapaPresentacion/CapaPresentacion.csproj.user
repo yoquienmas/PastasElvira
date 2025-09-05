@@ -2,10 +2,10 @@
 <Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup />
   <ItemGroup>
-    <Compile Update="FormMateria.xaml.cs">
+    <Compile Update="FormDetalleProduccion.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="FormProducto.xaml.cs">
+    <Compile Update="FormMateria.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="FormVenta.xaml.cs">

@@ -8,7 +8,7 @@ namespace CapaPresentacion
 {
     public partial class FormProducto : Window
     {
-        private CN_Producto cnProducto = new CN_Producto();
+        private readonly CN_Producto cnProducto = new CN_Producto();
 
         public FormProducto()
         {
@@ -27,9 +27,13 @@ namespace CapaPresentacion
 
         private void btnAgregar_Click(object sender, RoutedEventArgs e)
         {
-            if (!float.TryParse(txtPrecio.Text, out float precio) || !int.TryParse(txtStock.Text, out int stock))
+            if (!decimal.TryParse(txtCostoProduccion.Text, out decimal costo) ||
+                !decimal.TryParse(txtMargenGanancia.Text, out decimal margen) ||
+                !decimal.TryParse(txtPrecio.Text, out decimal precio) ||
+                !int.TryParse(txtStock.Text, out int stock) ||
+                !int.TryParse(txtStockMinimo.Text, out int stockMin))
             {
-                MessageBox.Show("Precio o stock inválido.", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show("Verifique los valores numéricos.", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
@@ -37,10 +41,12 @@ namespace CapaPresentacion
             {
                 Nombre = txtNombre.Text,
                 Tipo = txtTipo.Text,
+                CostoProduccion = costo,
+                MargenGanancia = margen,
                 PrecioVenta = precio,
                 StockActual = stock,
-                StockMinimo = 5,
-                Visible = true
+                StockMinimo = stockMin,
+                Visible = chkVisible.IsChecked ?? true
             };
 
             string mensaje;
@@ -53,16 +59,24 @@ namespace CapaPresentacion
         {
             if (dgvProductos.SelectedItem is Producto seleccionado)
             {
-                if (!float.TryParse(txtPrecio.Text, out float precio) || !int.TryParse(txtStock.Text, out int stock))
+                if (!decimal.TryParse(txtCostoProduccion.Text, out decimal costo) ||
+                    !decimal.TryParse(txtMargenGanancia.Text, out decimal margen) ||
+                    !decimal.TryParse(txtPrecio.Text, out decimal precio) ||
+                    !int.TryParse(txtStock.Text, out int stock) ||
+                    !int.TryParse(txtStockMinimo.Text, out int stockMin))
                 {
-                    MessageBox.Show("Precio o stock inválido.", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    MessageBox.Show("Verifique los valores numéricos.", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
                     return;
                 }
 
                 seleccionado.Nombre = txtNombre.Text;
                 seleccionado.Tipo = txtTipo.Text;
+                seleccionado.CostoProduccion = costo;
+                seleccionado.MargenGanancia = margen;
                 seleccionado.PrecioVenta = precio;
                 seleccionado.StockActual = stock;
+                seleccionado.StockMinimo = stockMin;
+                seleccionado.Visible = chkVisible.IsChecked ?? true;
 
                 string mensaje;
                 bool ok = cnProducto.Editar(seleccionado, out mensaje);
@@ -88,8 +102,12 @@ namespace CapaPresentacion
             {
                 txtNombre.Text = p.Nombre;
                 txtTipo.Text = p.Tipo;
-                txtPrecio.Text = p.PrecioVenta.ToString();
+                txtCostoProduccion.Text = p.CostoProduccion.ToString("0.00");
+                txtMargenGanancia.Text = p.MargenGanancia.ToString("0.00");
+                txtPrecio.Text = p.PrecioVenta.ToString("0.00");
                 txtStock.Text = p.StockActual.ToString();
+                txtStockMinimo.Text = p.StockMinimo.ToString();
+                chkVisible.IsChecked = p.Visible;
             }
         }
     }

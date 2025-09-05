@@ -32,6 +32,20 @@ namespace CapaPresentacion
             formVenta.Show();
             this.Close();
         }
+        private void btnProduccion_Click(object sender, RoutedEventArgs e)
+        {
+            FormProduccion formProduccion = new FormProduccion();
+            formProduccion.Show();
+            this.Close();
+        }
+
+        private void btnDetalleProduccion_Click(object sender, RoutedEventArgs e)
+        {
+            FormDetalleProduccion formdetalleproduccion = new FormDetalleProduccion();
+            formdetalleproduccion.Show();
+            this.Close();
+        }
+        
 
         private void btnSalir_Click(object sender, RoutedEventArgs e)
         {

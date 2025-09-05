@@ -47,7 +47,7 @@ namespace CapaDatos
                                 SqlCommand cmdItem = new SqlCommand("SP_REGISTRAR_ITEM_VENTA", con, transaction);
                                 cmdItem.CommandType = CommandType.StoredProcedure;
                                 cmdItem.Parameters.AddWithValue("@IdVenta", idVentaGenerado);
-                                cmdItem.Parameters.AddWithValue("@IdProducto", item.Producto.IdProducto);
+                                cmdItem.Parameters.AddWithValue("@IdProducto", item.IdProducto);
                                 cmdItem.Parameters.AddWithValue("@Cantidad", item.Cantidad);
                                 cmdItem.Parameters.AddWithValue("@PrecioUnitario", item.PrecioUnitario);
                                 cmdItem.Parameters.Add("@Respuesta", SqlDbType.Bit).Direction = ParameterDirection.Output;
@@ -57,7 +57,7 @@ namespace CapaDatos
                                
                                 SqlCommand cmdStock = new SqlCommand("SP_ACTUALIZAR_STOCK", con, transaction);
                                 cmdStock.CommandType = CommandType.StoredProcedure;
-                                cmdStock.Parameters.AddWithValue("@IdProducto", item.Producto.IdProducto);
+                                cmdStock.Parameters.AddWithValue("@IdProducto", item.IdProducto);
                                 cmdStock.Parameters.AddWithValue("@CantidadVendida", item.Cantidad);
                                 cmdStock.ExecuteNonQuery();
                             }

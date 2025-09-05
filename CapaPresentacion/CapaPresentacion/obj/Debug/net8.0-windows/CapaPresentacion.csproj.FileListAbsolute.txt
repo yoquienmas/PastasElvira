@@ -79,3 +79,7 @@ C:\Users\danie\Source\Repos\PastasElvira\CapaPresentacion\CapaPresentacion\obj\D
 C:\Users\danie\Source\Repos\PastasElvira\CapaPresentacion\CapaPresentacion\obj\Debug\net8.0-windows\CapaPresentacion.genruntimeconfig.cache
 C:\Users\danie\Source\Repos\PastasElvira\CapaPresentacion\CapaPresentacion\obj\Debug\net8.0-windows\ref\CapaPresentacion.dll
 C:\Users\danie\Source\Repos\PastasElvira\CapaPresentacion\CapaPresentacion\obj\Debug\net8.0-windows\CapaPresentacion.sourcelink.json
+C:\Users\danie\Source\Repos\PastasElvira\CapaPresentacion\CapaPresentacion\obj\Debug\net8.0-windows\FormProduccion.g.cs
+C:\Users\danie\Source\Repos\PastasElvira\CapaPresentacion\CapaPresentacion\obj\Debug\net8.0-windows\FormProduccion.baml
+C:\Users\danie\Source\Repos\PastasElvira\CapaPresentacion\CapaPresentacion\obj\Debug\net8.0-windows\FormDetalleProduccion.baml
+C:\Users\danie\Source\Repos\PastasElvira\CapaPresentacion\CapaPresentacion\obj\Debug\net8.0-windows\FormDetalleProduccion.g.cs

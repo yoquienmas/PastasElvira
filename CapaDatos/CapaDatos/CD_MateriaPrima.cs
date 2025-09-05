@@ -12,112 +12,136 @@ namespace CapaDatos
         {
             List<MateriaPrima> lista = new List<MateriaPrima>();
 
-            using (SqlConnection conexion = new SqlConnection(Conexion.cadena))
+            try
             {
-                string query = "SELECT IdMateria, Nombre, Unidad, CantidadDisponible FROM MateriaPrima";
-                SqlCommand cmd = new SqlCommand(query, conexion);
-                cmd.CommandType = CommandType.Text;
-
-                conexion.Open();
-
-                using (SqlDataReader dr = cmd.ExecuteReader())
+                using (SqlConnection oconexion = new SqlConnection(Conexion.cadena))
                 {
-                    while (dr.Read())
+                    string query = @"SELECT IdMateria, Nombre, Unidad, CantidadDisponible, StockMinimo, PrecioUnitario
+                                     FROM MateriaPrima";
+
+                    SqlCommand cmd = new SqlCommand(query, oconexion);
+                    cmd.CommandType = CommandType.Text;
+
+                    oconexion.Open();
+                    using (SqlDataReader dr = cmd.ExecuteReader())
                     {
-                        lista.Add(new MateriaPrima
+                        while (dr.Read())
                         {
-                            IdMateria = Convert.ToInt32(dr["IdMateria"]),
-                            Nombre = dr["Nombre"].ToString(),
-                            Unidad = dr["Unidad"].ToString(),
-                            CantidadDisponible = Convert.ToSingle(dr["CantidadDisponible"])
-                        });
+                            lista.Add(new MateriaPrima()
+                            {
+                                IdMateria = Convert.ToInt32(dr["IdMateria"]),
+                                Nombre = dr["Nombre"].ToString(),
+                                Unidad = dr["Unidad"].ToString(),
+                                CantidadDisponible = Convert.ToInt32(dr["CantidadDisponible"]),
+                                StockMinimo = Convert.ToInt32(dr["StockMinimo"]),
+                                PrecioUnitario = Convert.ToDecimal(dr["PrecioUnitario"])
+                            });
+                        }
                     }
                 }
+            }
+            catch (Exception)
+            {
+                lista = new List<MateriaPrima>();
             }
 
             return lista;
         }
 
-        public int Registrar(MateriaPrima materia, out string mensaje)
+        public int Registrar(MateriaPrima obj, out string mensaje)
         {
-            mensaje = "";
+            int id = 0;
+            mensaje = string.Empty;
 
             try
             {
-                using (SqlConnection conexion = new SqlConnection(Conexion.cadena))
+                using (SqlConnection oconexion = new SqlConnection(Conexion.cadena))
                 {
-                    string query = "INSERT INTO MateriaPrima (Nombre, Unidad, CantidadDisponible) " +
-                                   "VALUES (@Nombre, @Unidad, @Cantidad); SELECT SCOPE_IDENTITY();";
+                    SqlCommand cmd = new SqlCommand("INSERT INTO MateriaPrima(Nombre, Unidad, CantidadDisponible, StockMinimo, PrecioUnitario) " +
+                                                    "OUTPUT INSERTED.IdMateria VALUES(@Nombre,@Unidad,@CantidadDisponible,@StockMinimo,@PrecioUnitario)", oconexion);
 
-                    SqlCommand cmd = new SqlCommand(query, conexion);
-                    cmd.Parameters.AddWithValue("@Nombre", materia.Nombre);
-                    cmd.Parameters.AddWithValue("@Unidad", materia.Unidad);
-                    cmd.Parameters.AddWithValue("@Cantidad", materia.CantidadDisponible);
+                    cmd.Parameters.AddWithValue("@Nombre", obj.Nombre);
+                    cmd.Parameters.AddWithValue("@Unidad", obj.Unidad);
+                    cmd.Parameters.AddWithValue("@CantidadDisponible", obj.CantidadDisponible);
+                    cmd.Parameters.AddWithValue("@StockMinimo", obj.StockMinimo);
+                    cmd.Parameters.AddWithValue("@PrecioUnitario", obj.PrecioUnitario);
 
-                    conexion.Open();
-                    int idGenerado = Convert.ToInt32(cmd.ExecuteScalar());
-                    return idGenerado;
+                    oconexion.Open();
+                    id = Convert.ToInt32(cmd.ExecuteScalar());
                 }
+                mensaje = "Materia prima registrada correctamente.";
             }
             catch (Exception ex)
             {
+                id = 0;
                 mensaje = "Error al registrar materia prima: " + ex.Message;
-                return 0;
             }
+
+            return id;
         }
 
-        public bool Editar(MateriaPrima materia, out string mensaje)
+        public bool Editar(MateriaPrima obj, out string mensaje)
         {
-            mensaje = "";
+            bool resultado = false;
+            mensaje = string.Empty;
 
             try
             {
-                using (SqlConnection conexion = new SqlConnection(Conexion.cadena))
+                using (SqlConnection oconexion = new SqlConnection(Conexion.cadena))
                 {
-                    string query = "UPDATE MateriaPrima SET Nombre = @Nombre, Unidad = @Unidad, CantidadDisponible = @Cantidad " +
-                                   "WHERE IdMateria = @Id";
+                    SqlCommand cmd = new SqlCommand(@"UPDATE MateriaPrima SET 
+                                                      Nombre=@Nombre, 
+                                                      Unidad=@Unidad, 
+                                                      CantidadDisponible=@CantidadDisponible, 
+                                                      StockMinimo=@StockMinimo, 
+                                                      PrecioUnitario=@PrecioUnitario
+                                                      WHERE IdMateria=@IdMateria", oconexion);
 
-                    SqlCommand cmd = new SqlCommand(query, conexion);
-                    cmd.Parameters.AddWithValue("@Id", materia.IdMateria);
-                    cmd.Parameters.AddWithValue("@Nombre", materia.Nombre);
-                    cmd.Parameters.AddWithValue("@Unidad", materia.Unidad);
-                    cmd.Parameters.AddWithValue("@Cantidad", materia.CantidadDisponible);
+                    cmd.Parameters.AddWithValue("@IdMateria", obj.IdMateria);
+                    cmd.Parameters.AddWithValue("@Nombre", obj.Nombre);
+                    cmd.Parameters.AddWithValue("@Unidad", obj.Unidad);
+                    cmd.Parameters.AddWithValue("@CantidadDisponible", obj.CantidadDisponible);
+                    cmd.Parameters.AddWithValue("@StockMinimo", obj.StockMinimo);
+                    cmd.Parameters.AddWithValue("@PrecioUnitario", obj.PrecioUnitario);
 
-                    conexion.Open();
-                    int filas = cmd.ExecuteNonQuery();
-                    return filas > 0;
+                    oconexion.Open();
+                    resultado = cmd.ExecuteNonQuery() > 0;
                 }
+                mensaje = resultado ? "Materia prima editada correctamente." : "No se pudo editar.";
             }
             catch (Exception ex)
             {
+                resultado = false;
                 mensaje = "Error al editar materia prima: " + ex.Message;
-                return false;
             }
+
+            return resultado;
         }
 
         public bool Eliminar(int id, out string mensaje)
         {
-            mensaje = "";
+            bool resultado = false;
+            mensaje = string.Empty;
 
             try
             {
-                using (SqlConnection conexion = new SqlConnection(Conexion.cadena))
+                using (SqlConnection oconexion = new SqlConnection(Conexion.cadena))
                 {
-                    string query = "DELETE FROM MateriaPrima WHERE IdMateria = @Id";
+                    SqlCommand cmd = new SqlCommand("DELETE FROM MateriaPrima WHERE IdMateria=@IdMateria", oconexion);
+                    cmd.Parameters.AddWithValue("@IdMateria", id);
 
-                    SqlCommand cmd = new SqlCommand(query, conexion);
-                    cmd.Parameters.AddWithValue("@Id", id);
-
-                    conexion.Open();
-                    int filas = cmd.ExecuteNonQuery();
-                    return filas > 0;
+                    oconexion.Open();
+                    resultado = cmd.ExecuteNonQuery() > 0;
                 }
+                mensaje = resultado ? "Materia prima eliminada correctamente." : "No se pudo eliminar.";
             }
             catch (Exception ex)
             {
+                resultado = false;
                 mensaje = "Error al eliminar materia prima: " + ex.Message;
-                return false;
             }
+
+            return resultado;
         }
     }
 }

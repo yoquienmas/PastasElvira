@@ -3,7 +3,6 @@ using System.Windows;
 using System.Windows.Controls;
 using CapaEntidad;
 using CapaNegocio;
-using System.Collections.Generic;
 
 namespace CapaPresentacion
 {
@@ -28,9 +27,11 @@ namespace CapaPresentacion
 
         private void btnAgregar_Click(object sender, RoutedEventArgs e)
         {
-            if (!float.TryParse(txtCantidad.Text, out float cantidad))
+            if (!float.TryParse(txtCantidad.Text, out float cantidad) ||
+                !int.TryParse(txtStockMinimo.Text, out int stockMin) ||
+                !decimal.TryParse(txtPrecioUnitario.Text, out decimal precioUnitario))
             {
-                MessageBox.Show("Cantidad inválida.", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show("Verifique los valores numéricos.", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
@@ -38,7 +39,9 @@ namespace CapaPresentacion
             {
                 Nombre = txtNombre.Text,
                 Unidad = txtUnidad.Text,
-                CantidadDisponible = cantidad
+                CantidadDisponible = cantidad,
+                StockMinimo = stockMin,
+                PrecioUnitario = precioUnitario
             };
 
             string mensaje;
@@ -56,15 +59,19 @@ namespace CapaPresentacion
         {
             if (dgvMateriaPrima.SelectedItem is MateriaPrima seleccionado)
             {
-                if (!float.TryParse(txtCantidad.Text, out float cantidad))
+                if (!float.TryParse(txtCantidad.Text, out float cantidad) ||
+                    !int.TryParse(txtStockMinimo.Text, out int stockMin) ||
+                    !decimal.TryParse(txtPrecioUnitario.Text, out decimal precioUnitario))
                 {
-                    MessageBox.Show("Cantidad inválida.", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    MessageBox.Show("Verifique los valores numéricos.", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
                     return;
                 }
 
                 seleccionado.Nombre = txtNombre.Text;
                 seleccionado.Unidad = txtUnidad.Text;
                 seleccionado.CantidadDisponible = cantidad;
+                seleccionado.StockMinimo = stockMin;
+                seleccionado.PrecioUnitario = precioUnitario;
 
                 string mensaje;
                 bool ok = cnMateriaPrima.Editar(seleccionado, out mensaje);
@@ -101,6 +108,8 @@ namespace CapaPresentacion
                 txtNombre.Text = mp.Nombre;
                 txtUnidad.Text = mp.Unidad;
                 txtCantidad.Text = mp.CantidadDisponible.ToString();
+                txtStockMinimo.Text = mp.StockMinimo.ToString();
+                txtPrecioUnitario.Text = mp.PrecioUnitario.ToString("0.00");
             }
         }
 
@@ -109,6 +118,8 @@ namespace CapaPresentacion
             txtNombre.Text = "";
             txtUnidad.Text = "";
             txtCantidad.Text = "";
+            txtStockMinimo.Text = "";
+            txtPrecioUnitario.Text = "";
             dgvMateriaPrima.SelectedItem = null;
         }
     }

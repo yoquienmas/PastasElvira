@@ -10,7 +10,7 @@ using System.Linq;
 
 namespace CapaPresentacion
 {
-   
+
     public partial class FormVenta : Window
     {
         private CN_Producto cnProducto = new CN_Producto();
@@ -27,13 +27,13 @@ namespace CapaPresentacion
             dgvItemsVenta.ItemsSource = listaItemsVenta;
         }
 
-        
+
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             CargarProductos();
         }
 
-        
+
         private void CargarProductos()
         {
             listaProductos = cnProducto.Listar();
@@ -50,7 +50,7 @@ namespace CapaPresentacion
             }
         }
 
- 
+
         private void btnAgregar_Click(object sender, RoutedEventArgs e)
         {
             if (cboProductos.SelectedItem == null)
@@ -69,16 +69,18 @@ namespace CapaPresentacion
 
             ItemVenta nuevoItem = new ItemVenta
             {
-                Producto = productoSeleccionado,
+                IdProducto = productoSeleccionado.IdProducto,
+                NombreProducto = productoSeleccionado.Nombre,
                 Cantidad = cantidad,
                 PrecioUnitario = productoSeleccionado.PrecioVenta
             };
 
             listaItemsVenta.Add(nuevoItem);
             ActualizarTotalVenta();
+
         }
 
-     
+
         private void btnEliminar_Click(object sender, RoutedEventArgs e)
         {
             if (dgvItemsVenta.SelectedItem is ItemVenta itemSeleccionado)
@@ -92,7 +94,7 @@ namespace CapaPresentacion
             }
         }
 
-     
+
         private void btnRegistrarVenta_Click(object sender, RoutedEventArgs e)
         {
             if (listaItemsVenta.Count == 0)
@@ -120,11 +122,11 @@ namespace CapaPresentacion
 
         private void ActualizarTotalVenta()
         {
-            float total = listaItemsVenta.Sum(item => item.Cantidad * item.PrecioUnitario);
+            decimal total = listaItemsVenta.Sum(item => item.Cantidad * item.PrecioUnitario);
             txtTotalVenta.Text = total.ToString("F2");
         }
 
- 
+
         private void LimpiarFormulario()
         {
             listaItemsVenta.Clear();
