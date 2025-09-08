@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 
+
 namespace CapaDatos
 {
     public class CD_DetalleProduccion

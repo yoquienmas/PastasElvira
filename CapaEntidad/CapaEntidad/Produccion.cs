@@ -5,13 +5,16 @@ namespace CapaEntidad
     public class Produccion
     {
         public int IdProduccion { get; set; }
-        public DateTime Fecha { get; set; }
-        public int CantidadProducida { get; set; }
         public int IdProducto { get; set; }
-
-        // Opcional: para mostrar el nombre del producto en el DataGrid
         public string NombreProducto { get; set; }
+        public int CantidadProducida { get; set; }
+        public DateTime FechaProduccion { get; set; }
+
+        // Extra: para mostrar mensajes de validación
+        public string Mensaje { get; set; }
+        // Para mostrar en historial
     }
 }
+
 
 

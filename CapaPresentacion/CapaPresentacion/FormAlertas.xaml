@@ -1,0 +1,68 @@
+﻿<Window x:Class="CapaPresentacion.FormAlertas"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Sistema de Alertas de Stock" Height="600" Width="1000"
+        Background="#fff8e1" FontFamily="Georgia"
+        WindowStartupLocation="CenterScreen"
+        Loaded="Window_Loaded">
+
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Título -->
+        <TextBlock Text="🔔 SISTEMA DE ALERTAS DE STOCK" FontSize="24" FontWeight="Bold" Foreground="#a36b00"
+                   HorizontalAlignment="Center" Margin="0,0,0,20"/>
+
+        <!-- Botones de acción -->
+        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,20">
+            <Button x:Name="btnVerificar" Content="Verificar Alertas Ahora" Width="150" Height="35"
+                    Background="#2196F3" Foreground="White" FontWeight="Bold"
+                    Click="btnVerificar_Click" Margin="0,0,10,0"/>
+            <Button x:Name="btnLimpiar" Content="Limpiar Alertas Antiguas" Width="150" Height="35"
+                    Background="#FF9800" Foreground="White" FontWeight="Bold"
+                    Click="btnLimpiar_Click" Margin="0,0,10,0"/>
+            <Button x:Name="btnActualizar" Content="Actualizar Lista" Width="120" Height="35"
+                    Background="#4CAF50" Foreground="White" FontWeight="Bold"
+                    Click="btnActualizar_Click"/>
+        </StackPanel>
+
+        <!-- Contador de alertas -->
+        <TextBlock x:Name="txtContadorAlertas" Grid.Row="1" HorizontalAlignment="Right" Margin="0,0,20,0"
+                   FontSize="14" FontWeight="Bold" Foreground="#d32f2f" VerticalAlignment="Center"/>
+
+        <!-- Lista de Alertas -->
+        <DataGrid x:Name="dgvAlertas" Grid.Row="2" AutoGenerateColumns="False" IsReadOnly="True"
+                  SelectionMode="Single" Background="White" BorderBrush="#e2a42d" BorderThickness="1">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Fecha" Binding="{Binding FechaAlerta, StringFormat=dd/MM/yyyy HH:mm}" Width="120"/>
+                <DataGridTextColumn Header="Tipo" Binding="{Binding Tipo}" Width="80"/>
+                <DataGridTextColumn Header="Producto/Material" Binding="{Binding NombreProducto}" Width="200"/>
+                <DataGridTextColumn Header="Mensaje" Binding="{Binding Mensaje}" Width="*"/>
+                <DataGridTextColumn Header="Stock Actual" Binding="{Binding StockActual}" Width="80"/>
+                <DataGridTextColumn Header="Stock Mínimo" Binding="{Binding StockMinimo}" Width="80"/>
+                <DataGridTemplateColumn Header="Acciones" Width="100">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button Content="Resolver" Click="BtnResolver_Click" 
+                                    Background="#4CAF50" Foreground="White" Padding="5" FontSize="10"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <!-- Estadísticas -->
+        <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0">
+            <TextBlock Text="Alertas hoy: " FontWeight="Bold" Foreground="#5c3a00"/>
+            <TextBlock x:Name="txtAlertasHoy" FontWeight="Bold" Foreground="#d32f2f" Margin="5,0,20,0"/>
+
+            <TextBlock Text="Productos con stock bajo: " FontWeight="Bold" Foreground="#5c3a00"/>
+            <TextBlock x:Name="txtProductosBajoStock" FontWeight="Bold" Foreground="#d32f2f" Margin="5,0,0,0"/>
+        </StackPanel>
+    </Grid>
+</Window>

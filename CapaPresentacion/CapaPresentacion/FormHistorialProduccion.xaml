@@ -1,0 +1,20 @@
+﻿<Window x:Class="CapaPresentacion.FormHistorialProduccion"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Historial de Producción" Height="600" Width="800"
+        Background="#fff8e1" FontFamily="Georgia"
+        Loaded="Window_Loaded"
+    WindowStartupLocation="CenterScreen">
+
+    <Grid Margin="20">
+        <DataGrid x:Name="dgvProducciones" AutoGenerateColumns="False" IsReadOnly="True"
+                 Background="White" BorderBrush="#e2a42d">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="ID" Binding="{Binding IdProduccion}" Width="60"/>
+                <DataGridTextColumn Header="Producto" Binding="{Binding NombreProducto}" Width="*"/>
+                <DataGridTextColumn Header="Cantidad" Binding="{Binding CantidadProducida}" Width="100"/>
+                <DataGridTextColumn Header="Fecha" Binding="{Binding FechaProduccion, StringFormat=dd/MM/yyyy HH:mm}" Width="150"/>
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</Window>

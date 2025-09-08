@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Windows;
 
+
 namespace CapaPresentacion
 {
     public partial class FormProduccion : Window
@@ -19,44 +20,65 @@ namespace CapaPresentacion
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            // Listar productos disponibles en el ComboBox
-            cmbProducto.ItemsSource = cnProducto.Listar();
+            CargarProductos();
+            CargarHistorial();
+        }
+
+        private void CargarProductos()
+        {
+            var listaProductos = cnProducto.Listar();
+            cboProductos.ItemsSource = listaProductos;
+            cboProductos.DisplayMemberPath = "Nombre";
+            cboProductos.SelectedValuePath = "IdProducto";
+        }
+
+        private void CargarHistorial()
+        {
+            dgvProducciones.ItemsSource = cnProduccion.Listar();
         }
 
         private void btnRegistrar_Click(object sender, RoutedEventArgs e)
         {
-            if (cmbProducto.SelectedItem is Producto productoSeleccionado)
-            {
-                if (!int.TryParse(txtCantidad.Text, out int cantidad) || cantidad <= 0)
-                {
-                    MessageBox.Show("Ingrese una cantidad válida.", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
-                    return;
-                }
-
-                Produccion produccion = new Produccion
-                {
-                    IdProducto = productoSeleccionado.IdProducto,
-                    CantidadProducida = cantidad
-
-                };
-
-                string mensaje;
-                int idGenerado = cnProduccion.Registrar(produccion, out mensaje);
-
-                if (idGenerado > 0)
-                {
-                    MessageBox.Show($"Producción registrada correctamente.\n{mensaje}", "Éxito",
-                        MessageBoxButton.OK, MessageBoxImage.Information);
-                }
-                else
-                {
-                    MessageBox.Show($"Error al registrar producción.\n{mensaje}", "Error",
-                        MessageBoxButton.OK, MessageBoxImage.Error);
-                }
-            }
-            else
+            if (cboProductos.SelectedItem == null)
             {
                 MessageBox.Show("Seleccione un producto.", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            if (!int.TryParse(txtCantidad.Text, out int cantidad) || cantidad <= 0)
+            {
+                MessageBox.Show("La cantidad debe ser mayor a 0.", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            var producto = (Producto)cboProductos.SelectedItem;
+
+            // VALIDAR MATERIAS PRIMAS ANTES DE REGISTRAR
+            string errorMaterias = cnProduccion.ValidarDisponibilidadMateriasPrimas(producto.IdProducto, cantidad);
+            if (!string.IsNullOrEmpty(errorMaterias))
+            {
+                MessageBox.Show(errorMaterias, "Error de Materias Primas", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            Produccion nuevaProduccion = new Produccion
+            {
+                IdProducto = producto.IdProducto,
+                CantidadProducida = cantidad
+            };
+
+            string mensaje;
+            bool ok = cnProduccion.Registrar(nuevaProduccion, out mensaje);
+
+            MessageBox.Show(mensaje, ok ? "Éxito" : "Error",
+                MessageBoxButton.OK,
+                ok ? MessageBoxImage.Information : MessageBoxImage.Error);
+
+            if (ok)
+            {
+                CargarHistorial();
+                txtCantidad.Text = "";
+                cboProductos.SelectedIndex = -1;
             }
         }
     }

@@ -1,0 +1,70 @@
+﻿<Window x:Class="CapaPresentacion.FormReceta"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Gestión de Recetas" Height="600" Width="800"
+        Background="#fff8e1" FontFamily="Georgia"
+        Loaded="Window_Loaded">
+
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Text="Gestión de Recetas" FontSize="26" FontWeight="Bold" Foreground="#a36b00"/>
+
+        <!-- Selección de Producto -->
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,20,0,10">
+            <TextBlock Text="Seleccionar Producto:" VerticalAlignment="Center" Margin="0,0,10,0"/>
+            <ComboBox x:Name="cboProductos" Width="300" DisplayMemberPath="Nombre" SelectedValuePath="IdProducto"
+                      SelectionChanged="cboProductos_SelectionChanged"/>
+        </StackPanel>
+
+        <!-- Formulario para agregar materia prima -->
+        <Border Grid.Row="2" Background="White" CornerRadius="12" Padding="16" Margin="0,10,0,10">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="300"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel>
+                    <TextBlock Text="Agregar Materia Prima a la Receta:" FontWeight="Bold" Margin="0,0,0,10"/>
+
+                    <TextBlock Text="Materia Prima:" Foreground="#5c3a00" Margin="0,4,0,2"/>
+                    <ComboBox x:Name="cboMateriasPrimas" DisplayMemberPath="Nombre" SelectedValuePath="IdMateria"
+                              Height="30" Margin="0,0,0,8"/>
+
+                    <TextBlock Text="Cantidad Necesaria:" Foreground="#5c3a00" Margin="0,4,0,2"/>
+                    <TextBox x:Name="txtCantidadNecesaria" Height="30" Margin="0,0,0,8"/>
+
+                    <TextBlock Text="Unidad:" Foreground="#5c3a00" Margin="0,4,0,2"/>
+                    <TextBlock x:Name="txtUnidad" Height="30" Margin="0,0,0,8" Background="#f0f0f0" Padding="4"/>
+
+                    <Button x:Name="btnAgregar" Content="Agregar a Receta" Width="150" Height="35"
+                            Background="#e2a42d" Foreground="White" FontWeight="Bold"
+                            Click="btnAgregar_Click"/>
+                </StackPanel>
+
+                <!-- Lista de materias primas en la receta -->
+                <DataGrid x:Name="dgvReceta" Grid.Column="1" AutoGenerateColumns="False" IsReadOnly="True"
+                          Margin="20,0,0,0" Background="White" BorderBrush="#e2a42d">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Materia Prima" Binding="{Binding NombreMateria}" Width="*"/>
+                        <DataGridTextColumn Header="Cantidad" Binding="{Binding CantidadNecesaria}" Width="100"/>
+                        <DataGridTextColumn Header="Unidad" Binding="{Binding Unidad}" Width="100"/>
+                        <DataGridTemplateColumn Header="Acciones" Width="100">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Button Content="Eliminar" Click="BtnEliminar_Click" 
+                                            Background="#ff6b6b" Foreground="White" Padding="5"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>

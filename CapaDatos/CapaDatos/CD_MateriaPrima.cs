@@ -4,6 +4,7 @@ using System.Data;
 using Microsoft.Data.SqlClient;
 using CapaEntidad;
 
+
 namespace CapaDatos
 {
     public class CD_MateriaPrima
@@ -12,136 +13,150 @@ namespace CapaDatos
         {
             List<MateriaPrima> lista = new List<MateriaPrima>();
 
-            try
+            using (SqlConnection oconexion = new SqlConnection(Conexion.cadena))
             {
-                using (SqlConnection oconexion = new SqlConnection(Conexion.cadena))
+                SqlCommand cmd = new SqlCommand("SELECT * FROM MateriaPrima", oconexion);
+                oconexion.Open();
+
+                using (SqlDataReader dr = cmd.ExecuteReader())
                 {
-                    string query = @"SELECT IdMateria, Nombre, Unidad, CantidadDisponible, StockMinimo, PrecioUnitario
-                                     FROM MateriaPrima";
-
-                    SqlCommand cmd = new SqlCommand(query, oconexion);
-                    cmd.CommandType = CommandType.Text;
-
-                    oconexion.Open();
-                    using (SqlDataReader dr = cmd.ExecuteReader())
+                    while (dr.Read())
                     {
-                        while (dr.Read())
+                        lista.Add(new MateriaPrima()
                         {
-                            lista.Add(new MateriaPrima()
-                            {
-                                IdMateria = Convert.ToInt32(dr["IdMateria"]),
-                                Nombre = dr["Nombre"].ToString(),
-                                Unidad = dr["Unidad"].ToString(),
-                                CantidadDisponible = Convert.ToInt32(dr["CantidadDisponible"]),
-                                StockMinimo = Convert.ToInt32(dr["StockMinimo"]),
-                                PrecioUnitario = Convert.ToDecimal(dr["PrecioUnitario"])
-                            });
-                        }
+                            IdMateria = Convert.ToInt32(dr["IdMateria"]),
+                            Nombre = dr["Nombre"].ToString(),
+                            Unidad = dr["Unidad"].ToString(),
+                            CantidadDisponible = Convert.ToSingle(dr["CantidadDisponible"]),
+                            StockMinimo = Convert.ToInt32(dr["StockMinimo"]),
+                            PrecioUnitario = Convert.ToDecimal(dr["PrecioUnitario"])
+                        });
                     }
                 }
             }
-            catch (Exception)
-            {
-                lista = new List<MateriaPrima>();
-            }
-
             return lista;
         }
 
-        public int Registrar(MateriaPrima obj, out string mensaje)
+        public int Registrar(MateriaPrima materia, out string mensaje)
         {
-            int id = 0;
+            int idGenerado = 0;
             mensaje = string.Empty;
 
             try
             {
                 using (SqlConnection oconexion = new SqlConnection(Conexion.cadena))
                 {
-                    SqlCommand cmd = new SqlCommand("INSERT INTO MateriaPrima(Nombre, Unidad, CantidadDisponible, StockMinimo, PrecioUnitario) " +
-                                                    "OUTPUT INSERTED.IdMateria VALUES(@Nombre,@Unidad,@CantidadDisponible,@StockMinimo,@PrecioUnitario)", oconexion);
+                    SqlCommand cmd = new SqlCommand("INSERT INTO MateriaPrima (Nombre, Unidad, CantidadDisponible, StockMinimo, PrecioUnitario) OUTPUT INSERTED.IdMateria VALUES (@nombre, @unidad, @cantidad, @stockMinimo, @precio)", oconexion);
 
-                    cmd.Parameters.AddWithValue("@Nombre", obj.Nombre);
-                    cmd.Parameters.AddWithValue("@Unidad", obj.Unidad);
-                    cmd.Parameters.AddWithValue("@CantidadDisponible", obj.CantidadDisponible);
-                    cmd.Parameters.AddWithValue("@StockMinimo", obj.StockMinimo);
-                    cmd.Parameters.AddWithValue("@PrecioUnitario", obj.PrecioUnitario);
+                    cmd.Parameters.AddWithValue("@nombre", materia.Nombre);
+                    cmd.Parameters.AddWithValue("@unidad", materia.Unidad);
+                    cmd.Parameters.AddWithValue("@cantidad", materia.CantidadDisponible);
+                    cmd.Parameters.AddWithValue("@stockMinimo", materia.StockMinimo);
+                    cmd.Parameters.AddWithValue("@precio", materia.PrecioUnitario);
 
                     oconexion.Open();
-                    id = Convert.ToInt32(cmd.ExecuteScalar());
+                    idGenerado = Convert.ToInt32(cmd.ExecuteScalar());
+                    mensaje = "Materia prima registrada correctamente";
                 }
-                mensaje = "Materia prima registrada correctamente.";
             }
             catch (Exception ex)
             {
-                id = 0;
-                mensaje = "Error al registrar materia prima: " + ex.Message;
+                idGenerado = 0;
+                mensaje = ex.Message;
             }
-
-            return id;
+            return idGenerado;
         }
 
-        public bool Editar(MateriaPrima obj, out string mensaje)
+        // ✅ SOLO DEBE HABER UN MÉTODO EDITAR - ELIMINA CUALQUIER DUPLICADO
+        public bool Editar(MateriaPrima materia, out string mensaje)
         {
-            bool resultado = false;
             mensaje = string.Empty;
 
             try
             {
                 using (SqlConnection oconexion = new SqlConnection(Conexion.cadena))
                 {
-                    SqlCommand cmd = new SqlCommand(@"UPDATE MateriaPrima SET 
-                                                      Nombre=@Nombre, 
-                                                      Unidad=@Unidad, 
-                                                      CantidadDisponible=@CantidadDisponible, 
-                                                      StockMinimo=@StockMinimo, 
-                                                      PrecioUnitario=@PrecioUnitario
-                                                      WHERE IdMateria=@IdMateria", oconexion);
-
-                    cmd.Parameters.AddWithValue("@IdMateria", obj.IdMateria);
-                    cmd.Parameters.AddWithValue("@Nombre", obj.Nombre);
-                    cmd.Parameters.AddWithValue("@Unidad", obj.Unidad);
-                    cmd.Parameters.AddWithValue("@CantidadDisponible", obj.CantidadDisponible);
-                    cmd.Parameters.AddWithValue("@StockMinimo", obj.StockMinimo);
-                    cmd.Parameters.AddWithValue("@PrecioUnitario", obj.PrecioUnitario);
-
                     oconexion.Open();
-                    resultado = cmd.ExecuteNonQuery() > 0;
+
+                    // 1. Guardar el precio anterior para comparar
+                    SqlCommand cmdPrecioAnterior = new SqlCommand("SELECT PrecioUnitario FROM MateriaPrima WHERE IdMateria = @id", oconexion);
+                    cmdPrecioAnterior.Parameters.AddWithValue("@id", materia.IdMateria);
+                    decimal precioAnterior = Convert.ToDecimal(cmdPrecioAnterior.ExecuteScalar());
+
+                    // 2. Actualizar la materia prima
+                    SqlCommand cmd = new SqlCommand("UPDATE MateriaPrima SET Nombre = @nombre, Unidad = @unidad, CantidadDisponible = @cantidad, StockMinimo = @stockMinimo, PrecioUnitario = @precio WHERE IdMateria = @id", oconexion);
+                    cmd.Parameters.AddWithValue("@id", materia.IdMateria);
+                    cmd.Parameters.AddWithValue("@nombre", materia.Nombre);
+                    cmd.Parameters.AddWithValue("@unidad", materia.Unidad);
+                    cmd.Parameters.AddWithValue("@cantidad", materia.CantidadDisponible);
+                    cmd.Parameters.AddWithValue("@stockMinimo", materia.StockMinimo);
+                    cmd.Parameters.AddWithValue("@precio", materia.PrecioUnitario);
+
+                    bool resultado = cmd.ExecuteNonQuery() > 0;
+                    mensaje = resultado ? "Materia prima actualizada correctamente" : "No se pudo actualizar la materia prima";
+
+                    // 3. Si cambió el precio, recalcular costos de productos afectados
+                    if (resultado && precioAnterior != materia.PrecioUnitario)
+                    {
+                        RecalcularProductosConMateria(oconexion, materia.IdMateria);
+                    }
+
+                    return resultado;
                 }
-                mensaje = resultado ? "Materia prima editada correctamente." : "No se pudo editar.";
             }
             catch (Exception ex)
             {
-                resultado = false;
-                mensaje = "Error al editar materia prima: " + ex.Message;
+                mensaje = ex.Message;
+                return false;
             }
-
-            return resultado;
         }
 
-        public bool Eliminar(int id, out string mensaje)
+        public bool Eliminar(int idMateria, out string mensaje)
         {
-            bool resultado = false;
             mensaje = string.Empty;
 
             try
             {
                 using (SqlConnection oconexion = new SqlConnection(Conexion.cadena))
                 {
-                    SqlCommand cmd = new SqlCommand("DELETE FROM MateriaPrima WHERE IdMateria=@IdMateria", oconexion);
-                    cmd.Parameters.AddWithValue("@IdMateria", id);
+                    SqlCommand cmd = new SqlCommand("DELETE FROM MateriaPrima WHERE IdMateria = @id", oconexion);
+                    cmd.Parameters.AddWithValue("@id", idMateria);
 
                     oconexion.Open();
-                    resultado = cmd.ExecuteNonQuery() > 0;
+                    bool resultado = cmd.ExecuteNonQuery() > 0;
+                    mensaje = resultado ? "Materia prima eliminada correctamente" : "No se pudo eliminar la materia prima";
+                    return resultado;
                 }
-                mensaje = resultado ? "Materia prima eliminada correctamente." : "No se pudo eliminar.";
             }
             catch (Exception ex)
             {
-                resultado = false;
-                mensaje = "Error al eliminar materia prima: " + ex.Message;
+                mensaje = ex.Message;
+                return false;
             }
+        }
 
-            return resultado;
+        private void RecalcularProductosConMateria(SqlConnection conexion, int idMateria)
+        {
+            // Obtener todos los productos que usan esta materia prima
+            SqlCommand cmd = new SqlCommand("SELECT DISTINCT IdProducto FROM ProductoMateriaPrima WHERE IdMateria = @idMateria", conexion);
+            cmd.Parameters.AddWithValue("@idMateria", idMateria);
+
+            using (SqlDataReader dr = cmd.ExecuteReader())
+            {
+                while (dr.Read())
+                {
+                    int idProducto = Convert.ToInt32(dr["IdProducto"]);
+
+                    // Recalcular costo para cada producto
+                    SqlCommand cmdRecalcular = new SqlCommand("CalcularCostoProducto", conexion);
+                    cmdRecalcular.CommandType = CommandType.StoredProcedure;
+                    cmdRecalcular.Parameters.AddWithValue("@IdProducto", idProducto);
+                    cmdRecalcular.Parameters.Add("@CostoTotal", SqlDbType.Decimal).Direction = ParameterDirection.Output;
+                    cmdRecalcular.Parameters.Add("@PrecioSugerido", SqlDbType.Decimal).Direction = ParameterDirection.Output;
+                    cmdRecalcular.ExecuteNonQuery();
+                }
+            }
         }
     }
 }
+
