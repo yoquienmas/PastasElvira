@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("PastasElvira")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+5d4a55043ef2059ea151811f434defd36ef6dbfe")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+6fa76627c18859257c5f3c24794ce9c2f2c8d9c5")]
 [assembly: System.Reflection.AssemblyProductAttribute("PastasElvira")]
 [assembly: System.Reflection.AssemblyTitleAttribute("PastasElvira")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

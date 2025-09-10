@@ -180,11 +180,23 @@ namespace CapaPresentacion
             }
         }
 
-        #region Event Handlers - Admin
-        private void btnReporteVentas_Click(object sender, RoutedEventArgs e)
+        #region Event Handlers - Dueño
+        private void btnReportesGenerales_Click(object sender, RoutedEventArgs e)
         {
             FormReportes formReportes = new FormReportes();
             formReportes.Show();
+        }
+
+        private void btnReporteVentas_Click(object sender, RoutedEventArgs e)
+        {
+            FormReporteVentas formReporteVentas = new FormReporteVentas();
+            formReporteVentas.Show();
+        }
+
+        private void btnReporteConsumo_Click(object sender, RoutedEventArgs e)
+        {
+            FormReporteConsumo formReporteConsumo = new FormReporteConsumo();
+            formReporteConsumo.Show();
         }
 
         private void btnCostosFijos_Click(object sender, RoutedEventArgs e)
@@ -192,44 +204,62 @@ namespace CapaPresentacion
             FormCostoFijo formCostoFijo = new FormCostoFijo();
             formCostoFijo.Show();
         }
+        #endregion
 
-        private void btnEstadoFinanciero_Click(object sender, RoutedEventArgs e)
+        #region Event Handlers - Admin
+        private void btnMateriasPrimas_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("Módulo de Estado Financiero en desarrollo", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+            FormMateriaPrima  formMateria = new FormMateriaPrima();
+            formMateria.Show();
         }
 
-        private void btnNuevoProducto_Click(object sender, RoutedEventArgs e)
+        private void btnProductosTerminados_Click(object sender, RoutedEventArgs e)
         {
             FormProducto formProducto = new FormProducto();
             formProducto.Show();
-
         }
 
-        private void btnListaProductos_Click(object sender, RoutedEventArgs e)
+        private void btnAlertasStock_Click(object sender, RoutedEventArgs e)
         {
-            // Asumiendo que tienes FormProducto para listar productos
-            MessageBox.Show("Abrir listado de productos", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+            FormAlertas formAlerts = new FormAlertas();
+            formAlerts.Show();
         }
 
-        private void btnGestionRecetas_Click(object sender, RoutedEventArgs e)
+        private void btnProgramarProduccion_Click(object sender, RoutedEventArgs e)
         {
-            FormReceta formReceta = new FormReceta();
-            formReceta.Show();
+            FormProduccion formProduccion = new FormProduccion();
+            formProduccion.Show();
         }
 
-        private void btnRegistrarUsuario_Click(object sender, RoutedEventArgs e)
+        private void btnHistorialProduccion_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("Módulo de registro de usuarios en desarrollo", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+            FormHistorialProduccion formHistorialProduccion = new FormHistorialProduccion();
+            formHistorialProduccion.Show();
         }
 
-        private void btnListaUsuarios_Click(object sender, RoutedEventArgs e)
+        private void btnDetalleProduccion_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("Módulo de lista de usuarios en desarrollo", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+            FormDetalleProduccion formDetalleProduccion = new FormDetalleProduccion();
+            formDetalleProduccion.Show();
+        }
+
+        private void btnConsumoPorVenta_Click(object sender, RoutedEventArgs e)
+        {
+            FormConsumoPorVenta formConsumoPorVenta = new FormConsumoPorVenta();
+            formConsumoPorVenta.Show();
         }
 
         private void btnVerDetalleVenta_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("Ver detalle de venta seleccionada", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+            if (dgvVentasAdmin.SelectedItem != null)
+            {
+                // Aquí puedes implementar la lógica para ver el detalle de la venta seleccionada
+                MessageBox.Show("Mostrando detalle de venta seleccionada", "Detalle de Venta", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            else
+            {
+                MessageBox.Show("Por favor, seleccione una venta para ver su detalle", "Advertencia", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
         }
         #endregion
 
@@ -240,7 +270,7 @@ namespace CapaPresentacion
             formVenta.Show();
         }
 
-        private void btnRegistrarCliente_Click(object sender, RoutedEventArgs e)
+        private void btnGestionClientes_Click(object sender, RoutedEventArgs e)
         {
             FormCliente formCliente = new FormCliente();
             formCliente.Show();
@@ -249,13 +279,14 @@ namespace CapaPresentacion
         private void btnVerProductos_Click(object sender, RoutedEventArgs e)
         {
             // Asumiendo que tienes FormProducto para ver productos
-            MessageBox.Show("Abrir listado completo de productos", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+            FormProducto formProducto = new FormProducto();
+            formProducto.Show();
         }
         #endregion
 
         private void dgvTopClientes_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-
+            // Puedes implementar funcionalidad adicional aquí si es necesario
         }
     }
 }
