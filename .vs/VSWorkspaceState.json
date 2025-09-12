@@ -1,7 +1,9 @@
 {
   "ExpandedNodes": [
-    ""
+    "",
+    "\\CapaPresentacion",
+    "\\CapaPresentacion\\CapaPresentacion"
   ],
-  "SelectedNode": "\\PastasElvira.sln (PastasElvira\\PastasElvira.sln)",
+  "SelectedNode": "\\CapaPresentacion\\CapaPresentacion\\CapaPresentacion.csproj",
   "PreviewInSolutionExplorer": false
 }

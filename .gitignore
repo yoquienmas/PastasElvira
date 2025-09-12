@@ -1,0 +1,30 @@
+# Archivos y carpetas temporales de Visual Studio
+.vs/
+bin/
+obj/
+Debug/
+Release/
+[Bb]uild/
+x64/
+x86/
+
+# Archivos de usuario de Visual Studio
+*.user
+*.suo
+*.cache
+*.dbmdl
+*.log
+
+# Archivos de configuración locales
+*.vsidx
+*.vscode/
+*.local.json
+
+# Archivos generados
+*.exe
+*.dll
+*.pdb
+*.tmp
+
+# Otros
+[Tt]est[Rr]esult*/
