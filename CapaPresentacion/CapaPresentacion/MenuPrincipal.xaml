@@ -1,17 +1,30 @@
 ﻿<Window x:Class="CapaPresentacion.MenuPrincipal"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Menú Principal - Pastas Elvira" Height="768" Width="1366"
-        Background="#f5f5f5" FontFamily="Georgia"
+        Title="Menu Principal - Pastas Elvira" Height="768" Width="1024"
         WindowStartupLocation="CenterScreen"
-        Loaded="Window_Loaded">
+        Background="#fff8e1" FontFamily="Georgia">
 
-    <Grid>
+    <DockPanel>
+        <!-- Barra superior con información del usuario -->
+        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" 
+                   Background="#e2a42d" Height="40" VerticalAlignment="Top">
+            <TextBlock x:Name="txtFecha" Margin="10,0" VerticalAlignment="Center" 
+                      Foreground="White" FontWeight="Bold"/>
+            <TextBlock x:Name="txtUsuario" Margin="20,0" VerticalAlignment="Center" 
+                      Foreground="White" FontWeight="Bold"/>
+        </StackPanel>
+        <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
+        <StackPanel Orientation="Horizontal">
+            <Image Source="C:\Users\danie\Source\Repos\PastasElvira\PastasElvira\PastasElvira\Resources\logo.png" Width="40" Height="40" Margin="0,0,10,0"/>
+            <TextBlock Text="PASTAS ELVIRA" FontSize="20" FontWeight="Bold" Foreground="White" VerticalAlignment="Center"/>
+        </StackPanel>
+        
         <!-- Header con Selección de Rol -->
         <Border Background="#a36b00" Padding="15">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
@@ -22,7 +35,6 @@
                     <ComboBoxItem Content="ADMIN" Tag="ADMIN"/>
                     <ComboBoxItem Content="VENDEDOR" Tag="VENDEDOR"/>
                 </ComboBox>
-                <TextBlock x:Name="txtFecha" Margin="20,0,0,0" Foreground="White" FontSize="14" VerticalAlignment="Center"/>
             </StackPanel>
         </Border>
 
@@ -75,16 +87,10 @@
                         <!-- Funcionalidades para el Dueño -->
                         <GroupBox Header="📊 HERRAMIENTAS DE SUPERVISIÓN" Margin="0,0,0,20">
                             <WrapPanel Margin="10">
-                                <Button Content="Reportes Generales" Width="180" Height="40" Margin="5"
+                                    <Button Content="Reportes" Width="180" Height="40" Margin="5"
                                        Background="#4CAF50" Foreground="White" FontWeight="Bold"
                                        Click="btnReportesGenerales_Click"/>
-                                <Button Content="Reporte de Ventas" Width="180" Height="40" Margin="5"
-                                       Background="#2196F3" Foreground="White" FontWeight="Bold"
-                                       Click="btnReporteVentas_Click"/>
-                                <Button Content="Reporte de Consumo" Width="180" Height="40" Margin="5"
-                                       Background="#FF9800" Foreground="White" FontWeight="Bold"
-                                       Click="btnReporteConsumo_Click"/>
-                                <Button Content="Costos Fijos" Width="180" Height="40" Margin="5"
+                                    <Button Content="Costos Fijos" Width="180" Height="40" Margin="5"
                                        Background="#9C27B0" Foreground="White" FontWeight="Bold"
                                        Click="btnCostosFijos_Click"/>
                             </WrapPanel>
@@ -133,7 +139,7 @@
                                 <Button Content="Materias Primas" Width="180" Height="40" Margin="5"
                                        Background="#4CAF50" Foreground="White" FontWeight="Bold"
                                        Click="btnMateriasPrimas_Click"/>
-                                <Button Content="Productos Terminados" Width="180" Height="40" Margin="5"
+                                <Button Content="Agregar Productos" Width="180" Height="40" Margin="5"
                                        Background="#2196F3" Foreground="White" FontWeight="Bold"
                                        Click="btnProductosTerminados_Click"/>
                                 <Button Content="Alertas de Stock" Width="180" Height="40" Margin="5"
@@ -196,13 +202,13 @@
                             <Button Content="➕ NUEVA VENTA" Width="180" Height="60" Margin="5"
                                    Background="#4CAF50" Foreground="White" FontWeight="Bold" FontSize="14"
                                    Click="btnNuevaVenta_Click"/>
-                            <Button Content="👥 GESTIÓN CLIENTES" Width="180" Height="60" Margin="5"
+                            <Button Content="Mis Ventas"  Width="180" Height="60" Margin="5"
+                                       Background="#FF9800" Foreground="White" FontWeight="Bold" FontSize="14"
+                                       Click="btnMisVentas_Click"/>
+                                <Button Content="👥 GESTIÓN CLIENTES" Width="180" Height="60" Margin="5"
                                    Background="#2196F3" Foreground="White" FontWeight="Bold" FontSize="14"
                                    Click="btnGestionClientes_Click"/>
-                            <Button Content="📦 VER PRODUCTOS" Width="180" Height="60" Margin="5"
-                                   Background="#FF9800" Foreground="White" FontWeight="Bold" FontSize="14"
-                                   Click="btnVerProductos_Click"/>
-                        </WrapPanel>
+                            </WrapPanel>
 
                         <!-- Mis Ventas del Mes -->
                         <GroupBox Header="💰 MIS VENTAS DEL MES" Margin="0,0,0,20">
@@ -261,4 +267,5 @@
 
         </TabControl>
     </Grid>
+    </DockPanel>
 </Window>

@@ -2,9 +2,10 @@
 using CapaNegocio;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using System.Linq;
+using System.Windows.Input;
 
 namespace CapaPresentacion
 {
@@ -12,6 +13,8 @@ namespace CapaPresentacion
     {
         private CN_Reporte cnReporte = new CN_Reporte();
         private CN_Cliente cnCliente = new CN_Cliente();
+        private List<ReporteVenta> ventasClienteActual = new List<ReporteVenta>();
+        private string clienteActualNombre = "";
 
         public FormReportes()
         {
@@ -60,6 +63,7 @@ namespace CapaPresentacion
             dtpFechaInicio.Visibility = Visibility.Visible;
             dtpFechaFin.Visibility = Visibility.Visible;
             cboClientes.Visibility = Visibility.Collapsed;
+            panelFiltrosCliente.Visibility = Visibility.Collapsed;
 
             switch (reporteSeleccionado)
             {
@@ -67,6 +71,7 @@ namespace CapaPresentacion
                     dtpFechaInicio.Visibility = Visibility.Collapsed;
                     dtpFechaFin.Visibility = Visibility.Collapsed;
                     cboClientes.Visibility = Visibility.Visible;
+                    panelFiltrosCliente.Visibility = Visibility.Visible;
                     break;
 
                 case "Stock Crítico":
@@ -175,17 +180,80 @@ namespace CapaPresentacion
             }
 
             var cliente = (Cliente)cboClientes.SelectedItem;
-            var ventas = cnReporte.ObtenerVentasPorCliente(cliente.IdCliente);
+            ventasClienteActual = cnReporte.ObtenerVentasPorCliente(cliente.IdCliente);
+            clienteActualNombre = cliente.Nombre;
 
-            dgvReporte.ItemsSource = ventas;
+            // Aplicar filtros si existen
+            AplicarFiltrosVentasCliente();
+
+            GenerarResumenVentasCliente(ventasClienteActual, clienteActualNombre);
+        }
+
+        private void AplicarFiltrosVentasCliente()
+        {
+            var ventasFiltradas = ventasClienteActual;
+
+            // Filtrar por DNI si hay texto
+            if (!string.IsNullOrWhiteSpace(txtFiltroDNI.Text))
+            {
+                ventasFiltradas = ventasFiltradas
+                    .Where(v => v.DNI != null && v.DNI.Contains(txtFiltroDNI.Text))
+                    .ToList();
+            }
+
+            // Filtrar por producto si hay texto (asumiendo que tienes propiedad Productos)
+            if (!string.IsNullOrWhiteSpace(txtFiltroProducto.Text))
+            {
+                ventasFiltradas = ventasFiltradas
+                    .Where(v => v.Productos != null && v.Productos.Contains(txtFiltroProducto.Text))
+                    .ToList();
+            }
+
+            dgvReporte.ItemsSource = ventasFiltradas;
 
             // Configurar columnas
             dgvReporte.Columns.Clear();
             dgvReporte.Columns.Add(new DataGridTextColumn { Header = "ID", Binding = new System.Windows.Data.Binding("IdVenta"), Width = 60 });
             dgvReporte.Columns.Add(new DataGridTextColumn { Header = "Fecha", Binding = new System.Windows.Data.Binding("Fecha") { StringFormat = "dd/MM/yyyy HH:mm" }, Width = 120 });
+            dgvReporte.Columns.Add(new DataGridTextColumn { Header = "DNI", Binding = new System.Windows.Data.Binding("DniCliente"), Width = 100 });
             dgvReporte.Columns.Add(new DataGridTextColumn { Header = "Total", Binding = new System.Windows.Data.Binding("Total") { StringFormat = "C" }, Width = 100 });
 
-            GenerarResumenVentasCliente(ventas, cliente.Nombre);
+            // Solo agregar columna de productos si existe la propiedad
+            if (ventasFiltradas.Any(v => !string.IsNullOrEmpty(v.Productos)))
+            {
+                dgvReporte.Columns.Add(new DataGridTextColumn { Header = "Productos", Binding = new System.Windows.Data.Binding("Productos"), Width = 200 });
+            }
+        }
+
+        // Nuevos métodos para los filtros
+        private void TxtFiltroDNI_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter && cboTipoReporte.SelectedItem != null &&
+                ((ComboBoxItem)cboTipoReporte.SelectedItem).Content.ToString() == "Ventas por Cliente")
+            {
+                AplicarFiltrosVentasCliente();
+            }
+        }
+
+        private void TxtFiltroProducto_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter && cboTipoReporte.SelectedItem != null &&
+                ((ComboBoxItem)cboTipoReporte.SelectedItem).Content.ToString() == "Ventas por Cliente")
+            {
+                AplicarFiltrosVentasCliente();
+            }
+        }
+
+        private void BtnLimpiarFiltros_Click(object sender, RoutedEventArgs e)
+        {
+            txtFiltroDNI.Text = "";
+            txtFiltroProducto.Text = "";
+
+            if (cboTipoReporte.SelectedItem != null &&
+                ((ComboBoxItem)cboTipoReporte.SelectedItem).Content.ToString() == "Ventas por Cliente")
+            {
+                AplicarFiltrosVentasCliente();
+            }
         }
 
         private void GenerarReporteStockCritico()

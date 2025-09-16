@@ -2,8 +2,10 @@
 using CapaNegocio;
 using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace CapaPresentacion
 {
@@ -37,9 +39,23 @@ namespace CapaPresentacion
             txtDocumento.Text = "";
             txtTelefono.Text = "";
             txtEmail.Text = "";
+            txtCuil.Text = "";
             txtDireccion.Text = "";
             btnGuardar.Content = "Guardar";
             btnEliminar.IsEnabled = false;
+            btnEditar.IsEnabled = false;
+
+            // Limpiar estilos de validación
+            LimpiarEstilosValidacion();
+        }
+
+        private void LimpiarEstilosValidacion()
+        {
+            txtNombre.BorderBrush = System.Windows.Media.Brushes.Gray;
+            txtDocumento.BorderBrush = System.Windows.Media.Brushes.Gray;
+            txtTelefono.BorderBrush = System.Windows.Media.Brushes.Gray;
+            txtEmail.BorderBrush = System.Windows.Media.Brushes.Gray;
+            txtCuil.BorderBrush = System.Windows.Media.Brushes.Gray;
         }
 
         private void btnNuevo_Click(object sender, RoutedEventArgs e)
@@ -49,18 +65,8 @@ namespace CapaPresentacion
 
         private void btnGuardar_Click(object sender, RoutedEventArgs e)
         {
-            // Validaciones
-            if (string.IsNullOrWhiteSpace(txtNombre.Text))
-            {
-                MessageBox.Show("El nombre es obligatorio", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+            if (!ValidarFormulario())
                 return;
-            }
-
-            if (string.IsNullOrWhiteSpace(txtDocumento.Text))
-            {
-                MessageBox.Show("El documento es obligatorio", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
-                return;
-            }
 
             // Crear objeto cliente
             Cliente cliente = new Cliente
@@ -69,14 +75,9 @@ namespace CapaPresentacion
                 Documento = txtDocumento.Text.Trim(),
                 Telefono = string.IsNullOrWhiteSpace(txtTelefono.Text) ? null : txtTelefono.Text.Trim(),
                 Email = string.IsNullOrWhiteSpace(txtEmail.Text) ? null : txtEmail.Text.Trim(),
+                Cuil = string.IsNullOrWhiteSpace(txtCuil.Text) ? null : txtCuil.Text.Trim(),
                 Direccion = string.IsNullOrWhiteSpace(txtDireccion.Text) ? null : txtDireccion.Text.Trim()
             };
-
-            // Si hay cliente seleccionado, es una edición
-            if (clienteSeleccionado != null)
-            {
-                cliente.IdCliente = clienteSeleccionado.IdCliente;
-            }
 
             string mensaje;
             bool resultado;
@@ -88,7 +89,8 @@ namespace CapaPresentacion
             }
             else
             {
-                // Editar cliente existente
+                // Si hay cliente seleccionado pero se usa el botón Guardar en lugar de Editar
+                cliente.IdCliente = clienteSeleccionado.IdCliente;
                 resultado = cnCliente.Editar(cliente, out mensaje);
             }
 
@@ -101,6 +103,135 @@ namespace CapaPresentacion
                 CargarClientes();
                 LimpiarFormulario();
             }
+        }
+
+        private void btnEditar_Click(object sender, RoutedEventArgs e)
+        {
+            if (clienteSeleccionado == null)
+            {
+                MessageBox.Show("Seleccione un cliente para editar", "Error",
+                                MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            if (!ValidarFormulario())
+                return;
+
+            // Crear objeto cliente con los datos actualizados
+            Cliente cliente = new Cliente
+            {
+                IdCliente = clienteSeleccionado.IdCliente,
+                Nombre = txtNombre.Text.Trim(),
+                Documento = txtDocumento.Text.Trim(),
+                Telefono = string.IsNullOrWhiteSpace(txtTelefono.Text) ? null : txtTelefono.Text.Trim(),
+                Email = string.IsNullOrWhiteSpace(txtEmail.Text) ? null : txtEmail.Text.Trim(),
+                Cuil = string.IsNullOrWhiteSpace(txtCuil.Text) ? null : txtCuil.Text.Trim(),
+                Direccion = string.IsNullOrWhiteSpace(txtDireccion.Text) ? null : txtDireccion.Text.Trim()
+            };
+
+            string mensaje;
+            bool resultado = cnCliente.Editar(cliente, out mensaje);
+
+            MessageBox.Show(mensaje, resultado ? "Éxito" : "Error",
+                MessageBoxButton.OK,
+                resultado ? MessageBoxImage.Information : MessageBoxImage.Error);
+
+            if (resultado)
+            {
+                CargarClientes();
+                LimpiarFormulario();
+            }
+        }
+
+        private bool ValidarFormulario()
+        {
+            bool esValido = true;
+            LimpiarEstilosValidacion();
+
+            // Validar Nombre
+            if (string.IsNullOrWhiteSpace(txtNombre.Text))
+            {
+                txtNombre.BorderBrush = System.Windows.Media.Brushes.Red;
+                MessageBox.Show("El nombre es obligatorio", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                esValido = false;
+            }
+            else if (txtNombre.Text.Trim().Length < 3)
+            {
+                txtNombre.BorderBrush = System.Windows.Media.Brushes.Red;
+                MessageBox.Show("El nombre debe tener al menos 3 caracteres", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                esValido = false;
+            }
+
+            // Validar Documento
+            if (string.IsNullOrWhiteSpace(txtDocumento.Text))
+            {
+                txtDocumento.BorderBrush = System.Windows.Media.Brushes.Red;
+                MessageBox.Show("El documento es obligatorio", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                esValido = false;
+            }
+            else if (!EsDocumentoValido(txtDocumento.Text.Trim()))
+            {
+                txtDocumento.BorderBrush = System.Windows.Media.Brushes.Red;
+                MessageBox.Show("El documento no tiene un formato válido", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                esValido = false;
+            }
+
+            // Validar Teléfono (si está completado)
+            if (!string.IsNullOrWhiteSpace(txtTelefono.Text) && !EsTelefonoValido(txtTelefono.Text.Trim()))
+            {
+                txtTelefono.BorderBrush = System.Windows.Media.Brushes.Red;
+                MessageBox.Show("El teléfono no tiene un formato válido", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                esValido = false;
+            }
+
+            // Validar Email (si está completado)
+            if (!string.IsNullOrWhiteSpace(txtEmail.Text) && !EsEmailValido(txtEmail.Text.Trim()))
+            {
+                txtEmail.BorderBrush = System.Windows.Media.Brushes.Red;
+                MessageBox.Show("El email no tiene un formato válido", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                esValido = false;
+            }
+
+            // Validar CUIL (si está completado)
+            if (!string.IsNullOrWhiteSpace(txtCuil.Text) && !EsCuilValido(txtCuil.Text.Trim()))
+            {
+                txtCuil.BorderBrush = System.Windows.Media.Brushes.Red;
+                MessageBox.Show("El CUIL no tiene un formato válido", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                esValido = false;
+            }
+
+            return esValido;
+        }
+
+        private bool EsDocumentoValido(string documento)
+        {
+            // Permitir solo números y guiones, entre 7 y 15 caracteres
+            return Regex.IsMatch(documento, @"^[0-9\-]{7,15}$");
+        }
+
+        private bool EsTelefonoValido(string telefono)
+        {
+            // Validar formato de teléfono (números, paréntesis, guiones, espacios)
+            return Regex.IsMatch(telefono, @"^[0-9\s\(\)\-]{8,20}$");
+        }
+
+        private bool EsEmailValido(string email)
+        {
+            try
+            {
+                var addr = new System.Net.Mail.MailAddress(email);
+                return addr.Address == email;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        private bool EsCuilValido(string cuil)
+        {
+            // Validar formato básico de CUIL (xx-xxxxxxxx-x)
+            return Regex.IsMatch(cuil, @"^\d{2}-\d{8}-\d{1}$");
         }
 
         private void btnEliminar_Click(object sender, RoutedEventArgs e)
@@ -140,9 +271,73 @@ namespace CapaPresentacion
                 txtDocumento.Text = cliente.Documento;
                 txtTelefono.Text = cliente.Telefono;
                 txtEmail.Text = cliente.Email;
+                txtCuil.Text = cliente.Cuil;
                 txtDireccion.Text = cliente.Direccion;
+
+                // Cambiar el texto del botón Guardar a "Actualizar"
                 btnGuardar.Content = "Actualizar";
                 btnEliminar.IsEnabled = true;
+                btnEditar.IsEnabled = true;
+
+                LimpiarEstilosValidacion();
+            }
+        }
+
+        // Eventos para validación en tiempo real
+        private void txtNombre_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (!string.IsNullOrEmpty(txtNombre.Text))
+                txtNombre.BorderBrush = System.Windows.Media.Brushes.Gray;
+        }
+
+        private void txtDocumento_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (!string.IsNullOrEmpty(txtDocumento.Text) && EsDocumentoValido(txtDocumento.Text))
+                txtDocumento.BorderBrush = System.Windows.Media.Brushes.Gray;
+        }
+
+        private void txtTelefono_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (string.IsNullOrEmpty(txtTelefono.Text) || EsTelefonoValido(txtTelefono.Text))
+                txtTelefono.BorderBrush = System.Windows.Media.Brushes.Gray;
+        }
+
+        private void txtEmail_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (string.IsNullOrEmpty(txtEmail.Text) || EsEmailValido(txtEmail.Text))
+                txtEmail.BorderBrush = System.Windows.Media.Brushes.Gray;
+        }
+
+        private void txtCuil_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (string.IsNullOrEmpty(txtCuil.Text) || EsCuilValido(txtCuil.Text))
+                txtCuil.BorderBrush = System.Windows.Media.Brushes.Gray;
+        }
+
+        // Validación de entrada para solo números
+        private void SoloNumeros_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            if (sender == txtDocumento || sender == txtTelefono)
+            {
+                e.Handled = !EsNumero(e.Text);
+            }
+        }
+
+        private bool EsNumero(string texto)
+        {
+            return int.TryParse(texto, out _);
+        }
+
+        // Formato automático para CUIL
+        private void txtCuil_LostFocus(object sender, RoutedEventArgs e)
+        {
+            if (!string.IsNullOrWhiteSpace(txtCuil.Text) && txtCuil.Text.Length >= 11)
+            {
+                string cuil = txtCuil.Text.Replace("-", "").Trim();
+                if (cuil.Length == 11)
+                {
+                    txtCuil.Text = $"{cuil.Substring(0, 2)}-{cuil.Substring(2, 8)}-{cuil.Substring(10, 1)}";
+                }
             }
         }
     }

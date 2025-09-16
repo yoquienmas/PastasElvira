@@ -1,8 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Windows;
+﻿using CapaDatos;
 using CapaEntidad;
 using CapaNegocio;
+using System;
+using System.Collections.Generic;
+using System.Windows;
 
 namespace CapaPresentacion
 {

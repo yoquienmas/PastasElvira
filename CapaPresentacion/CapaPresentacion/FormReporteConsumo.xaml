@@ -6,13 +6,17 @@
         Loaded="Window_Loaded">
 
     <Grid Margin="20">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="66*"/>
+            <ColumnDefinition Width="149*"/>
+        </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <!-- Filtros -->
-        <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+        <StackPanel Orientation="Horizontal" Margin="0,0,0,10" Grid.ColumnSpan="2">
             <TextBlock Text="Fecha Inicio:" VerticalAlignment="Center" Margin="0,0,10,0"/>
             <DatePicker x:Name="dpFechaInicio" Width="150" Margin="0,0,20,0"/>
 
@@ -24,14 +28,16 @@
                     Click="btnGenerar_Click"/>
         </StackPanel>
 
-        <!-- DataGrid -->
         <DataGrid x:Name="dgvConsumo" Grid.Row="1" AutoGenerateColumns="False" IsReadOnly="True"
-                  Background="White" BorderBrush="#e2a42d" BorderThickness="1">
+                  Background="White" BorderBrush="#e2a42d" BorderThickness="1" Grid.ColumnSpan="2" SelectionChanged="dgvConsumo_SelectionChanged">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Materia Prima" Binding="{Binding MateriaPrima}" Width="*"/>
                 <DataGridTextColumn Header="Cantidad Consumida" Binding="{Binding CantidadConsumida}" Width="200"/>
                 <DataGridTextColumn Header="Unidad" Binding="{Binding Unidad}" Width="150"/>
             </DataGrid.Columns>
         </DataGrid>
+
+        <TextBlock x:Name="lblTotal" Grid.Row="2" Grid.ColumnSpan="2" FontWeight="Bold" FontSize="16"
+                   HorizontalAlignment="Right" Margin="0,10,0,0"/>
     </Grid>
 </Window>

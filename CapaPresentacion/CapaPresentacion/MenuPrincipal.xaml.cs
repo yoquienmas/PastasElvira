@@ -16,11 +16,56 @@ namespace CapaPresentacion
         private CN_Producto cnProducto = new CN_Producto();
         private CN_Alerta cnAlerta = new CN_Alerta();
 
+        // Variables para almacenar información del usuario
+        private int _idUsuarioLogueado;
+        private string _nombreUsuarioLogueado;
+
+        // Constructor sin parámetros (necesario para XAML)
         public MenuPrincipal()
         {
             InitializeComponent();
             txtFecha.Text = DateTime.Now.ToString("dd/MM/yyyy HH:mm");
+
+            // Valores por defecto para testing
+            _idUsuarioLogueado = 0;
+            _nombreUsuarioLogueado = "Usuario Demo";
         }
+
+        // Constructor con parámetros (para cuando se abre desde login)
+        public MenuPrincipal(int idUsuario, string nombreUsuario) : this() // Llama al constructor sin parámetros
+        {
+            _idUsuarioLogueado = idUsuario;
+            _nombreUsuarioLogueado = nombreUsuario;
+
+            // Mostrar información del usuario si está logueado
+            if (_idUsuarioLogueado > 0)
+            {
+                txtUsuario.Text = $"Usuario: {_nombreUsuarioLogueado}";
+            }
+        }
+
+        private void btnMisVentas_Click(object sender, RoutedEventArgs e)
+        {
+            // Verificar si hay un usuario logueado
+            if (_idUsuarioLogueado == 0)
+            {
+                MessageBox.Show("No hay usuario logueado. Por favor, inicie sesión.", "Error",
+                               MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            try
+            {
+                FormHistorialVentas formHistorialVentas = new FormHistorialVentas(_idUsuarioLogueado, _nombreUsuarioLogueado);
+                formHistorialVentas.Show();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al abrir el historial de ventas: {ex.Message}", "Error",
+                               MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
@@ -70,7 +115,7 @@ namespace CapaPresentacion
 
                 // 1. Ventas del mes
                 decimal totalVentasMes = cnReporte.ObtenerTotalVentasPeriodo(inicioMes, finMes);
-                txtVentasMes.Text = totalVentasMes.ToString("C");
+                txtVentasMes.Text = totalVentasMes.ToString("$");
 
                 // 2. Total clientes
                 var clientes = cnCliente.Listar();
@@ -159,9 +204,9 @@ namespace CapaPresentacion
                 int cantidadVentas = misVentas.Count;
                 decimal ticketPromedio = cantidadVentas > 0 ? totalVentas / cantidadVentas : 0;
 
-                txtMisVentasTotal.Text = totalVentas.ToString("C");
+                txtMisVentasTotal.Text = totalVentas.ToString("$");
                 txtMisVentasCantidad.Text = cantidadVentas.ToString();
-                txtMisTicketPromedio.Text = ticketPromedio.ToString("C");
+                txtMisTicketPromedio.Text = ticketPromedio.ToString("$");
 
                 dgvMisVentas.ItemsSource = misVentas;
 
@@ -288,5 +333,6 @@ namespace CapaPresentacion
         {
             // Puedes implementar funcionalidad adicional aquí si es necesario
         }
+        
     }
 }

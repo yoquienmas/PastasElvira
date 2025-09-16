@@ -31,6 +31,20 @@
             <ComboBox x:Name="cboClientes" Width="200" DisplayMemberPath="Nombre" SelectedValuePath="IdCliente"
                      Visibility="Collapsed" Margin="0,0,15,0"/>
 
+            <!-- Filtros para Ventas por Cliente -->
+            <StackPanel x:Name="panelFiltrosCliente" Orientation="Horizontal" Visibility="Collapsed" Margin="0,0,15,0">
+                <TextBlock Text="DNI:" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                <TextBox x:Name="txtFiltroDNI" Width="120" Margin="0,0,15,0" 
+                        KeyDown="TxtFiltroDNI_KeyDown" ToolTip="Buscar por DNI del cliente"/>
+
+                <TextBlock Text="Producto:" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                <TextBox x:Name="txtFiltroProducto" Width="200" Margin="0,0,15,0"
+                        KeyDown="TxtFiltroProducto_KeyDown" ToolTip="Buscar por nombre de producto"/>
+
+                <Button x:Name="btnLimpiarFiltros" Content="Limpiar" Width="80" Height="25"
+                        Click="BtnLimpiarFiltros_Click" Background="#FF9800" Foreground="White"/>
+            </StackPanel>
+
             <Button x:Name="btnGenerarReporte" Content="Generar Reporte" Width="120" Height="30"
                     Background="#2196F3" Foreground="White" FontWeight="Bold"
                     Click="btnGenerarReporte_Click"/>

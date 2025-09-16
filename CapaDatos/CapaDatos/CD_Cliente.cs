@@ -30,6 +30,7 @@ namespace CapaDatos
                                 Documento = dr["Documento"].ToString(),
                                 Telefono = dr["Telefono"] != DBNull.Value ? dr["Telefono"].ToString() : "",
                                 Email = dr["Email"] != DBNull.Value ? dr["Email"].ToString() : "",
+                                Cuil = dr["Cuil"].ToString(),
                                 Direccion = dr["Direccion"] != DBNull.Value ? dr["Direccion"].ToString() : ""
                             });
                         }
@@ -52,12 +53,13 @@ namespace CapaDatos
             {
                 using (SqlConnection oconexion = new SqlConnection(Conexion.cadena))
                 {
-                    SqlCommand cmd = new SqlCommand("INSERT INTO Cliente (Nombre, Documento, Telefono, Email, Direccion) VALUES (@nombre, @documento, @telefono, @email, @direccion)", oconexion);
+                    SqlCommand cmd = new SqlCommand("INSERT INTO Cliente (Nombre, Documento, Telefono, Email, Cuil, Direccion) VALUES (@nombre, @documento, @telefono, @email, @direccion)", oconexion);
 
                     cmd.Parameters.AddWithValue("@nombre", cliente.Nombre);
                     cmd.Parameters.AddWithValue("@documento", cliente.Documento);
                     cmd.Parameters.AddWithValue("@telefono", cliente.Telefono ?? (object)DBNull.Value);
                     cmd.Parameters.AddWithValue("@email", cliente.Email ?? (object)DBNull.Value);
+                    cmd.Parameters.AddWithValue("@cuil", cliente.Cuil);
                     cmd.Parameters.AddWithValue("@direccion", cliente.Direccion ?? (object)DBNull.Value);
 
                     oconexion.Open();
@@ -83,13 +85,14 @@ namespace CapaDatos
             {
                 using (SqlConnection oconexion = new SqlConnection(Conexion.cadena))
                 {
-                    SqlCommand cmd = new SqlCommand("UPDATE Cliente SET Nombre = @nombre, Documento = @documento, Telefono = @telefono, Email = @email, Direccion = @direccion WHERE IdCliente = @id", oconexion);
+                    SqlCommand cmd = new SqlCommand("UPDATE Cliente SET Nombre = @nombre, Documento = @documento, Telefono = @telefono, Email = @email, Cuil = @cuil, Direccion = @direccion WHERE IdCliente = @id", oconexion);
 
                     cmd.Parameters.AddWithValue("@id", cliente.IdCliente);
                     cmd.Parameters.AddWithValue("@nombre", cliente.Nombre);
                     cmd.Parameters.AddWithValue("@documento", cliente.Documento);
                     cmd.Parameters.AddWithValue("@telefono", cliente.Telefono ?? (object)DBNull.Value);
                     cmd.Parameters.AddWithValue("@email", cliente.Email ?? (object)DBNull.Value);
+                    cmd.Parameters.AddWithValue("@cuil", cliente.Cuil);
                     cmd.Parameters.AddWithValue("@direccion", cliente.Direccion ?? (object)DBNull.Value);
 
                     oconexion.Open();

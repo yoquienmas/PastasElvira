@@ -5,6 +5,9 @@
     <Compile Update="FormDetalleProduccion.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="FormHistorialVentas.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="FormMateria.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
