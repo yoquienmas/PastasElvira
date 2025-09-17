@@ -2,42 +2,55 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Reporte de Consumo de Materias Primas" Height="600" Width="900"
-        Background="#fff8e1" FontFamily="Georgia"
-        Loaded="Window_Loaded">
+        Background="#fff8e1"
+        FontFamily="Georgia"
+        Loaded="Window_Loaded"
+        WindowStartupLocation="CenterScreen">
 
-    <Grid Margin="20">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="66*"/>
-            <ColumnDefinition Width="149*"/>
-        </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
+    <Border Background="White" CornerRadius="12" Padding="20"
+            BorderBrush="#e2a42d" BorderThickness="2" Margin="20">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
 
-        <StackPanel Orientation="Horizontal" Margin="0,0,0,10" Grid.ColumnSpan="2">
-            <TextBlock Text="Fecha Inicio:" VerticalAlignment="Center" Margin="0,0,10,0"/>
-            <DatePicker x:Name="dpFechaInicio" Width="150" Margin="0,0,20,0"/>
+            <TextBlock Grid.Row="0" Text="📊 REPORTE DE CONSUMO" FontSize="24" FontWeight="Bold"
+                       Foreground="#a36b00" HorizontalAlignment="Center" Margin="0,0,0,20"/>
 
-            <TextBlock Text="Fecha Fin:" VerticalAlignment="Center" Margin="0,0,10,0"/>
-            <DatePicker x:Name="dpFechaFin" Width="150" Margin="0,0,20,0"/>
+            <GroupBox Header="FILTRAR POR FECHA" Grid.Row="1" FontWeight="Bold" Foreground="#a36b00">
+                <StackPanel Orientation="Horizontal" Margin="10">
+                    <TextBlock Text="Fecha Inicio:" VerticalAlignment="Center" Margin="0,0,10,0" Foreground="#5c3a00"/>
+                    <DatePicker x:Name="dpFechaInicio" Width="150" Margin="0,0,20,0"/>
 
-            <Button x:Name="btnGenerar" Content="Generar Reporte" Width="150"
-                    Background="#e2a42d" Foreground="White" FontWeight="Bold"
-                    Click="btnGenerar_Click"/>
-        </StackPanel>
+                    <TextBlock Text="Fecha Fin:" VerticalAlignment="Center" Margin="0,0,10,0" Foreground="#5c3a00"/>
+                    <DatePicker x:Name="dpFechaFin" Width="150" Margin="0,0,20,0"/>
 
-        <DataGrid x:Name="dgvConsumo" Grid.Row="1" AutoGenerateColumns="False" IsReadOnly="True"
-                  Background="White" BorderBrush="#e2a42d" BorderThickness="1" Grid.ColumnSpan="2" SelectionChanged="dgvConsumo_SelectionChanged">
-            <DataGrid.Columns>
-                <DataGridTextColumn Header="Materia Prima" Binding="{Binding MateriaPrima}" Width="*"/>
-                <DataGridTextColumn Header="Cantidad Consumida" Binding="{Binding CantidadConsumida}" Width="200"/>
-                <DataGridTextColumn Header="Unidad" Binding="{Binding Unidad}" Width="150"/>
-            </DataGrid.Columns>
-        </DataGrid>
+                    <Button x:Name="btnGenerar" Content="Generar Reporte" Width="150"
+                            Background="#e2a42d" Foreground="White" FontWeight="Bold"
+                            Click="btnGenerar_Click"/>
+                </StackPanel>
+            </GroupBox>
 
-        <TextBlock x:Name="lblTotal" Grid.Row="2" Grid.ColumnSpan="2" FontWeight="Bold" FontSize="16"
-                   HorizontalAlignment="Right" Margin="0,10,0,0"/>
-    </Grid>
+            <Border Grid.Row="2" Margin="0,20,0,0" Background="White" CornerRadius="10" Padding="5"
+                    BorderBrush="#e2a42d" BorderThickness="2">
+                <DataGrid x:Name="dgvConsumo" AutoGenerateColumns="False" IsReadOnly="True"
+                          Background="White" BorderThickness="0"
+                          SelectionChanged="dgvConsumo_SelectionChanged">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Materia Prima" Binding="{Binding MateriaPrima}" Width="*"/>
+                        <DataGridTextColumn Header="Cantidad Consumida" Binding="{Binding CantidadConsumida}" Width="200"/>
+                        <DataGridTextColumn Header="Unidad" Binding="{Binding Unidad}" Width="150"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Border>
+
+            <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,15,0,0">
+                <TextBlock Text="Costo Total:" FontWeight="Bold" Foreground="#5c3a00"/>
+                <TextBlock x:Name="lblTotal" FontWeight="Bold" FontSize="16" Foreground="#e2a42d" MinWidth="100"/>
+            </StackPanel>
+        </Grid>
+    </Border>
 </Window>

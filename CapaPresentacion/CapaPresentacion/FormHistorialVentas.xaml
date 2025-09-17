@@ -2,69 +2,65 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Historial de Ventas - Vendedor" Height="600" Width="1000"
-        Background="#fff8e1" FontFamily="Georgia"
+        Background="#fff8e1"
+        FontFamily="Georgia"
         WindowStartupLocation="CenterScreen">
 
-    <Grid Margin="20">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
+    <Border Background="White" CornerRadius="12" Padding="20"
+            BorderBrush="#e2a42d" BorderThickness="2" Margin="20">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
 
-        <!-- Información del vendedor -->
-        <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
-            <TextBlock Text="Vendedor:" VerticalAlignment="Center" Margin="0,0,10,0" FontWeight="Bold"/>
-            <TextBlock x:Name="txtNombreVendedor" VerticalAlignment="Center" FontWeight="Bold" Foreground="#e2a42d"/>
-        </StackPanel>
+            <TextBlock Grid.Row="0" Text="HISTORIAL DE VENTAS" FontSize="24" FontWeight="Bold"
+                       Foreground="#a36b00" HorizontalAlignment="Center" Margin="0,0,0,20"/>
 
-        <!-- Filtros de fecha -->
-        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,10">
-            <TextBlock Text="Fecha Inicio:" VerticalAlignment="Center" Margin="0,0,10,0"/>
-            <DatePicker x:Name="dtpFechaInicio" Width="150" Margin="0,0,20,0"/>
+            <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,0,0,10">
+                <TextBlock Text="Vendedor:" VerticalAlignment="Center" Margin="0,0,10,0" FontWeight="Bold"/>
+                <TextBlock x:Name="txtNombreVendedor" VerticalAlignment="Center" FontWeight="Bold" Foreground="#a36b00"/>
+            </StackPanel>
 
-            <TextBlock Text="Fecha Fin:" VerticalAlignment="Center" Margin="0,0,10,0"/>
-            <DatePicker x:Name="dtpFechaFin" Width="150" Margin="0,0,20,0"/>
+            <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,0,0,10">
+                <TextBlock Text="Fecha Inicio:" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                <DatePicker x:Name="dtpFechaInicio" Width="150" Margin="0,0,20,0"/>
 
-            <Button x:Name="btnConsultar" Content="Consultar" Width="120"
-                    Background="#e2a42d" Foreground="White" FontWeight="Bold"
-                    Click="btnConsultar_Click"/>
-        </StackPanel>
+                <TextBlock Text="Fecha Fin:" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                <DatePicker x:Name="dtpFechaFin" Width="150" Margin="0,0,20,0"/>
 
-        <!-- Filtros adicionales -->
-        <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,0,0,10">
-            <TextBlock Text="DNI Cliente:" VerticalAlignment="Center" Margin="0,0,10,0"/>
-            <TextBox x:Name="txtDniCliente" Width="120" Margin="0,0,20,0" 
-                     ToolTip="Filtrar por DNI del cliente"/>
+                <Button x:Name="btnConsultar" Content="Consultar" Width="120"
+                        Background="#e2a42d" Foreground="White" FontWeight="Bold"
+                        Click="btnConsultar_Click"/>
+                <Button x:Name="btnLimpiarFiltros" Content="Limpiar Filtros" Width="120" Margin="10,0,0,0"
+                        Background="#6c757d" Foreground="White" FontWeight="Bold"
+                        Click="btnLimpiarFiltros_Click"/>
+            </StackPanel>
 
-            <TextBlock Text="Producto:" VerticalAlignment="Center" Margin="0,0,10,0"/>
-            <TextBox x:Name="txtNombreProducto" Width="200" Margin="0,0,20,0" 
-                     ToolTip="Filtrar por nombre de producto"/>
+            <Border Grid.Row="3" Background="White" CornerRadius="10" Padding="5"
+                    BorderBrush="#e2a42d" BorderThickness="2">
+                <DataGrid x:Name="dgvHistorialVentas" AutoGenerateColumns="False" IsReadOnly="True"
+                          Background="White" BorderThickness="0">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="ID Venta" Binding="{Binding IdVenta}" Width="80"/>
+                        <DataGridTextColumn Header="Fecha" Binding="{Binding Fecha, StringFormat=\{0:dd/MM/yyyy HH:mm\}}" Width="160"/>
+                        <DataGridTextColumn Header="Cliente" Binding="{Binding Cliente}" Width="*"/>
+                        <DataGridTextColumn Header="DNI Cliente" Binding="{Binding DniCliente}" Width="120"/>
+                        <DataGridTextColumn Header="Productos" Binding="{Binding Productos}" Width="250"/>
+                        <DataGridTextColumn Header="Total" Binding="{Binding Total, StringFormat=C}" Width="120"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Border>
 
-            <Button x:Name="btnLimpiarFiltros" Content="Limpiar Filtros" Width="120"
-                    Background="#6c757d" Foreground="White" FontWeight="Bold"
-                    Click="btnLimpiarFiltros_Click"/>
-        </StackPanel>
-
-        <!-- DataGrid -->
-        <DataGrid x:Name="dgvHistorialVentas" Grid.Row="3" AutoGenerateColumns="False" IsReadOnly="True"
-                  Background="White" BorderBrush="#e2a42d" BorderThickness="1">
-            <DataGrid.Columns>
-                <DataGridTextColumn Header="ID Venta" Binding="{Binding IdVenta}" Width="80"/>
-                <DataGridTextColumn Header="Fecha" Binding="{Binding Fecha, StringFormat=\{0:dd/MM/yyyy HH:mm\}}" Width="160"/>
-                <DataGridTextColumn Header="Cliente" Binding="{Binding Cliente}" Width="*"/>
-                <DataGridTextColumn Header="DNI Cliente" Binding="{Binding DniCliente}" Width="120"/>
-                <DataGridTextColumn Header="Productos" Binding="{Binding Productos}" Width="250"/>
-                <DataGridTextColumn Header="Total" Binding="{Binding Total, StringFormat=C}" Width="120"/>
-            </DataGrid.Columns>
-        </DataGrid>
-
-        <!-- Resumen -->
-        <StackPanel Grid.Row="4" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0">
-            <TextBlock Text="Total de Ventas:" VerticalAlignment="Center" Margin="0,0,10,0" FontWeight="Bold"/>
-            <TextBlock x:Name="txtTotalVentas" VerticalAlignment="Center" FontWeight="Bold" Foreground="#e2a42d" MinWidth="100"/>
-        </StackPanel>
-    </Grid>
+            <StackPanel Grid.Row="4" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,15,0,0">
+                <TextBlock Text="Total de Ventas:" VerticalAlignment="Center" Margin="0,0,10,0" FontWeight="Bold"
+                           Foreground="#5c3a00"/>
+                <TextBlock x:Name="txtTotalVentas" VerticalAlignment="Center" FontWeight="Bold"
+                           Foreground="#e2a42d" MinWidth="100"/>
+            </StackPanel>
+        </Grid>
+    </Border>
 </Window>

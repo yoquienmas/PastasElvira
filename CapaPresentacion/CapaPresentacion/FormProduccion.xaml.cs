@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Windows;
 
-
 namespace CapaPresentacion
 {
     public partial class FormProduccion : Window
@@ -22,6 +21,13 @@ namespace CapaPresentacion
         {
             CargarProductos();
             CargarHistorial();
+        }
+
+        // MÉTODO QUE FALTA - AGREGAR ESTO
+        private void btnHistorial_Click(object sender, RoutedEventArgs e)
+        {
+            FormHistorialProduccion formHistorial = new FormHistorialProduccion();
+            formHistorial.Show();
         }
 
         private void CargarProductos()

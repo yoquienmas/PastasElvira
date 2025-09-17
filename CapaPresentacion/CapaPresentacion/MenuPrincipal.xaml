@@ -1,271 +1,92 @@
 ﻿<Window x:Class="CapaPresentacion.MenuPrincipal"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Menu Principal - Pastas Elvira" Height="768" Width="1024"
+        Title="Menú Principal - Pastas Elvira" Height="768" Width="1366"
+        Background="#f5f5f5" FontFamily="Georgia"
         WindowStartupLocation="CenterScreen"
-        Background="#fff8e1" FontFamily="Georgia">
+        Loaded="Window_Loaded">
 
-    <DockPanel>
-        <!-- Barra superior con información del usuario -->
-        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" 
-                   Background="#e2a42d" Height="40" VerticalAlignment="Top">
-            <TextBlock x:Name="txtFecha" Margin="10,0" VerticalAlignment="Center" 
-                      Foreground="White" FontWeight="Bold"/>
-            <TextBlock x:Name="txtUsuario" Margin="20,0" VerticalAlignment="Center" 
-                      Foreground="White" FontWeight="Bold"/>
-        </StackPanel>
-        <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
+    <Grid>
+        <Border x:Name="pnlLogin" Background="White" CornerRadius="10" Margin="200"
+                BorderBrush="#a36b00" BorderThickness="2" Visibility="Visible">
+            <StackPanel Margin="30" VerticalAlignment="Center">
 
-        <StackPanel Orientation="Horizontal">
-            <Image Source="C:\Users\danie\Source\Repos\PastasElvira\PastasElvira\PastasElvira\Resources\logo.png" Width="40" Height="40" Margin="0,0,10,0"/>
-            <TextBlock Text="PASTAS ELVIRA" FontSize="20" FontWeight="Bold" Foreground="White" VerticalAlignment="Center"/>
-        </StackPanel>
-        
-        <!-- Header con Selección de Rol -->
-        <Border Background="#a36b00" Padding="15">
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                <TextBlock Text="PASTAS ELVIRA - " FontSize="20" FontWeight="Bold" Foreground="White" VerticalAlignment="Center"/>
-                <ComboBox x:Name="cboRol" Width="150" Height="35" Margin="20,0,0,0" FontWeight="Bold"
-                         SelectionChanged="cboRol_SelectionChanged">
-                    <ComboBoxItem Content="DUEÑO" Tag="DUEÑO"/>
-                    <ComboBoxItem Content="ADMIN" Tag="ADMIN"/>
-                    <ComboBoxItem Content="VENDEDOR" Tag="VENDEDOR"/>
-                </ComboBox>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,20">
+                    <Image Source="pack:/Resources/logo.png" Width="60" Height="60" Margin="0,0,15,0"/>
+                    <TextBlock Text="PASTAS ELVIRA" FontSize="24" FontWeight="Bold"
+                              Foreground="#a36b00" VerticalAlignment="Center"/>
+                </StackPanel>
+
+                <StackPanel>
+                    <TextBlock Text="👤 Usuario:" FontWeight="Bold" Foreground="#a36b00" Margin="0,0,0,5"/>
+                    <TextBox x:Name="txtLoginUsuario" Height="35" Padding="10" FontSize="14"
+                             BorderBrush="#a36b00" BorderThickness="1" Background="#FFF9E6"
+                             Foreground="#333333" CaretBrush="#a36b00"/>
+
+                    <TextBlock Text="🔒 Contraseña:" FontWeight="Bold" Foreground="#a36b00"
+                               Margin="0,10,0,5"/>
+                    <PasswordBox x:Name="txtLoginClave" Height="35" Padding="10" FontSize="14"
+                                 BorderBrush="#a36b00" BorderThickness="1" Background="#FFF9E6"
+                                 Foreground="#333333" CaretBrush="#a36b00"
+                                 KeyDown="txtLoginClave_KeyDown"/>
+
+                    <Border x:Name="errorMessageBorder" Background="#FFF0F0" BorderBrush="Red" BorderThickness="1"
+                            CornerRadius="5" Margin="0,15,0,0" Visibility="Collapsed" Padding="10">
+                        <StackPanel>
+                            <TextBlock x:Name="txtMensajeError" Foreground="Red" FontWeight="Bold" TextAlignment="Center" TextWrapping="Wrap"/>
+                        </StackPanel>
+                    </Border>
+
+                    <Button Content="INGRESAR" Width="150" Height="40" Margin="0,20,0,0"
+                            Background="#a36b00" Foreground="White" FontWeight="Bold" FontSize="14"
+                            HorizontalAlignment="Center" Click="BtnLogin_Click" Cursor="Hand">
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="Background" Value="#a36b00"/>
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="#8F5E00"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                </StackPanel>
             </StackPanel>
         </Border>
 
-        <!-- Contenedor Principal de Vistas -->
-        <TabControl Grid.Row="1" Background="Transparent" BorderThickness="0">
+        <DockPanel x:Name="pnlPrincipal" Visibility="Collapsed">
+            <StackPanel DockPanel.Dock="Top" Orientation="Horizontal"
+                        Background="#e2a42d" Height="40" VerticalAlignment="Top">
+                <TextBlock x:Name="txtFechaPrincipal" Margin="10,0" VerticalAlignment="Center"
+                           Foreground="White" FontWeight="Bold"/>
+                <TextBlock x:Name="txtUsuarioPrincipal" Margin="20,0" VerticalAlignment="Center"
+                           Foreground="White" FontWeight="Bold"/>
+                <Button Content="Cerrar Sesión" Margin="20,0" Padding="10,5"
+                        Background="Transparent" Foreground="White" BorderThickness="0"
+                        Click="BtnCerrarSesion_Click" FontWeight="Bold"/>
+            </StackPanel>
 
-            <!-- PESTAÑA DUEÑO -->
-            <TabItem x:Name="tabDueño" Header="👑 DUEÑO" IsEnabled="False">
-                <ScrollViewer>
-                    <StackPanel Margin="20">
-                        <!-- Métricas Principales -->
-                        <WrapPanel Margin="0,0,0,20">
-                            <!-- Total Ventas Mes -->
-                            <Border Background="#4CAF50" CornerRadius="10" Padding="20" Margin="5" Width="250">
-                                <StackPanel>
-                                    <TextBlock Text="💰" FontSize="24" HorizontalAlignment="Center"/>
-                                    <TextBlock Text="VENTAS DEL MES" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center"/>
-                                    <TextBlock x:Name="txtVentasMes" FontSize="18" Foreground="White" HorizontalAlignment="Center" Margin="0,5,0,0"/>
-                                </StackPanel>
-                            </Border>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
 
-                            <!-- Total Clientes -->
-                            <Border Background="#2196F3" CornerRadius="10" Padding="20" Margin="5" Width="250">
-                                <StackPanel>
-                                    <TextBlock Text="👥" FontSize="24" HorizontalAlignment="Center"/>
-                                    <TextBlock Text="CLIENTES" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center"/>
-                                    <TextBlock x:Name="txtTotalClientes" FontSize="18" Foreground="White" HorizontalAlignment="Center" Margin="0,5,0,0"/>
-                                </StackPanel>
-                            </Border>
-
-                            <!-- Productos Vendidos -->
-                            <Border Background="#FF9800" CornerRadius="10" Padding="20" Margin="5" Width="250">
-                                <StackPanel>
-                                    <TextBlock Text="📦" FontSize="24" HorizontalAlignment="Center"/>
-                                    <TextBlock Text="PRODUCTOS VENDIDOS" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center"/>
-                                    <TextBlock x:Name="txtProductosVendidos" FontSize="18" Foreground="White" HorizontalAlignment="Center" Margin="0,5,0,0"/>
-                                </StackPanel>
-                            </Border>
-
-                            <!-- Stock Crítico -->
-                            <Border Background="#f44336" CornerRadius="10" Padding="20" Margin="5" Width="250">
-                                <StackPanel>
-                                    <TextBlock Text="⚠️" FontSize="24" HorizontalAlignment="Center"/>
-                                    <TextBlock Text="STOCK CRÍTICO" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center"/>
-                                    <TextBlock x:Name="txtStockCritico" FontSize="18" Foreground="White" HorizontalAlignment="Center" Margin="0,5,0,0"/>
-                                </StackPanel>
-                            </Border>
-                        </WrapPanel>
-
-                        <!-- Funcionalidades para el Dueño -->
-                        <GroupBox Header="📊 HERRAMIENTAS DE SUPERVISIÓN" Margin="0,0,0,20">
-                            <WrapPanel Margin="10">
-                                    <Button Content="Reportes" Width="180" Height="40" Margin="5"
-                                       Background="#4CAF50" Foreground="White" FontWeight="Bold"
-                                       Click="btnReportesGenerales_Click"/>
-                                    <Button Content="Costos Fijos" Width="180" Height="40" Margin="5"
-                                       Background="#9C27B0" Foreground="White" FontWeight="Bold"
-                                       Click="btnCostosFijos_Click"/>
-                            </WrapPanel>
-                        </GroupBox>
-
-                        <!-- Sección de Ventas por Tipo -->
-                        <Border Background="White" CornerRadius="10" Padding="15" Margin="0,0,0,20">
-                            <StackPanel>
-                                <TextBlock Text="📊 VENTAS POR TIPO DE PRODUCTO" FontWeight="Bold" Foreground="#a36b00" Margin="0,0,0,10"/>
-                                <DataGrid x:Name="dgvVentasPorTipo" AutoGenerateColumns="False" IsReadOnly="True"
-                                        Height="200" Background="White" BorderThickness="0">
-                                    <DataGrid.Columns>
-                                        <DataGridTextColumn Header="Tipo" Binding="{Binding Tipo}" Width="*"/>
-                                        <DataGridTextColumn Header="Cantidad Vendida" Binding="{Binding Cantidad}" Width="120"/>
-                                        <DataGridTextColumn Header="Total Ventas" Binding="{Binding Total, StringFormat=C}" Width="120"/>
-                                    </DataGrid.Columns>
-                                </DataGrid>
-                            </StackPanel>
-                        </Border>
-
-                        <!-- Top 5 Clientes -->
-                        <Border Background="White" CornerRadius="10" Padding="15">
-                            <StackPanel>
-                                <TextBlock Text="🏆 TOP 5 CLIENTES" FontWeight="Bold" Foreground="#a36b00" Margin="0,0,0,10"/>
-                                <DataGrid x:Name="dgvTopClientes" AutoGenerateColumns="False" IsReadOnly="True"
-                                         Height="200" Background="White" BorderThickness="0" SelectionChanged="dgvTopClientes_SelectionChanged">
-                                    <DataGrid.Columns>
-                                        <DataGridTextColumn Header="Cliente" Binding="{Binding Nombre}" Width="*"/>
-                                        <DataGridTextColumn Header="Compras" Binding="{Binding CantidadCompras}" Width="80"/>
-                                        <DataGridTextColumn Header="Total Gastado" Binding="{Binding TotalGastado, StringFormat=C}" Width="120"/>
-                                    </DataGrid.Columns>
-                                </DataGrid>
-                            </StackPanel>
-                        </Border>
+                <Border Background="#a36b00" Padding="15" Grid.Row="0">
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                        <Image Source="pack://application:,,,/Resources/logo.png"
+                               Width="40" Height="40" Margin="0,0,10,0"/>
+                        <TextBlock Text="PASTAS ELVIRA - " FontSize="20" FontWeight="Bold"
+                                   Foreground="White" VerticalAlignment="Center"/>
+                        <TextBlock x:Name="txtRolUsuario" FontSize="20" FontWeight="Bold"
+                                   Foreground="White" VerticalAlignment="Center"/>
                     </StackPanel>
-                </ScrollViewer>
-            </TabItem>
+                </Border>
 
-            <!-- PESTAÑA ADMIN -->
-            <TabItem x:Name="tabAdmin" Header="⚙️ ADMIN" IsEnabled="False">
-                <ScrollViewer>
-                    <StackPanel Margin="20">
-                        <!-- Gestión de Inventario -->
-                        <GroupBox Header="📦 GESTIÓN DE INVENTARIO" Margin="0,0,0,20">
-                            <WrapPanel Margin="10">
-                                <Button Content="Materias Primas" Width="180" Height="40" Margin="5"
-                                       Background="#4CAF50" Foreground="White" FontWeight="Bold"
-                                       Click="btnMateriasPrimas_Click"/>
-                                <Button Content="Agregar Productos" Width="180" Height="40" Margin="5"
-                                       Background="#2196F3" Foreground="White" FontWeight="Bold"
-                                       Click="btnProductosTerminados_Click"/>
-                                <Button Content="Alertas de Stock" Width="180" Height="40" Margin="5"
-                                       Background="#f44336" Foreground="White" FontWeight="Bold"
-                                       Click="btnAlertasStock_Click"/>
-                            </WrapPanel>
-                        </GroupBox>
-
-                        <!-- Gestión de Producción -->
-                        <GroupBox Header="🏭 GESTIÓN DE PRODUCCIÓN" Margin="0,0,0,20">
-                            <WrapPanel Margin="10">
-                                <Button Content="Programar Producción" Width="180" Height="40" Margin="5"
-                                       Background="#FF9800" Foreground="White" FontWeight="Bold"
-                                       Click="btnProgramarProduccion_Click"/>
-                                <Button Content="Historial Producción" Width="180" Height="40" Margin="5"
-                                       Background="#9C27B0" Foreground="White" FontWeight="Bold"
-                                       Click="btnHistorialProduccion_Click"/>
-                                <Button Content="Detalle Producción" Width="180" Height="40" Margin="5"
-                                       Background="#795548" Foreground="White" FontWeight="Bold"
-                                       Click="btnDetalleProduccion_Click"/>
-                                <Button Content="Consumo por Venta" Width="180" Height="40" Margin="5"
-                                       Background="#607D8B" Foreground="White" FontWeight="Bold"
-                                       Click="btnConsumoPorVenta_Click"/>
-                            </WrapPanel>
-                        </GroupBox>
-
-                        <!-- Historial de Ventas -->
-                        <GroupBox Header="📋 HISTORIAL DE VENTAS">
-                            <StackPanel Margin="10">
-                                <DataGrid x:Name="dgvVentasAdmin" AutoGenerateColumns="False" IsReadOnly="True"
-                                         Height="250" Background="White">
-                                    <DataGrid.Columns>
-                                        <DataGridTextColumn Header="ID" Binding="{Binding IdVenta}" Width="60"/>
-                                        <DataGridTextColumn Header="Fecha" Binding="{Binding Fecha, StringFormat=dd/MM/yyyy}" Width="100"/>
-                                        <DataGridTextColumn Header="Cliente" Binding="{Binding Cliente}" Width="150"/>
-                                        <DataGridTextColumn Header="Vendedor" Binding="{Binding Usuario}" Width="100"/>
-                                        <DataGridTextColumn Header="Total" Binding="{Binding Total, StringFormat=C}" Width="100"/>
-                                        <DataGridTemplateColumn Header="Acciones" Width="100">
-                                            <DataGridTemplateColumn.CellTemplate>
-                                                <DataTemplate>
-                                                    <Button Content="Ver Detalle" Click="btnVerDetalleVenta_Click" 
-                                                           Background="#2196F3" Foreground="White" Padding="5" FontSize="10"/>
-                                                </DataTemplate>
-                                            </DataGridTemplateColumn.CellTemplate>
-                                        </DataGridTemplateColumn>
-                                    </DataGrid.Columns>
-                                </DataGrid>
-                            </StackPanel>
-                        </GroupBox>
-                    </StackPanel>
-                </ScrollViewer>
-            </TabItem>
-
-            <!-- PESTAÑA VENDEDOR -->
-            <TabItem x:Name="tabVendedor" Header="💼 VENDEDOR" IsEnabled="False">
-                <ScrollViewer>
-                    <StackPanel Margin="20">
-                        <!-- Acciones Rápidas -->
-                        <WrapPanel Margin="0,0,0,20">
-                            <Button Content="➕ NUEVA VENTA" Width="180" Height="60" Margin="5"
-                                   Background="#4CAF50" Foreground="White" FontWeight="Bold" FontSize="14"
-                                   Click="btnNuevaVenta_Click"/>
-                            <Button Content="Mis Ventas"  Width="180" Height="60" Margin="5"
-                                       Background="#FF9800" Foreground="White" FontWeight="Bold" FontSize="14"
-                                       Click="btnMisVentas_Click"/>
-                                <Button Content="👥 GESTIÓN CLIENTES" Width="180" Height="60" Margin="5"
-                                   Background="#2196F3" Foreground="White" FontWeight="Bold" FontSize="14"
-                                   Click="btnGestionClientes_Click"/>
-                            </WrapPanel>
-
-                        <!-- Mis Ventas del Mes -->
-                        <GroupBox Header="💰 MIS VENTAS DEL MES" Margin="0,0,0,20">
-                            <StackPanel Margin="10">
-                                <WrapPanel Margin="0,0,0,10">
-                                    <Border Background="#E8F5E9" CornerRadius="5" Padding="10" Margin="5">
-                                        <TextBlock>
-                                            <Run Text="Total Vendido: " FontWeight="Bold"/>
-                                            <Run x:Name="txtMisVentasTotal" Text="0" Foreground="#4CAF50"/>
-                                        </TextBlock>
-                                    </Border>
-                                    <Border Background="#FFF3E0" CornerRadius="5" Padding="10" Margin="5">
-                                        <TextBlock>
-                                            <Run Text="Ventas Realizadas: " FontWeight="Bold"/>
-                                            <Run x:Name="txtMisVentasCantidad" Text="0" Foreground="#FF9800"/>
-                                        </TextBlock>
-                                    </Border>
-                                    <Border Background="#E3F2FD" CornerRadius="5" Padding="10" Margin="5">
-                                        <TextBlock>
-                                            <Run Text="Ticket Promedio: " FontWeight="Bold"/>
-                                            <Run x:Name="txtMisTicketPromedio" Text="0" Foreground="#2196F3"/>
-                                        </TextBlock>
-                                    </Border>
-                                </WrapPanel>
-
-                                <DataGrid x:Name="dgvMisVentas" AutoGenerateColumns="False" IsReadOnly="True"
-                                         Height="200" Background="White">
-                                    <DataGrid.Columns>
-                                        <DataGridTextColumn Header="Fecha" Binding="{Binding Fecha, StringFormat=dd/MM/yyyy}" Width="100"/>
-                                        <DataGridTextColumn Header="Cliente" Binding="{Binding Cliente}" Width="150"/>
-                                        <DataGridTextColumn Header="Productos" Binding="{Binding CantidadProductos}" Width="80"/>
-                                        <DataGridTextColumn Header="Total" Binding="{Binding Total, StringFormat=C}" Width="100"/>
-                                    </DataGrid.Columns>
-                                </DataGrid>
-                            </StackPanel>
-                        </GroupBox>
-
-                        <!-- Productos Disponibles -->
-                        <GroupBox Header="📦 PRODUCTOS DISPONIBLES">
-                            <StackPanel Margin="10">
-                                <DataGrid x:Name="dgvProductosVendedor" AutoGenerateColumns="False" IsReadOnly="True"
-                                         Height="200" Background="White">
-                                    <DataGrid.Columns>
-                                        <DataGridTextColumn Header="Producto" Binding="{Binding Nombre}" Width="*"/>
-                                        <DataGridTextColumn Header="Tipo" Binding="{Binding Tipo}" Width="100"/>
-                                        <DataGridTextColumn Header="Precio" Binding="{Binding PrecioVenta, StringFormat=C}" Width="80"/>
-                                        <DataGridTextColumn Header="Stock" Binding="{Binding StockActual}" Width="60"/>
-                                        <DataGridTextColumn Header="Estado" Binding="{Binding EstadoStock}" Width="80"/>
-                                    </DataGrid.Columns>
-                                </DataGrid>
-                            </StackPanel>
-                        </GroupBox>
-                    </StackPanel>
-                </ScrollViewer>
-            </TabItem>
-
-        </TabControl>
+                <TabControl x:Name="tcMain" Grid.Row="1" Background="Transparent" BorderThickness="0">
+                </TabControl>
+            </Grid>
+        </DockPanel>
     </Grid>
-    </DockPanel>
 </Window>

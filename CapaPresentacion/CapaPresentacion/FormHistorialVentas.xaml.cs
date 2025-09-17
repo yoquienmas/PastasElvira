@@ -9,14 +9,19 @@ namespace CapaPresentacion
 {
     public partial class FormHistorialVentas : Window
     {
+        private int _idUsuario;
+        private string _nombreUsuario;
         private CN_Reporte cnReporte = new CN_Reporte();
-        private int idUsuarioVendedor;
 
+        // Constructor que acepta parámetros
         public FormHistorialVentas(int idUsuario, string nombreUsuario)
         {
             InitializeComponent();
-            idUsuarioVendedor = idUsuario;
-            txtNombreVendedor.Text = nombreUsuario;
+            _idUsuario = idUsuario;
+            _nombreUsuario = nombreUsuario;
+
+            // Mostrar nombre del vendedor
+            txtNombreVendedor.Text = _nombreUsuario;
 
             // Establecer fechas por defecto (mes actual)
             dtpFechaInicio.SelectedDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
@@ -36,12 +41,12 @@ namespace CapaPresentacion
             DateTime fechaInicio = dtpFechaInicio.SelectedDate.Value;
             DateTime fechaFin = dtpFechaFin.SelectedDate.Value;
 
-            // Obtener valores de los filtros
-            string dniCliente = txtDniCliente.Text.Trim();
-            string nombreProducto = txtNombreProducto.Text.Trim();
+            // MODIFICADO: Ya no hay controles de filtro en el XAML
+            string dniCliente = ""; // Filtro vacío
+            string nombreProducto = ""; // Filtro vacío
 
             List<ReporteVenta> lista = cnReporte.ObtenerVentasPorVendedor(
-                idUsuarioVendedor, fechaInicio, fechaFin, dniCliente, nombreProducto);
+                _idUsuario, fechaInicio, fechaFin, dniCliente, nombreProducto);
 
             dgvHistorialVentas.ItemsSource = lista;
 
@@ -66,8 +71,7 @@ namespace CapaPresentacion
 
         private void btnLimpiarFiltros_Click(object sender, RoutedEventArgs e)
         {
-            txtDniCliente.Text = "";
-            txtNombreProducto.Text = "";
+            // MODIFICADO: Ya no hay controles que limpiar, solo recargar
             CargarVentas();
         }
 

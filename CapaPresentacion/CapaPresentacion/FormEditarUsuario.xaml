@@ -1,0 +1,75 @@
+﻿<Window x:Class="CapaPresentacion.FormEditarUsuario"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Editar Usuario" Height="450" Width="400"
+        WindowStartupLocation="CenterScreen"
+        Background="#fff8e1" FontFamily="Georgia">
+
+    <Grid Margin="20">
+        <StackPanel>
+            <!-- Título -->
+            <TextBlock Text="EDITAR USUARIO" FontSize="18" FontWeight="Bold" 
+                      Foreground="#a36b00" HorizontalAlignment="Center" Margin="0,0,0,20"/>
+
+            <!-- Campos del formulario -->
+            <StackPanel>
+                <!-- ID (solo lectura) -->
+                <TextBlock Text="ID:" FontWeight="Bold" Foreground="#a36b00" Margin="0,0,0,5"/>
+                <TextBox x:Name="txtId" Height="30" IsEnabled="False" Background="#F5F5F5"
+                        BorderBrush="#a36b00" BorderThickness="1"/>
+
+                <!-- Nombre -->
+                <TextBlock Text="Nombre:" FontWeight="Bold" Foreground="#a36b00" Margin="0,10,0,5"/>
+                <TextBox x:Name="txtNombre" Height="30" 
+                        BorderBrush="#a36b00" BorderThickness="1"/>
+
+                <!-- Apellido -->
+                <TextBlock Text="Apellido:" FontWeight="Bold" Foreground="#a36b00" Margin="0,10,0,5"/>
+                <TextBox x:Name="txtApellido" Height="30" 
+                        BorderBrush="#a36b00" BorderThickness="1"/>
+
+                <!-- Usuario -->
+                <TextBlock Text="Usuario:" FontWeight="Bold" Foreground="#a36b00" Margin="0,10,0,5"/>
+                <TextBox x:Name="txtUsuario" Height="30" 
+                        BorderBrush="#a36b00" BorderThickness="1"/>
+
+                <!-- Contraseña -->
+                <TextBlock Text="Contraseña:" FontWeight="Bold" Foreground="#a36b00" Margin="0,10,0,5"/>
+                <PasswordBox x:Name="txtPassword" Height="30" 
+                            BorderBrush="#a36b00" BorderThickness="1"/>
+
+                <!-- Rol -->
+                <TextBlock Text="Rol:" FontWeight="Bold" Foreground="#a36b00" Margin="0,10,0,5"/>
+                <ComboBox x:Name="cmbRol" Height="30" 
+                         BorderBrush="#a36b00" BorderThickness="1">
+                    <ComboBoxItem Content="ADMIN" Tag="ADMIN"/>
+                    <ComboBoxItem Content="VENDEDOR" Tag="VENDEDOR"/>
+                    <ComboBoxItem Content="DUEÑO" Tag="DUEÑO"/>
+                </ComboBox>
+
+                <!-- Estado -->
+                <TextBlock Text="Estado:" FontWeight="Bold" Foreground="#a36b00" Margin="0,10,0,5"/>
+                <ComboBox x:Name="cmbEstado" Height="30" 
+                         BorderBrush="#a36b00" BorderThickness="1">
+                    <ComboBoxItem Content="Activo" Tag="1"/>
+                    <ComboBoxItem Content="Inactivo" Tag="0"/>
+                </ComboBox>
+            </StackPanel>
+
+            <!-- Botones -->
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,20,0,0">
+                <Button Content="GUARDAR" Width="100" Height="35" Margin="10"
+                       Background="#4CAF50" Foreground="White" FontWeight="Bold"
+                       Click="BtnGuardar_Click"/>
+
+                <Button Content="CANCELAR" Width="100" Height="35" Margin="10"
+                       Background="#f44336" Foreground="White" FontWeight="Bold"
+                       Click="BtnCancelar_Click"/>
+            </StackPanel>
+
+            <!-- Mensaje de error -->
+            <TextBlock x:Name="txtMensaje" Foreground="Red" FontWeight="Bold"
+                      Margin="0,10,0,0" TextAlignment="Center" Visibility="Collapsed"/>
+        </StackPanel>
+    </Grid>
+</Window>

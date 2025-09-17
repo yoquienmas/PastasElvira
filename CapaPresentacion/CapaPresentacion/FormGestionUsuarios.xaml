@@ -1,0 +1,97 @@
+﻿<Window x:Class="CapaPresentacion.FormGestionUsuarios"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Gestión de Usuarios - Pastas Elvira" Height="500" Width="600"
+        Background="#fff8e1"
+        FontFamily="Georgia"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="NoResize"
+        Loaded="Window_Loaded">
+
+    <Border Background="White" CornerRadius="12" Padding="20"
+            BorderBrush="#e2a42d" BorderThickness="2" Margin="20">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <TextBlock Grid.Row="0" Text="👥 GESTIÓN DE USUARIOS" FontSize="24" FontWeight="Bold"
+                       Foreground="#a36b00" HorizontalAlignment="Center" Margin="0,0,0,20"/>
+
+            <GroupBox Header="NUEVO USUARIO" Grid.Row="0" Margin="0,40,0,10" FontWeight="Bold" Foreground="#a36b00">
+                <StackPanel Margin="10">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <TextBlock Text="Nombre:" Grid.Row="0" Grid.Column="0" Margin="0,0,5,5"/>
+                        <TextBox x:Name="txtNombre" Grid.Row="0" Grid.Column="1" Margin="0,0,10,5" Height="25"/>
+
+                        <TextBlock Text="Contraseña:" Grid.Row="0" Grid.Column="2" Margin="0,0,5,5"/>
+                        <PasswordBox x:Name="txtPassword" Grid.Row="0" Grid.Column="3" Margin="0,0,0,5" Height="25"/>
+
+                        <TextBlock Text="Rol:" Grid.Row="1" Grid.Column="0" Margin="0,0,5,5"/>
+                        <ComboBox x:Name="cboRol" Grid.Row="1" Grid.Column="1" Margin="0,0,10,5" Height="25">
+                            <ComboBoxItem Content="ADMIN"/>
+                            <ComboBoxItem Content="VENDEDOR"/>
+                        </ComboBox>
+
+                        <TextBlock Text="Estado:" Grid.Row="1" Grid.Column="2" Margin="0,0,5,5"/>
+                        <ComboBox x:Name="cboEstado" Grid.Row="1" Grid.Column="3" Margin="0,0,0,5" Height="25">
+                            <ComboBoxItem Content="Activo"/>
+                            <ComboBoxItem Content="Inactivo"/>
+                        </ComboBox>
+                    </Grid>
+
+                    <Button Content="➕ Agregar Usuario" Width="150" Height="30" Margin="0,15,0,0"
+                            HorizontalAlignment="Center"
+                            Click="BtnAgregarUsuario_Click" Background="#e2a42d" Foreground="White" FontWeight="Bold"/>
+                </StackPanel>
+            </GroupBox>
+
+            <GroupBox Header="USUARIOS EXISTENTES" Grid.Row="1" Margin="0,10,0,0" FontWeight="Bold" Foreground="#a36b00">
+                <Border Background="White" CornerRadius="10" Padding="5"
+                        BorderBrush="#e2a42d" BorderThickness="2">
+                    <DataGrid x:Name="dgvUsuarios" AutoGenerateColumns="False" IsReadOnly="True" BorderThickness="0"
+                              SelectionChanged="dgvUsuarios_SelectionChanged">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="ID" Binding="{Binding IdUsuario}" Width="50"/>
+                            <DataGridTextColumn Header="Nombre" Binding="{Binding Nombre}" Width="*"/>
+                            <DataGridTextColumn Header="Rol" Binding="{Binding Rol}" Width="100"/>
+                            <DataGridCheckBoxColumn Header="Activo" Binding="{Binding Activo}" Width="60"/>
+                            <DataGridTemplateColumn Header="Acciones" Width="120">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                            <Button Content="✏️" Click="BtnEditarUsuario_Click"
+                                                    Margin="2" Padding="5,2" FontSize="10" Background="#FFC107"
+                                                    ToolTip="Editar Usuario"/>
+                                            <Button Content="🗑️" Click="BtnEliminarUsuario_Click"
+                                                    Margin="2" Padding="5,2" FontSize="10" Background="#f44336"
+                                                    ToolTip="Eliminar Usuario"/>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Border>
+            </GroupBox>
+
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Grid.Row="2" Margin="0,15,0,0">
+                <Button Content="Cerrar" Width="80" Height="30" Click="BtnCerrar_Click"
+                        Background="#e2a42d" Foreground="White" FontWeight="Bold"/>
+            </StackPanel>
+        </Grid>
+    </Border>
+</Window>

@@ -2,92 +2,103 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Sistema de Reportes - Pastas Elvira" Height="700" Width="1000"
-        Background="#fff8e1" FontFamily="Georgia"
+        Background="#fff8e1"
+        FontFamily="Georgia"
         WindowStartupLocation="CenterScreen"
         Loaded="Window_Loaded">
 
-    <Grid Margin="20">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
+    <Border Background="White" CornerRadius="12" Padding="20"
+            BorderBrush="#e2a42d" BorderThickness="2" Margin="20">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
 
-        <!-- Título -->
-        <TextBlock Text="📊 SISTEMA DE REPORTES" FontSize="24" FontWeight="Bold" Foreground="#a36b00"
-                   HorizontalAlignment="Center" Margin="0,0,0,20"/>
+            <TextBlock Grid.Row="0" Text="📊 SISTEMA DE REPORTES" FontSize="24" FontWeight="Bold"
+                       Foreground="#a36b00" HorizontalAlignment="Center" Margin="0,0,0,20"/>
 
-        <!-- Selector de Reportes -->
-        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,20"/>
+            <GroupBox Header="TIPO DE REPORTE" Grid.Row="1" FontWeight="Bold" Foreground="#a36b00">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="10">
+                    <TextBlock Text="Seleccionar Reporte:" VerticalAlignment="Center" Margin="0,0,10,0" Foreground="#5c3a00"/>
+                    <ComboBox x:Name="cboTipoReporte" Width="300" SelectionChanged="cboTipoReporte_SelectionChanged">
+                        <ComboBoxItem Content="Consumo Materia Prima"/>
+                        <ComboBoxItem Content="Ventas por Fecha"/>
+                        <ComboBoxItem Content="Ventas por Cliente"/>
+                        <ComboBoxItem Content="Stock Crítico"/>
+                        <ComboBoxItem Content="Inventario Completo"/>
+                    </ComboBox>
+                </StackPanel>
+            </GroupBox>
 
-        <!-- Panel de Filtros (visible según reporte) -->
-        <StackPanel x:Name="panelFiltros" Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,40,0,10">
-            <TextBlock Text="Fecha Inicio:" VerticalAlignment="Center" Margin="0,0,5,0"/>
-            <DatePicker x:Name="dtpFechaInicio" Width="120" Margin="0,0,15,0"/>
+            <Grid Grid.Row="2" Margin="0,20,0,10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
 
-            <TextBlock Text="Fecha Fin:" VerticalAlignment="Center" Margin="0,0,5,0"/>
-            <DatePicker x:Name="dtpFechaFin" Width="120" Margin="0,0,15,0"/>
+                <GroupBox Header="FILTROS" Grid.Column="0" FontWeight="Bold" Foreground="#a36b00">
+                    <StackPanel x:Name="panelFiltros" Orientation="Horizontal" Margin="10" Visibility="Collapsed">
+                        <TextBlock Text="Fecha Inicio:" VerticalAlignment="Center" Margin="0,0,5,0" Foreground="#5c3a00"/>
+                        <DatePicker x:Name="dtpFechaInicio" Width="120" Margin="0,0,15,0"/>
 
-            <ComboBox x:Name="cboClientes" Width="200" DisplayMemberPath="Nombre" SelectedValuePath="IdCliente"
-                     Visibility="Collapsed" Margin="0,0,15,0"/>
+                        <TextBlock Text="Fecha Fin:" VerticalAlignment="Center" Margin="0,0,5,0" Foreground="#5c3a00"/>
+                        <DatePicker x:Name="dtpFechaFin" Width="120" Margin="0,0,15,0"/>
 
-            <!-- Filtros para Ventas por Cliente -->
-            <StackPanel x:Name="panelFiltrosCliente" Orientation="Horizontal" Visibility="Collapsed" Margin="0,0,15,0">
-                <TextBlock Text="DNI:" VerticalAlignment="Center" Margin="0,0,5,0"/>
-                <TextBox x:Name="txtFiltroDNI" Width="120" Margin="0,0,15,0" 
-                        KeyDown="TxtFiltroDNI_KeyDown" ToolTip="Buscar por DNI del cliente"/>
+                        <ComboBox x:Name="cboClientes" Width="200" DisplayMemberPath="Nombre" SelectedValuePath="IdCliente"
+                                  Visibility="Collapsed" Margin="0,0,15,0"/>
 
-                <TextBlock Text="Producto:" VerticalAlignment="Center" Margin="0,0,5,0"/>
-                <TextBox x:Name="txtFiltroProducto" Width="200" Margin="0,0,15,0"
-                        KeyDown="TxtFiltroProducto_KeyDown" ToolTip="Buscar por nombre de producto"/>
+                        <StackPanel x:Name="panelFiltrosCliente" Orientation="Horizontal" Visibility="Collapsed" Margin="0,0,15,0">
+                            <TextBlock Text="DNI:" VerticalAlignment="Center" Margin="0,0,5,0" Foreground="#5c3a00"/>
+                            <TextBox x:Name="txtFiltroDNI" Width="120" Margin="0,0,15,0" KeyDown="TxtFiltroDNI_KeyDown" ToolTip="Buscar por DNI del cliente"/>
+                            <TextBlock Text="Producto:" VerticalAlignment="Center" Margin="0,0,5,0" Foreground="#5c3a00"/>
+                            <TextBox x:Name="txtFiltroProducto" Width="200" Margin="0,0,15,0" KeyDown="TxtFiltroProducto_KeyDown" ToolTip="Buscar por nombre de producto"/>
+                        </StackPanel>
 
-                <Button x:Name="btnLimpiarFiltros" Content="Limpiar" Width="80" Height="25"
-                        Click="BtnLimpiarFiltros_Click" Background="#FF9800" Foreground="White"/>
+                        <Button x:Name="btnGenerarReporte" Content="Generar Reporte" Width="120" Height="35"
+                                Background="#2196F3" Foreground="White" FontWeight="Bold" Click="btnGenerarReporte_Click"/>
+                        <Button x:Name="btnLimpiarFiltros" Content="Limpiar" Width="80" Height="35" Margin="10,0,0,0"
+                                Background="#FF9800" Foreground="White" Click="BtnLimpiarFiltros_Click"/>
+                    </StackPanel>
+                </GroupBox>
+
+                <GroupBox Header="ESTADÍSTICAS RÁPIDAS" Grid.Column="1" FontWeight="Bold" Foreground="#a36b00" Margin="20,0,0,0">
+                    <StackPanel Orientation="Vertical">
+                        <Border Background="#e8f5e8" CornerRadius="8" Padding="10" Margin="0,0,0,10">
+                            <TextBlock x:Name="txtVentasHoy" FontSize="12" FontWeight="Bold" Foreground="#2e7d32"/>
+                        </Border>
+                        <Border Background="#fff3e0" CornerRadius="8" Padding="10">
+                            <TextBlock x:Name="txtStockCritico" FontSize="12" FontWeight="Bold" Foreground="#f57c00"/>
+                        </Border>
+                    </StackPanel>
+                </GroupBox>
+            </Grid>
+
+            <GroupBox Header="RESULTADOS DEL REPORTE" Grid.Row="3" Margin="0,10,0,0" FontWeight="Bold" Foreground="#a36b00">
+                <TabControl x:Name="tcMain" Background="White" BorderBrush="#e2a42d" BorderThickness="2" Margin="5">
+                    <TabItem Header="📋 Vista de Datos">
+                        <Border Background="White" CornerRadius="10" Padding="5" BorderBrush="#e2a42d" BorderThickness="2">
+                            <DataGrid x:Name="dgvReporte" AutoGenerateColumns="False" IsReadOnly="True"
+                                      Background="White" BorderThickness="0"/>
+                        </Border>
+                    </TabItem>
+                    <TabItem Header="📈 Resumen">
+                        <ScrollViewer>
+                            <StackPanel x:Name="panelResumen" Margin="20"/>
+                        </ScrollViewer>
+                    </TabItem>
+                </TabControl>
+            </GroupBox>
+
+            <StackPanel Grid.Row="4" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,15,0,0">
+                <Button Content="📄 Exportar a Excel" Width="150" Height="35" Margin="0,0,10,0"
+                        Background="#4CAF50" Foreground="White" FontWeight="Bold" Click="btnExportarExcel_Click"/>
+                <Button Content="🖨️ Imprimir" Width="100" Height="35"
+                        Background="#2196F3" Foreground="White" FontWeight="Bold" Click="btnImprimir_Click"/>
             </StackPanel>
-
-            <Button x:Name="btnGenerarReporte" Content="Generar Reporte" Width="120" Height="30"
-                    Background="#2196F3" Foreground="White" FontWeight="Bold"
-                    Click="btnGenerarReporte_Click"/>
-        </StackPanel>
-
-        <!-- Estadísticas Rápidas -->
-        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,40,0,10">
-            <Border Background="#e8f5e8" CornerRadius="8" Padding="10" Margin="0,0,10,0">
-                <TextBlock x:Name="txtVentasHoy" FontSize="12" FontWeight="Bold" Foreground="#2e7d32"/>
-            </Border>
-            <Border Background="#fff3e0" CornerRadius="8" Padding="10" Margin="0,0,10,0">
-                <TextBlock x:Name="txtStockCritico" FontSize="12" FontWeight="Bold" Foreground="#f57c00"/>
-            </Border>
-        </StackPanel>
-
-        <!-- Contenedor de Reportes -->
-        <TabControl Grid.Row="2" Background="White" BorderBrush="#e2a42d">
-            <TabItem Header="📋 Vista de Datos">
-                <DataGrid x:Name="dgvReporte" AutoGenerateColumns="False" IsReadOnly="True"
-                         Background="White" BorderThickness="0"/>
-            </TabItem>
-            <TabItem Header="📈 Resumen">
-                <ScrollViewer>
-                    <StackPanel x:Name="panelResumen" Margin="20"/>
-                </ScrollViewer>
-            </TabItem>
-        </TabControl>
-
-        <!-- Botones de Exportación -->
-        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,0,10">
-            <Button Content="📄 Exportar a Excel" Width="120" Height="30" Margin="0,0,10,0"
-                    Background="#4CAF50" Foreground="White" FontWeight="Bold"
-                    Click="btnExportarExcel_Click"/>
-            <Button Content="🖨️ Imprimir" Width="80" Height="30"
-                    Background="#2196F3" Foreground="White" FontWeight="Bold"
-                    Click="btnImprimir_Click"/>
-        </StackPanel>
-        <ComboBox x:Name="cboTipoReporte" SelectionChanged="cboTipoReporte_SelectionChanged" RenderTransformOrigin="0.512,-0.858" Margin="380,33,380,63" Grid.RowSpan="2">
-            <ComboBoxItem Content="Consumo Materia Prima"/>
-            <ComboBoxItem Content="Ventas por Fecha"/>
-            <ComboBoxItem Content="Ventas por Cliente"/>
-            <ComboBoxItem Content="Stock Crítico"/>
-            <ComboBoxItem Content="Inventario Completo"/>
-        </ComboBox>
-    </Grid>
+        </Grid>
+    </Border>
 </Window>

@@ -4,17 +4,31 @@
         Title="Historial de Producción" Height="600" Width="800"
         Background="#fff8e1" FontFamily="Georgia"
         Loaded="Window_Loaded"
-    WindowStartupLocation="CenterScreen">
+        WindowStartupLocation="CenterScreen">
 
-    <Grid Margin="20">
-        <DataGrid x:Name="dgvProducciones" AutoGenerateColumns="False" IsReadOnly="True"
-                 Background="White" BorderBrush="#e2a42d">
-            <DataGrid.Columns>
-                <DataGridTextColumn Header="ID" Binding="{Binding IdProduccion}" Width="60"/>
-                <DataGridTextColumn Header="Producto" Binding="{Binding NombreProducto}" Width="*"/>
-                <DataGridTextColumn Header="Cantidad" Binding="{Binding CantidadProducida}" Width="100"/>
-                <DataGridTextColumn Header="Fecha" Binding="{Binding FechaProduccion, StringFormat=dd/MM/yyyy HH:mm}" Width="150"/>
-            </DataGrid.Columns>
-        </DataGrid>
-    </Grid>
+    <Border Background="White" CornerRadius="12" Padding="20"
+            BorderBrush="#e2a42d" BorderThickness="2" Margin="20">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <TextBlock Grid.Row="0" Text="HISTORIAL DE PRODUCCIÓN" FontSize="24" FontWeight="Bold"
+                       Foreground="#a36b00" HorizontalAlignment="Center" Margin="0,0,0,20"/>
+
+            <Border Grid.Row="1" Background="White" CornerRadius="10" Padding="5"
+                    BorderBrush="#e2a42d" BorderThickness="2">
+                <DataGrid x:Name="dgvProducciones" AutoGenerateColumns="False" IsReadOnly="True"
+                          Background="White" BorderThickness="0">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="ID" Binding="{Binding IdProduccion}" Width="60"/>
+                        <DataGridTextColumn Header="Producto" Binding="{Binding NombreProducto}" Width="*"/>
+                        <DataGridTextColumn Header="Cantidad" Binding="{Binding CantidadProducida}" Width="100"/>
+                        <DataGridTextColumn Header="Fecha" Binding="{Binding FechaProduccion, StringFormat=dd/MM/yyyy HH:mm}" Width="150"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Border>
+        </Grid>
+    </Border>
 </Window>

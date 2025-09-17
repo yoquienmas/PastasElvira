@@ -32,6 +32,7 @@ namespace CapaPresentacion
         {
             CargarProductos();
         }
+        // En la clase FormVenta (FormVenta.xaml.cs)
 
 
         private void CargarProductos()

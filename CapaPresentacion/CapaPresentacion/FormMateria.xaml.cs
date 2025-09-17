@@ -6,11 +6,11 @@ using CapaNegocio;
 
 namespace CapaPresentacion
 {
-    public partial class FormMateriaPrima : Window
+    public partial class FormMateria : Window
     {
         private CN_MateriaPrima cnMateriaPrima = new CN_MateriaPrima();
 
-        public FormMateriaPrima()
+        public FormMateria()
         {
             InitializeComponent();
         }
@@ -18,6 +18,12 @@ namespace CapaPresentacion
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             ListarMateriasPrimas();
+        }
+
+        // MÉTODO QUE FALTA - AGREGAR ESTO
+        private void btnLimpiar_Click(object sender, RoutedEventArgs e)
+        {
+            LimpiarCampos();
         }
 
         private void ListarMateriasPrimas()

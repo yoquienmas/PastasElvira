@@ -9,6 +9,7 @@ namespace CapaNegocio
     public class CN_Reporte
     {
         private CD_Reporte cdReporte = new CD_Reporte();
+        private string conexion = "Server=localhost;Database=PastasElvira;Integrated Security=true;"; // Ajusta tu cadena
 
         public List<ReporteVenta> ObtenerVentasPorFecha(DateTime fechaInicio, DateTime fechaFin)
         {
@@ -35,7 +36,6 @@ namespace CapaNegocio
             return cdReporte.ObtenerConsumoMateriaPrima(fechaInicio, fechaFin);
         }
 
-        // MÉTODOS NUEVOS QUE FALTAN:
         public List<ReporteStock> ObtenerTodosProductosConStock()
         {
             return cdReporte.ObtenerTodosProductosConStock();
@@ -45,9 +45,8 @@ namespace CapaNegocio
         {
             return cdReporte.ObtenerVentasPorCliente(idCliente);
         }
-        private string conexion = "TuCadenaDeConexion"; // Reemplaza con tu cadena de conexión
 
-        public List<ReporteVenta> ObtenerVentasPorVendedor(int idVendedor, DateTime fechaInicio, DateTime fechaFin,
+        public List<ReporteVenta> ObtenerVentasPorVendedor(int idUsuario, DateTime fechaInicio, DateTime fechaFin,
                                                          string dniCliente = "", string nombreProducto = "")
         {
             List<ReporteVenta> lista = new List<ReporteVenta>();
@@ -62,8 +61,9 @@ namespace CapaNegocio
                         v.Fecha, 
                         c.NombreCompleto as Cliente,
                         c.DNI as DniCliente,
-                        u.NombreCompleto as Usuario,
+                        u.NombreUsuario as Vendedor,
                         v.Total,
+                        v.IdUsuario,
                         STUFF((
                             SELECT ', ' + p.Nombre + ' (' + CAST(dv.Cantidad AS VARCHAR) + ')'
                             FROM DetalleVenta dv
@@ -97,7 +97,7 @@ namespace CapaNegocio
                     SqlCommand cmd = new SqlCommand(query, oconexion);
                     cmd.Parameters.AddWithValue("@FechaInicio", fechaInicio.Date);
                     cmd.Parameters.AddWithValue("@FechaFin", fechaFin.Date);
-                    cmd.Parameters.AddWithValue("@IdVendedor", idVendedor);
+                    cmd.Parameters.AddWithValue("@IdVendedor", idUsuario);
 
                     if (!string.IsNullOrEmpty(dniCliente))
                     {
@@ -120,8 +120,9 @@ namespace CapaNegocio
                                 IdVenta = Convert.ToInt32(dr["IdVenta"]),
                                 Fecha = Convert.ToDateTime(dr["Fecha"]),
                                 Cliente = dr["Cliente"].ToString(),
-                                DNI = dr["DNI"].ToString(),
-                                Usuario = dr["Usuario"].ToString(),
+                                DNI = dr["DniCliente"].ToString(),
+                                Usuario = dr["Vendedor"].ToString(),
+                                IdUsuario = Convert.ToInt32(dr["IdUsuario"]),
                                 Total = Convert.ToDecimal(dr["Total"]),
                                 Productos = dr["Productos"].ToString()
                             });
@@ -130,24 +131,39 @@ namespace CapaNegocio
                 }
                 catch (Exception ex)
                 {
-                    // Puedes loggear el error aquí
                     Console.WriteLine($"Error: {ex.Message}");
                     lista = new List<ReporteVenta>();
                 }
             }
             return lista;
-
         }
 
-        // Otros métodos que puedas necesitar...
+        // Método simplificado para el dashboard (sin filtros de fecha)
+        public List<ReporteVenta> ObtenerVentasPorVendedor(int idUsuario)
+        {
+            return ObtenerVentasPorVendedor(idUsuario, DateTime.Now.AddMonths(-1), DateTime.Now);
+        }
+
         public List<ReporteVenta> ObtenerTodasLasVentas(DateTime fechaInicio, DateTime fechaFin)
         {
-            // Implementación similar para obtener todas las ventas
-            return new List<ReporteVenta>();
+            return cdReporte.ObtenerVentasPorFecha(fechaInicio, fechaFin);
         }
+
         public List<ConsumoMateriaPrima> ObtenerConsumoMateriaPrimaPorVenta(int idVenta)
         {
             return cdReporte.ObtenerConsumoMateriaPrimaPorVenta(idVenta);
+        }
+        // En tu clase CN_Reporte, agrega estos métodos:
+        public List<dynamic> ObtenerVentasPorTipo(DateTime inicio, DateTime fin)
+        {
+            // Implementar lógica para obtener ventas por tipo
+            return new List<dynamic>();
+        }
+
+        public List<dynamic> ObtenerTopClientes(DateTime inicio, DateTime fin, int cantidad)
+        {
+            // Implementar lógica para obtener top clientes
+            return new List<dynamic>();
         }
     }
 }

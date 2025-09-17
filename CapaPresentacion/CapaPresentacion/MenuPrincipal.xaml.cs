@@ -1,10 +1,14 @@
-﻿using CapaEntidad;
+﻿using CapaDatos;
+using CapaEntidad;
 using CapaNegocio;
 using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
+using System.Linq;
+using System.Data;
+using System.Windows.Input;
 
 namespace CapaPresentacion
 {
@@ -15,324 +19,132 @@ namespace CapaPresentacion
         private CN_Cliente cnCliente = new CN_Cliente();
         private CN_Producto cnProducto = new CN_Producto();
         private CN_Alerta cnAlerta = new CN_Alerta();
+        private CN_Usuario cn_usuario = new CN_Usuario();
 
         // Variables para almacenar información del usuario
         private int _idUsuarioLogueado;
         private string _nombreUsuarioLogueado;
+        private string _rolUsuarioLogueado;
 
-        // Constructor sin parámetros (necesario para XAML)
         public MenuPrincipal()
         {
             InitializeComponent();
-            txtFecha.Text = DateTime.Now.ToString("dd/MM/yyyy HH:mm");
-
-            // Valores por defecto para testing
-            _idUsuarioLogueado = 0;
-            _nombreUsuarioLogueado = "Usuario Demo";
+            txtFechaPrincipal.Text = DateTime.Now.ToString("dd/MM/yyyy HH:mm");
         }
-
-        // Constructor con parámetros (para cuando se abre desde login)
-        public MenuPrincipal(int idUsuario, string nombreUsuario) : this() // Llama al constructor sin parámetros
-        {
-            _idUsuarioLogueado = idUsuario;
-            _nombreUsuarioLogueado = nombreUsuario;
-
-            // Mostrar información del usuario si está logueado
-            if (_idUsuarioLogueado > 0)
-            {
-                txtUsuario.Text = $"Usuario: {_nombreUsuarioLogueado}";
-            }
-        }
-
-        private void btnMisVentas_Click(object sender, RoutedEventArgs e)
-        {
-            // Verificar si hay un usuario logueado
-            if (_idUsuarioLogueado == 0)
-            {
-                MessageBox.Show("No hay usuario logueado. Por favor, inicie sesión.", "Error",
-                               MessageBoxButton.OK, MessageBoxImage.Warning);
-                return;
-            }
-
-            try
-            {
-                FormHistorialVentas formHistorialVentas = new FormHistorialVentas(_idUsuarioLogueado, _nombreUsuarioLogueado);
-                formHistorialVentas.Show();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error al abrir el historial de ventas: {ex.Message}", "Error",
-                               MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-        }
-
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            cboRol.SelectedIndex = 0; // Seleccionar DUEÑO por defecto
+            txtFechaPrincipal.Text = DateTime.Now.ToString("dd/MM/yyyy HH:mm");
         }
 
-        private void cboRol_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void OcultarError()
         {
-            if (cboRol.SelectedItem == null) return;
-
-            string rol = ((ComboBoxItem)cboRol.SelectedItem).Tag.ToString();
-            ActualizarVistaSegunRol(rol);
+            errorMessageBorder.Visibility = Visibility.Collapsed;
         }
 
-        private void ActualizarVistaSegunRol(string rol)
+        private void MostrarError(string mensaje)
         {
-            // Habilitar solo la pestaña correspondiente al rol
-            tabDueño.IsEnabled = rol == "DUEÑO";
-            tabAdmin.IsEnabled = rol == "ADMIN";
-            tabVendedor.IsEnabled = rol == "VENDEDOR";
+            txtMensajeError.Text = mensaje;
+            errorMessageBorder.Visibility = Visibility.Visible;
+        }
 
-            // Seleccionar la pestaña activa
-            if (rol == "DUEÑO")
+        // MÉTODO QUE FALTA - AGREGAR ESTO
+        private void BtnLogin_Click(object sender, RoutedEventArgs e)
+        {
+            RealizarLogin();
+        }
+
+        private void txtLoginClave_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
             {
-                tabDueño.IsSelected = true;
-                CargarDashboardDueño();
-            }
-            else if (rol == "ADMIN")
-            {
-                tabAdmin.IsSelected = true;
-                CargarDashboardAdmin();
-            }
-            else if (rol == "VENDEDOR")
-            {
-                tabVendedor.IsSelected = true;
-                CargarDashboardVendedor();
+                RealizarLogin();
             }
         }
 
-        private void CargarDashboardDueño()
+        private void RealizarLogin()
         {
             try
             {
-                // Obtener fecha actual para cálculos
-                DateTime inicioMes = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1);
-                DateTime finMes = inicioMes.AddMonths(1).AddDays(-1);
+                OcultarError();
 
-                // 1. Ventas del mes
-                decimal totalVentasMes = cnReporte.ObtenerTotalVentasPeriodo(inicioMes, finMes);
-                txtVentasMes.Text = totalVentasMes.ToString("$");
+                string nombre = txtLoginUsuario.Text;
+                string clave = txtLoginClave.Password;
 
-                // 2. Total clientes
-                var clientes = cnCliente.Listar();
-                txtTotalClientes.Text = clientes.Count.ToString();
-
-                // 3. Productos vendidos (aproximado)
-                var ventasMes = cnReporte.ObtenerVentasPorFecha(inicioMes, finMes);
-                int totalProductos = ventasMes.Sum(v => v.CantidadProductos);
-                txtProductosVendidos.Text = totalProductos.ToString();
-
-                // 4. Stock crítico
-                var stockCritico = cnReporte.ObtenerProductosStockBajo();
-                txtStockCritico.Text = $"{stockCritico.Count} productos";
-
-                // 5. Ventas por tipo
-                CargarVentasPorTipo(inicioMes, finMes);
-
-                // 6. Top 5 clientes
-                CargarTopClientes(inicioMes, finMes);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error al cargar dashboard: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-        }
-
-        private void CargarVentasPorTipo(DateTime inicio, DateTime fin)
-        {
-            // Simulación - En una implementación real, esto vendría de la base de datos
-            var ventasPorTipo = new List<dynamic>
-            {
-                new { Tipo = "Ñoquis", Cantidad = 150, Total = 75000m },
-                new { Tipo = "Ravioles", Cantidad = 200, Total = 45000m },
-                new { Tipo = "Tallarines", Cantidad = 80, Total = 12000m },
-                new { Tipo = "Canelones", Cantidad = 50, Total = 8000m }
-            };
-
-            dgvVentasPorTipo.ItemsSource = ventasPorTipo;
-        }
-
-        private void CargarTopClientes(DateTime inicio, DateTime fin)
-        {
-            // Simulación - En una implementación real, esto vendría de la base de datos
-            var topClientes = new List<dynamic>
-            {
-                new { Nombre = "María González", CantidadCompras = 8, TotalGastado = 18500m },
-                new { Nombre = "Carlos Rodríguez", CantidadCompras = 6, TotalGastado = 14200m },
-                new { Nombre = "Restaurant Don José", CantidadCompras = 5, TotalGastado = 23500m },
-                new { Nombre = "Ana Martínez", CantidadCompras = 4, TotalGastado = 8600m },
-                new { Nombre = "Juan Pérez", CantidadCompras = 3, TotalGastado = 7200m }
-            };
-
-            dgvTopClientes.ItemsSource = topClientes;
-        }
-
-        private void CargarDashboardAdmin()
-        {
-            try
-            {
-                // Cargar últimas ventas
-                var ventas = cnReporte.ObtenerVentasPorFecha(DateTime.Today.AddDays(-30), DateTime.Today);
-                dgvVentasAdmin.ItemsSource = ventas.Take(20); // Mostrar últimas 20 ventas
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error al cargar dashboard admin: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-        }
-
-        private void CargarDashboardVendedor()
-        {
-            try
-            {
-                // Simular datos del vendedor actual (en producción vendría del login)
-                int idVendedorSimulado = 1;
-
-                // Mis ventas del mes
-                DateTime inicioMes = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1);
-                DateTime finMes = inicioMes.AddMonths(1).AddDays(-1);
-
-                var misVentas = cnReporte.ObtenerVentasPorFecha(inicioMes, finMes)
-                    .Where(v => v.Usuario.Contains("Vendedor")) // Simulación
-                    .ToList();
-
-                decimal totalVentas = misVentas.Sum(v => v.Total);
-                int cantidadVentas = misVentas.Count;
-                decimal ticketPromedio = cantidadVentas > 0 ? totalVentas / cantidadVentas : 0;
-
-                txtMisVentasTotal.Text = totalVentas.ToString("$");
-                txtMisVentasCantidad.Text = cantidadVentas.ToString();
-                txtMisTicketPromedio.Text = ticketPromedio.ToString("$");
-
-                dgvMisVentas.ItemsSource = misVentas;
-
-                // Productos disponibles
-                var productos = cnProducto.Listar();
-                foreach (var producto in productos)
+                if (string.IsNullOrEmpty(nombre) || string.IsNullOrEmpty(clave))
                 {
-                    producto.EstadoStock = producto.StockActual <= producto.StockMinimo ? "CRÍTICO" :
-                                          producto.StockActual <= producto.StockMinimo * 2 ? "BAJO" : "NORMAL";
+                    MostrarError("Por favor, complete todos los campos.");
+                    return;
                 }
-                dgvProductosVendedor.ItemsSource = productos;
+
+                bool resultado = cn_usuario.Login(nombre, clave);
+
+                if (resultado)
+                {
+                    DataTable usuarioInfo = cn_usuario.ObtenerUsuarioPorNombre(nombre);
+
+                    if (usuarioInfo.Rows.Count > 0)
+                    {
+                        DataRow row = usuarioInfo.Rows[0];
+                        _idUsuarioLogueado = Convert.ToInt32(row["IdUsuario"]);
+                        _nombreUsuarioLogueado = row["NombreUsuario"].ToString();
+                        _rolUsuarioLogueado = row["Rol"].ToString();
+
+                        // CERRAR esta ventana de login y ABRIR la ventana correspondiente
+                        this.Hide(); // Ocultar ventana de login
+
+                        // Abrir ventana según el rol
+                        switch (_rolUsuarioLogueado.ToUpper())
+                        {
+                            case "DUEÑO":
+                                MenuDueño menuDueño = new MenuDueño();
+                                menuDueño.Show();
+                                break;
+                            case "ADMIN":
+                                MenuAdmin menuAdmin = new MenuAdmin();
+                                menuAdmin.Show();
+                                break;
+                            case "VENDEDOR":
+                                MenuVendedor menuVendedor = new MenuVendedor(_idUsuarioLogueado, _nombreUsuarioLogueado);
+                                menuVendedor.Show();
+                                break;
+                            default:
+                                MessageBox.Show("Rol no reconocido: " + _rolUsuarioLogueado);
+                                this.Show(); // Mostrar nuevamente el login
+                                break;
+                        }
+                    }
+                }
+                else
+                {
+                    MostrarError("Usuario o contraseña incorrectos");
+                }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error al cargar dashboard vendedor: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MostrarError("Error en el sistema: " + ex.Message);
             }
         }
 
-        #region Event Handlers - Dueño
-        private void btnReportesGenerales_Click(object sender, RoutedEventArgs e)
+        private void BtnCerrarSesion_Click(object sender, RoutedEventArgs e)
         {
-            FormReportes formReportes = new FormReportes();
-            formReportes.Show();
-        }
+            // Cerrar todas las ventanas abiertas y volver a mostrar el login
+            Application.Current.Windows.OfType<Window>()
+                .Where(w => w != this && w.GetType() != typeof(MenuPrincipal))
+                .ToList()
+                .ForEach(w => w.Close());
 
-        private void btnReporteVentas_Click(object sender, RoutedEventArgs e)
-        {
-            FormReporteVentas formReporteVentas = new FormReporteVentas();
-            formReporteVentas.Show();
-        }
+            // Reiniciar campos de login
+            txtLoginUsuario.Text = "";
+            txtLoginClave.Password = "";
+            OcultarError();
 
-        private void btnReporteConsumo_Click(object sender, RoutedEventArgs e)
-        {
-            FormReporteConsumo formReporteConsumo = new FormReporteConsumo();
-            formReporteConsumo.Show();
-        }
+            // Mostrar panel de login
+            pnlLogin.Visibility = Visibility.Visible;
+            pnlPrincipal.Visibility = Visibility.Collapsed;
 
-        private void btnCostosFijos_Click(object sender, RoutedEventArgs e)
-        {
-            FormCostoFijo formCostoFijo = new FormCostoFijo();
-            formCostoFijo.Show();
+            this.Show(); // Mostrar ventana principal (login)
         }
-        #endregion
-
-        #region Event Handlers - Admin
-        private void btnMateriasPrimas_Click(object sender, RoutedEventArgs e)
-        {
-            FormMateriaPrima  formMateria = new FormMateriaPrima();
-            formMateria.Show();
-        }
-
-        private void btnProductosTerminados_Click(object sender, RoutedEventArgs e)
-        {
-            FormProducto formProducto = new FormProducto();
-            formProducto.Show();
-        }
-
-        private void btnAlertasStock_Click(object sender, RoutedEventArgs e)
-        {
-            FormAlertas formAlerts = new FormAlertas();
-            formAlerts.Show();
-        }
-
-        private void btnProgramarProduccion_Click(object sender, RoutedEventArgs e)
-        {
-            FormProduccion formProduccion = new FormProduccion();
-            formProduccion.Show();
-        }
-
-        private void btnHistorialProduccion_Click(object sender, RoutedEventArgs e)
-        {
-            FormHistorialProduccion formHistorialProduccion = new FormHistorialProduccion();
-            formHistorialProduccion.Show();
-        }
-
-        private void btnDetalleProduccion_Click(object sender, RoutedEventArgs e)
-        {
-            FormDetalleProduccion formDetalleProduccion = new FormDetalleProduccion();
-            formDetalleProduccion.Show();
-        }
-
-        private void btnConsumoPorVenta_Click(object sender, RoutedEventArgs e)
-        {
-            FormConsumoPorVenta formConsumoPorVenta = new FormConsumoPorVenta();
-            formConsumoPorVenta.Show();
-        }
-
-        private void btnVerDetalleVenta_Click(object sender, RoutedEventArgs e)
-        {
-            if (dgvVentasAdmin.SelectedItem != null)
-            {
-                // Aquí puedes implementar la lógica para ver el detalle de la venta seleccionada
-                MessageBox.Show("Mostrando detalle de venta seleccionada", "Detalle de Venta", MessageBoxButton.OK, MessageBoxImage.Information);
-            }
-            else
-            {
-                MessageBox.Show("Por favor, seleccione una venta para ver su detalle", "Advertencia", MessageBoxButton.OK, MessageBoxImage.Warning);
-            }
-        }
-        #endregion
-
-        #region Event Handlers - Vendedor
-        private void btnNuevaVenta_Click(object sender, RoutedEventArgs e)
-        {
-            FormVenta formVenta = new FormVenta();
-            formVenta.Show();
-        }
-
-        private void btnGestionClientes_Click(object sender, RoutedEventArgs e)
-        {
-            FormCliente formCliente = new FormCliente();
-            formCliente.Show();
-        }
-
-        private void btnVerProductos_Click(object sender, RoutedEventArgs e)
-        {
-            // Asumiendo que tienes FormProducto para ver productos
-            FormProducto formProducto = new FormProducto();
-            formProducto.Show();
-        }
-        #endregion
-
-        private void dgvTopClientes_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            // Puedes implementar funcionalidad adicional aquí si es necesario
-        }
-        
+       
     }
 }

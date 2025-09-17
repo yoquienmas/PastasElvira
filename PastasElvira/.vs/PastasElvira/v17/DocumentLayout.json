@@ -3,10 +3,140 @@
   "WorkspaceRootPath": "C:\\Users\\danie\\Source\\Repos\\PastasElvira\\PastasElvira\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{C9F6F791-1C4B-957C-360E-B4FB731214B1}|..\\CapaPresentacion\\CapaPresentacion\\CapaPresentacion.csproj|c:\\users\\danie\\source\\repos\\pastaselvira\\capapresentacion\\capapresentacion\\menuprincipal.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+      "AbsoluteMoniker": "D:0:0:{C9F6F791-1C4B-957C-360E-B4FB731214B1}|..\\CapaPresentacion\\CapaPresentacion\\CapaPresentacion.csproj|c:\\users\\danie\\source\\repos\\pastaselvira\\capapresentacion\\capapresentacion\\menuvendedor.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C9F6F791-1C4B-957C-360E-B4FB731214B1}|..\\CapaPresentacion\\CapaPresentacion\\CapaPresentacion.csproj|c:\\users\\danie\\source\\repos\\pastaselvira\\capapresentacion\\capapresentacion\\menudue\u00F1o.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C9F6F791-1C4B-957C-360E-B4FB731214B1}|..\\CapaPresentacion\\CapaPresentacion\\CapaPresentacion.csproj|c:\\users\\danie\\source\\repos\\pastaselvira\\capapresentacion\\capapresentacion\\menudue\u00F1o.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C9F6F791-1C4B-957C-360E-B4FB731214B1}|..\\CapaPresentacion\\CapaPresentacion\\CapaPresentacion.csproj|c:\\users\\danie\\source\\repos\\pastaselvira\\capapresentacion\\capapresentacion\\menuadmin.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C9F6F791-1C4B-957C-360E-B4FB731214B1}|..\\CapaPresentacion\\CapaPresentacion\\CapaPresentacion.csproj|c:\\users\\danie\\source\\repos\\pastaselvira\\capapresentacion\\capapresentacion\\menuadmin.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{C9F6F791-1C4B-957C-360E-B4FB731214B1}|..\\CapaPresentacion\\CapaPresentacion\\CapaPresentacion.csproj|c:\\users\\danie\\source\\repos\\pastaselvira\\capapresentacion\\capapresentacion\\menuprincipal.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C9F6F791-1C4B-957C-360E-B4FB731214B1}|..\\CapaPresentacion\\CapaPresentacion\\CapaPresentacion.csproj|c:\\users\\danie\\source\\repos\\pastaselvira\\capapresentacion\\capapresentacion\\menuprincipal.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C9F6F791-1C4B-957C-360E-B4FB731214B1}|..\\CapaPresentacion\\CapaPresentacion\\CapaPresentacion.csproj|c:\\users\\danie\\source\\repos\\pastaselvira\\capapresentacion\\capapresentacion\\menuvendedor.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C9F6F791-1C4B-957C-360E-B4FB731214B1}|..\\CapaPresentacion\\CapaPresentacion\\CapaPresentacion.csproj|c:\\users\\danie\\source\\repos\\pastaselvira\\capapresentacion\\capapresentacion\\formproduccion.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C9F6F791-1C4B-957C-360E-B4FB731214B1}|..\\CapaPresentacion\\CapaPresentacion\\CapaPresentacion.csproj|c:\\users\\danie\\source\\repos\\pastaselvira\\capapresentacion\\capapresentacion\\formproducto.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C9F6F791-1C4B-957C-360E-B4FB731214B1}|..\\CapaPresentacion\\CapaPresentacion\\CapaPresentacion.csproj|c:\\users\\danie\\source\\repos\\pastaselvira\\capapresentacion\\capapresentacion\\formproducto.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E7D39169-3B78-C802-C971-088CDC5B167A}|..\\CapaEntidad\\CapaEntidad\\CapaEntidad.csproj|c:\\users\\danie\\source\\repos\\pastaselvira\\capaentidad\\capaentidad\\detalleproduccion.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C9F6F791-1C4B-957C-360E-B4FB731214B1}|..\\CapaPresentacion\\CapaPresentacion\\CapaPresentacion.csproj|c:\\users\\danie\\source\\repos\\pastaselvira\\capapresentacion\\capapresentacion\\formproduccion.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C9F6F791-1C4B-957C-360E-B4FB731214B1}|..\\CapaPresentacion\\CapaPresentacion\\CapaPresentacion.csproj|c:\\users\\danie\\source\\repos\\pastaselvira\\capapresentacion\\capapresentacion\\formmateria.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C9F6F791-1C4B-957C-360E-B4FB731214B1}|..\\CapaPresentacion\\CapaPresentacion\\CapaPresentacion.csproj|c:\\users\\danie\\source\\repos\\pastaselvira\\capapresentacion\\capapresentacion\\formmateria.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C9F6F791-1C4B-957C-360E-B4FB731214B1}|..\\CapaPresentacion\\CapaPresentacion\\CapaPresentacion.csproj|c:\\users\\danie\\source\\repos\\pastaselvira\\capapresentacion\\capapresentacion\\formgestionusuarios.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C9F6F791-1C4B-957C-360E-B4FB731214B1}|..\\CapaPresentacion\\CapaPresentacion\\CapaPresentacion.csproj|c:\\users\\danie\\source\\repos\\pastaselvira\\capapresentacion\\capapresentacion\\formhistorialventas.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C9F6F791-1C4B-957C-360E-B4FB731214B1}|..\\CapaPresentacion\\CapaPresentacion\\CapaPresentacion.csproj|c:\\users\\danie\\source\\repos\\pastaselvira\\capapresentacion\\capapresentacion\\formhistorialventas.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C9F6F791-1C4B-957C-360E-B4FB731214B1}|..\\CapaPresentacion\\CapaPresentacion\\CapaPresentacion.csproj|c:\\users\\danie\\source\\repos\\pastaselvira\\capapresentacion\\capapresentacion\\formgestionusuarios.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C9F6F791-1C4B-957C-360E-B4FB731214B1}|..\\CapaPresentacion\\CapaPresentacion\\CapaPresentacion.csproj|c:\\users\\danie\\source\\repos\\pastaselvira\\capapresentacion\\capapresentacion\\formventa.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C9F6F791-1C4B-957C-360E-B4FB731214B1}|..\\CapaPresentacion\\CapaPresentacion\\CapaPresentacion.csproj|c:\\users\\danie\\source\\repos\\pastaselvira\\capapresentacion\\capapresentacion\\formreporteventas.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C9F6F791-1C4B-957C-360E-B4FB731214B1}|..\\CapaPresentacion\\CapaPresentacion\\CapaPresentacion.csproj|c:\\users\\danie\\source\\repos\\pastaselvira\\capapresentacion\\capapresentacion\\formreportes.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C9F6F791-1C4B-957C-360E-B4FB731214B1}|..\\CapaPresentacion\\CapaPresentacion\\CapaPresentacion.csproj|c:\\users\\danie\\source\\repos\\pastaselvira\\capapresentacion\\capapresentacion\\formreporteconsumo.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C9F6F791-1C4B-957C-360E-B4FB731214B1}|..\\CapaPresentacion\\CapaPresentacion\\CapaPresentacion.csproj|c:\\users\\danie\\source\\repos\\pastaselvira\\capapresentacion\\capapresentacion\\formreporteconsumo.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C9F6F791-1C4B-957C-360E-B4FB731214B1}|..\\CapaPresentacion\\CapaPresentacion\\CapaPresentacion.csproj|c:\\users\\danie\\source\\repos\\pastaselvira\\capapresentacion\\capapresentacion\\formreceta.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C9F6F791-1C4B-957C-360E-B4FB731214B1}|..\\CapaPresentacion\\CapaPresentacion\\CapaPresentacion.csproj|c:\\users\\danie\\source\\repos\\pastaselvira\\capapresentacion\\capapresentacion\\formhistorialproduccion.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C9F6F791-1C4B-957C-360E-B4FB731214B1}|..\\CapaPresentacion\\CapaPresentacion\\CapaPresentacion.csproj|c:\\users\\danie\\source\\repos\\pastaselvira\\capapresentacion\\capapresentacion\\formeditarusuario.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C9F6F791-1C4B-957C-360E-B4FB731214B1}|..\\CapaPresentacion\\CapaPresentacion\\CapaPresentacion.csproj|c:\\users\\danie\\source\\repos\\pastaselvira\\capapresentacion\\capapresentacion\\formdetalleproduccion.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C9F6F791-1C4B-957C-360E-B4FB731214B1}|..\\CapaPresentacion\\CapaPresentacion\\CapaPresentacion.csproj|c:\\users\\danie\\source\\repos\\pastaselvira\\capapresentacion\\capapresentacion\\formcostofijo.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C9F6F791-1C4B-957C-360E-B4FB731214B1}|..\\CapaPresentacion\\CapaPresentacion\\CapaPresentacion.csproj|c:\\users\\danie\\source\\repos\\pastaselvira\\capapresentacion\\capapresentacion\\formconsumoporventa.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C9F6F791-1C4B-957C-360E-B4FB731214B1}|..\\CapaPresentacion\\CapaPresentacion\\CapaPresentacion.csproj|c:\\users\\danie\\source\\repos\\pastaselvira\\capapresentacion\\capapresentacion\\formcliente.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C9F6F791-1C4B-957C-360E-B4FB731214B1}|..\\CapaPresentacion\\CapaPresentacion\\CapaPresentacion.csproj|c:\\users\\danie\\source\\repos\\pastaselvira\\capapresentacion\\capapresentacion\\formalertas.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5A66DBAB-973D-4E04-B4CC-6AE92816F28D}|PastasElvira\\PastasElvira.csproj|c:\\users\\danie\\source\\repos\\pastaselvira\\pastaselvira\\pastaselvira\\resources\\logo.png||{58961B49-13E0-48C0-9258-13CBC4D40279}",
+      "RelativeMoniker": "D:0:0:{5A66DBAB-973D-4E04-B4CC-6AE92816F28D}|PastasElvira\\PastasElvira.csproj|solutionrelative:pastaselvira\\resources\\logo.png||{58961B49-13E0-48C0-9258-13CBC4D40279}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C9F6F791-1C4B-957C-360E-B4FB731214B1}|..\\CapaPresentacion\\CapaPresentacion\\CapaPresentacion.csproj|c:\\users\\danie\\source\\repos\\pastaselvira\\capapresentacion\\capapresentacion\\formventa.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9F3A0735-28FA-AFB7-AF0A-205334FB31A7}|..\\CapaNegocio\\CapaNegocio\\CapaNegocio.csproj|c:\\users\\danie\\source\\repos\\pastaselvira\\capanegocio\\capanegocio\\cn_reporte.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{52374688-EF5F-7B50-97F6-497F919C7BAC}|..\\CapaDatos\\CapaDatos\\CapaDatos.csproj|c:\\users\\danie\\source\\repos\\pastaselvira\\capadatos\\capadatos\\cd_reporte.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E7D39169-3B78-C802-C971-088CDC5B167A}|..\\CapaEntidad\\CapaEntidad\\CapaEntidad.csproj|c:\\users\\danie\\source\\repos\\pastaselvira\\capaentidad\\capaentidad\\reporteventa.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{52374688-EF5F-7B50-97F6-497F919C7BAC}|..\\CapaDatos\\CapaDatos\\CapaDatos.csproj|c:\\users\\danie\\source\\repos\\pastaselvira\\capadatos\\capadatos\\cd_usuario.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9F3A0735-28FA-AFB7-AF0A-205334FB31A7}|..\\CapaNegocio\\CapaNegocio\\CapaNegocio.csproj|c:\\users\\danie\\source\\repos\\pastaselvira\\capanegocio\\capanegocio\\cn_usuario.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{52374688-EF5F-7B50-97F6-497F919C7BAC}|..\\CapaDatos\\CapaDatos\\CapaDatos.csproj|c:\\users\\danie\\source\\repos\\pastaselvira\\capadatos\\capadatos\\cd_detalleproduccion.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C9F6F791-1C4B-957C-360E-B4FB731214B1}|..\\CapaPresentacion\\CapaPresentacion\\CapaPresentacion.csproj|c:\\users\\danie\\source\\repos\\pastaselvira\\capapresentacion\\capapresentacion\\formeditarusuario.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{52374688-EF5F-7B50-97F6-497F919C7BAC}|..\\CapaDatos\\CapaDatos\\CapaDatos.csproj|c:\\users\\danie\\source\\repos\\pastaselvira\\capadatos\\capadatos\\cd_venta.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{52374688-EF5F-7B50-97F6-497F919C7BAC}|..\\CapaDatos\\CapaDatos\\CapaDatos.csproj|c:\\users\\danie\\source\\repos\\pastaselvira\\capadatos\\capadatos\\cd_producto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{52374688-EF5F-7B50-97F6-497F919C7BAC}|..\\CapaDatos\\CapaDatos\\CapaDatos.csproj|c:\\users\\danie\\source\\repos\\pastaselvira\\capadatos\\capadatos\\cd_produccion.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{52374688-EF5F-7B50-97F6-497F919C7BAC}|..\\CapaDatos\\CapaDatos\\CapaDatos.csproj|c:\\users\\danie\\source\\repos\\pastaselvira\\capadatos\\capadatos\\cd_costofijo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -16,7 +146,7 @@
       "DocumentGroups": [
         {
           "DockedHeight": 523,
-          "SelectedChildIndex": 5,
+          "SelectedChildIndex": 6,
           "Children": [
             {
               "$type": "Bookmark",
@@ -36,20 +166,82 @@
             },
             {
               "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "MenuAdmin.xaml",
+              "DocumentMoniker": "C:\\Users\\danie\\Source\\Repos\\PastasElvira\\CapaPresentacion\\CapaPresentacion\\MenuAdmin.xaml",
+              "RelativeDocumentMoniker": "..\\CapaPresentacion\\CapaPresentacion\\MenuAdmin.xaml",
+              "ToolTip": "C:\\Users\\danie\\Source\\Repos\\PastasElvira\\CapaPresentacion\\CapaPresentacion\\MenuAdmin.xaml",
+              "RelativeToolTip": "..\\CapaPresentacion\\CapaPresentacion\\MenuAdmin.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2025-09-17T15:16:24.7Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
               "DocumentIndex": 1,
+              "Title": "MenuDue\u00F1o.xaml",
+              "DocumentMoniker": "C:\\Users\\danie\\Source\\Repos\\PastasElvira\\CapaPresentacion\\CapaPresentacion\\MenuDue\u00F1o.xaml",
+              "RelativeDocumentMoniker": "..\\CapaPresentacion\\CapaPresentacion\\MenuDue\u00F1o.xaml",
+              "ToolTip": "C:\\Users\\danie\\Source\\Repos\\PastasElvira\\CapaPresentacion\\CapaPresentacion\\MenuDue\u00F1o.xaml",
+              "RelativeToolTip": "..\\CapaPresentacion\\CapaPresentacion\\MenuDue\u00F1o.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2025-09-17T15:15:29.392Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "MenuVendedor.xaml",
+              "DocumentMoniker": "C:\\Users\\danie\\Source\\Repos\\PastasElvira\\CapaPresentacion\\CapaPresentacion\\MenuVendedor.xaml",
+              "RelativeDocumentMoniker": "..\\CapaPresentacion\\CapaPresentacion\\MenuVendedor.xaml",
+              "ToolTip": "C:\\Users\\danie\\Source\\Repos\\PastasElvira\\CapaPresentacion\\CapaPresentacion\\MenuVendedor.xaml",
+              "RelativeToolTip": "..\\CapaPresentacion\\CapaPresentacion\\MenuVendedor.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2025-09-17T15:16:49.127Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "MenuDue\u00F1o.xaml.cs",
+              "DocumentMoniker": "C:\\Users\\danie\\Source\\Repos\\PastasElvira\\CapaPresentacion\\CapaPresentacion\\MenuDue\u00F1o.xaml.cs",
+              "RelativeDocumentMoniker": "..\\CapaPresentacion\\CapaPresentacion\\MenuDue\u00F1o.xaml.cs",
+              "ToolTip": "C:\\Users\\danie\\Source\\Repos\\PastasElvira\\CapaPresentacion\\CapaPresentacion\\MenuDue\u00F1o.xaml.cs",
+              "RelativeToolTip": "..\\CapaPresentacion\\CapaPresentacion\\MenuDue\u00F1o.xaml.cs",
+              "ViewState": "AgIAAHEAAAAAAAAAAAAAAHcAAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-17T15:21:28.826Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "MenuAdmin.xaml.cs",
+              "DocumentMoniker": "C:\\Users\\danie\\Source\\Repos\\PastasElvira\\CapaPresentacion\\CapaPresentacion\\MenuAdmin.xaml.cs",
+              "RelativeDocumentMoniker": "..\\CapaPresentacion\\CapaPresentacion\\MenuAdmin.xaml.cs",
+              "ToolTip": "C:\\Users\\danie\\Source\\Repos\\PastasElvira\\CapaPresentacion\\CapaPresentacion\\MenuAdmin.xaml.cs",
+              "RelativeToolTip": "..\\CapaPresentacion\\CapaPresentacion\\MenuAdmin.xaml.cs",
+              "ViewState": "AgIAAFMAAAAAAAAAAAAAwHAAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-17T15:23:28.915Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
               "Title": "MenuPrincipal.xaml.cs",
               "DocumentMoniker": "C:\\Users\\danie\\Source\\Repos\\PastasElvira\\CapaPresentacion\\CapaPresentacion\\MenuPrincipal.xaml.cs",
               "RelativeDocumentMoniker": "..\\CapaPresentacion\\CapaPresentacion\\MenuPrincipal.xaml.cs",
               "ToolTip": "C:\\Users\\danie\\Source\\Repos\\PastasElvira\\CapaPresentacion\\CapaPresentacion\\MenuPrincipal.xaml.cs",
               "RelativeToolTip": "..\\CapaPresentacion\\CapaPresentacion\\MenuPrincipal.xaml.cs",
-              "ViewState": "AgIAAAUBAAAAAAAAAAAowBIBAAAMAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAJIAAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-09-16T20:15:12.46Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 6,
               "Title": "MenuPrincipal.xaml",
               "DocumentMoniker": "C:\\Users\\danie\\Source\\Repos\\PastasElvira\\CapaPresentacion\\CapaPresentacion\\MenuPrincipal.xaml",
               "RelativeDocumentMoniker": "..\\CapaPresentacion\\CapaPresentacion\\MenuPrincipal.xaml",
@@ -57,6 +249,482 @@
               "RelativeToolTip": "..\\CapaPresentacion\\CapaPresentacion\\MenuPrincipal.xaml",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
               "WhenOpened": "2025-09-16T20:13:40.648Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "MenuVendedor.xaml.cs",
+              "DocumentMoniker": "C:\\Users\\danie\\Source\\Repos\\PastasElvira\\CapaPresentacion\\CapaPresentacion\\MenuVendedor.xaml.cs",
+              "RelativeDocumentMoniker": "..\\CapaPresentacion\\CapaPresentacion\\MenuVendedor.xaml.cs",
+              "ToolTip": "C:\\Users\\danie\\Source\\Repos\\PastasElvira\\CapaPresentacion\\CapaPresentacion\\MenuVendedor.xaml.cs",
+              "RelativeToolTip": "..\\CapaPresentacion\\CapaPresentacion\\MenuVendedor.xaml.cs",
+              "ViewState": "AgIAAFwAAAAAAAAAAAAAAHUAAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-17T15:24:29.429Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "FormProduccion.xaml.cs",
+              "DocumentMoniker": "C:\\Users\\danie\\Source\\Repos\\PastasElvira\\CapaPresentacion\\CapaPresentacion\\FormProduccion.xaml.cs",
+              "RelativeDocumentMoniker": "..\\CapaPresentacion\\CapaPresentacion\\FormProduccion.xaml.cs",
+              "ToolTip": "C:\\Users\\danie\\Source\\Repos\\PastasElvira\\CapaPresentacion\\CapaPresentacion\\FormProduccion.xaml.cs",
+              "RelativeToolTip": "..\\CapaPresentacion\\CapaPresentacion\\FormProduccion.xaml.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-17T18:01:39.952Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "FormProducto.xaml",
+              "DocumentMoniker": "C:\\Users\\danie\\Source\\Repos\\PastasElvira\\CapaPresentacion\\CapaPresentacion\\FormProducto.xaml",
+              "RelativeDocumentMoniker": "..\\CapaPresentacion\\CapaPresentacion\\FormProducto.xaml",
+              "ToolTip": "C:\\Users\\danie\\Source\\Repos\\PastasElvira\\CapaPresentacion\\CapaPresentacion\\FormProducto.xaml",
+              "RelativeToolTip": "..\\CapaPresentacion\\CapaPresentacion\\FormProducto.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2025-09-17T17:03:07.938Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "DetalleProduccion.cs",
+              "DocumentMoniker": "C:\\Users\\danie\\Source\\Repos\\PastasElvira\\CapaEntidad\\CapaEntidad\\DetalleProduccion.cs",
+              "RelativeDocumentMoniker": "..\\CapaEntidad\\CapaEntidad\\DetalleProduccion.cs",
+              "ToolTip": "C:\\Users\\danie\\Source\\Repos\\PastasElvira\\CapaEntidad\\CapaEntidad\\DetalleProduccion.cs",
+              "RelativeToolTip": "..\\CapaEntidad\\CapaEntidad\\DetalleProduccion.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAWAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-16T22:44:14.958Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "FormProducto.xaml.cs",
+              "DocumentMoniker": "C:\\Users\\danie\\Source\\Repos\\PastasElvira\\CapaPresentacion\\CapaPresentacion\\FormProducto.xaml.cs",
+              "RelativeDocumentMoniker": "..\\CapaPresentacion\\CapaPresentacion\\FormProducto.xaml.cs",
+              "ToolTip": "C:\\Users\\danie\\Source\\Repos\\PastasElvira\\CapaPresentacion\\CapaPresentacion\\FormProducto.xaml.cs",
+              "RelativeToolTip": "..\\CapaPresentacion\\CapaPresentacion\\FormProducto.xaml.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACcAAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-17T18:10:01.596Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "FormProduccion.xaml",
+              "DocumentMoniker": "C:\\Users\\danie\\Source\\Repos\\PastasElvira\\CapaPresentacion\\CapaPresentacion\\FormProduccion.xaml",
+              "RelativeDocumentMoniker": "..\\CapaPresentacion\\CapaPresentacion\\FormProduccion.xaml",
+              "ToolTip": "C:\\Users\\danie\\Source\\Repos\\PastasElvira\\CapaPresentacion\\CapaPresentacion\\FormProduccion.xaml",
+              "RelativeToolTip": "..\\CapaPresentacion\\CapaPresentacion\\FormProduccion.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2025-09-17T17:01:55.165Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 13,
+              "Title": "FormMateria.xaml.cs",
+              "DocumentMoniker": "C:\\Users\\danie\\Source\\Repos\\PastasElvira\\CapaPresentacion\\CapaPresentacion\\FormMateria.xaml.cs",
+              "RelativeDocumentMoniker": "..\\CapaPresentacion\\CapaPresentacion\\FormMateria.xaml.cs",
+              "ToolTip": "C:\\Users\\danie\\Source\\Repos\\PastasElvira\\CapaPresentacion\\CapaPresentacion\\FormMateria.xaml.cs",
+              "RelativeToolTip": "..\\CapaPresentacion\\CapaPresentacion\\FormMateria.xaml.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAHwAAAAgAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-17T17:16:26.432Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 14,
+              "Title": "FormMateria.xaml",
+              "DocumentMoniker": "C:\\Users\\danie\\Source\\Repos\\PastasElvira\\CapaPresentacion\\CapaPresentacion\\FormMateria.xaml",
+              "RelativeDocumentMoniker": "..\\CapaPresentacion\\CapaPresentacion\\FormMateria.xaml",
+              "ToolTip": "C:\\Users\\danie\\Source\\Repos\\PastasElvira\\CapaPresentacion\\CapaPresentacion\\FormMateria.xaml",
+              "RelativeToolTip": "..\\CapaPresentacion\\CapaPresentacion\\FormMateria.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2025-09-17T16:59:50.627Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 15,
+              "Title": "FormGestionUsuarios.xaml",
+              "DocumentMoniker": "C:\\Users\\danie\\Source\\Repos\\PastasElvira\\CapaPresentacion\\CapaPresentacion\\FormGestionUsuarios.xaml",
+              "RelativeDocumentMoniker": "..\\CapaPresentacion\\CapaPresentacion\\FormGestionUsuarios.xaml",
+              "ToolTip": "C:\\Users\\danie\\Source\\Repos\\PastasElvira\\CapaPresentacion\\CapaPresentacion\\FormGestionUsuarios.xaml",
+              "RelativeToolTip": "..\\CapaPresentacion\\CapaPresentacion\\FormGestionUsuarios.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2025-09-16T22:20:30.087Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 16,
+              "Title": "FormHistorialVentas.xaml.cs",
+              "DocumentMoniker": "C:\\Users\\danie\\Source\\Repos\\PastasElvira\\CapaPresentacion\\CapaPresentacion\\FormHistorialVentas.xaml.cs",
+              "RelativeDocumentMoniker": "..\\CapaPresentacion\\CapaPresentacion\\FormHistorialVentas.xaml.cs",
+              "ToolTip": "C:\\Users\\danie\\Source\\Repos\\PastasElvira\\CapaPresentacion\\CapaPresentacion\\FormHistorialVentas.xaml.cs",
+              "RelativeToolTip": "..\\CapaPresentacion\\CapaPresentacion\\FormHistorialVentas.xaml.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAFIAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-17T03:34:08.43Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 17,
+              "Title": "FormHistorialVentas.xaml",
+              "DocumentMoniker": "C:\\Users\\danie\\Source\\Repos\\PastasElvira\\CapaPresentacion\\CapaPresentacion\\FormHistorialVentas.xaml",
+              "RelativeDocumentMoniker": "..\\CapaPresentacion\\CapaPresentacion\\FormHistorialVentas.xaml",
+              "ToolTip": "C:\\Users\\danie\\Source\\Repos\\PastasElvira\\CapaPresentacion\\CapaPresentacion\\FormHistorialVentas.xaml",
+              "RelativeToolTip": "..\\CapaPresentacion\\CapaPresentacion\\FormHistorialVentas.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2025-09-17T03:33:59.149Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 18,
+              "Title": "FormGestionUsuarios.xaml.cs",
+              "DocumentMoniker": "C:\\Users\\danie\\Source\\Repos\\PastasElvira\\CapaPresentacion\\CapaPresentacion\\FormGestionUsuarios.xaml.cs",
+              "RelativeDocumentMoniker": "..\\CapaPresentacion\\CapaPresentacion\\FormGestionUsuarios.xaml.cs",
+              "ToolTip": "C:\\Users\\danie\\Source\\Repos\\PastasElvira\\CapaPresentacion\\CapaPresentacion\\FormGestionUsuarios.xaml.cs",
+              "RelativeToolTip": "..\\CapaPresentacion\\CapaPresentacion\\FormGestionUsuarios.xaml.cs",
+              "ViewState": "AgIAAFsAAAAAAAAAAAAAwHgAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-16T22:21:36.565Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 19,
+              "Title": "FormVenta.xaml",
+              "DocumentMoniker": "C:\\Users\\danie\\Source\\Repos\\PastasElvira\\CapaPresentacion\\CapaPresentacion\\FormVenta.xaml",
+              "RelativeDocumentMoniker": "..\\CapaPresentacion\\CapaPresentacion\\FormVenta.xaml",
+              "ToolTip": "C:\\Users\\danie\\Source\\Repos\\PastasElvira\\CapaPresentacion\\CapaPresentacion\\FormVenta.xaml",
+              "RelativeToolTip": "..\\CapaPresentacion\\CapaPresentacion\\FormVenta.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2025-09-17T15:41:55.235Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 20,
+              "Title": "FormReporteVentas.xaml",
+              "DocumentMoniker": "C:\\Users\\danie\\Source\\Repos\\PastasElvira\\CapaPresentacion\\CapaPresentacion\\FormReporteVentas.xaml",
+              "RelativeDocumentMoniker": "..\\CapaPresentacion\\CapaPresentacion\\FormReporteVentas.xaml",
+              "ToolTip": "C:\\Users\\danie\\Source\\Repos\\PastasElvira\\CapaPresentacion\\CapaPresentacion\\FormReporteVentas.xaml",
+              "RelativeToolTip": "..\\CapaPresentacion\\CapaPresentacion\\FormReporteVentas.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2025-09-17T17:07:55.353Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 21,
+              "Title": "FormReportes.xaml",
+              "DocumentMoniker": "C:\\Users\\danie\\Source\\Repos\\PastasElvira\\CapaPresentacion\\CapaPresentacion\\FormReportes.xaml",
+              "RelativeDocumentMoniker": "..\\CapaPresentacion\\CapaPresentacion\\FormReportes.xaml",
+              "ToolTip": "C:\\Users\\danie\\Source\\Repos\\PastasElvira\\CapaPresentacion\\CapaPresentacion\\FormReportes.xaml",
+              "RelativeToolTip": "..\\CapaPresentacion\\CapaPresentacion\\FormReportes.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2025-09-17T15:42:40.266Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 23,
+              "Title": "FormReporteConsumo.xaml.cs",
+              "DocumentMoniker": "C:\\Users\\danie\\Source\\Repos\\PastasElvira\\CapaPresentacion\\CapaPresentacion\\FormReporteConsumo.xaml.cs",
+              "RelativeDocumentMoniker": "..\\CapaPresentacion\\CapaPresentacion\\FormReporteConsumo.xaml.cs",
+              "ToolTip": "C:\\Users\\danie\\Source\\Repos\\PastasElvira\\CapaPresentacion\\CapaPresentacion\\FormReporteConsumo.xaml.cs",
+              "RelativeToolTip": "..\\CapaPresentacion\\CapaPresentacion\\FormReporteConsumo.xaml.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-17T17:06:35.041Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 22,
+              "Title": "FormReporteConsumo.xaml",
+              "DocumentMoniker": "C:\\Users\\danie\\Source\\Repos\\PastasElvira\\CapaPresentacion\\CapaPresentacion\\FormReporteConsumo.xaml",
+              "RelativeDocumentMoniker": "..\\CapaPresentacion\\CapaPresentacion\\FormReporteConsumo.xaml",
+              "ToolTip": "C:\\Users\\danie\\Source\\Repos\\PastasElvira\\CapaPresentacion\\CapaPresentacion\\FormReporteConsumo.xaml",
+              "RelativeToolTip": "..\\CapaPresentacion\\CapaPresentacion\\FormReporteConsumo.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2025-09-17T16:51:28.952Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 24,
+              "Title": "FormReceta.xaml",
+              "DocumentMoniker": "C:\\Users\\danie\\Source\\Repos\\PastasElvira\\CapaPresentacion\\CapaPresentacion\\FormReceta.xaml",
+              "RelativeDocumentMoniker": "..\\CapaPresentacion\\CapaPresentacion\\FormReceta.xaml",
+              "ToolTip": "C:\\Users\\danie\\Source\\Repos\\PastasElvira\\CapaPresentacion\\CapaPresentacion\\FormReceta.xaml",
+              "RelativeToolTip": "..\\CapaPresentacion\\CapaPresentacion\\FormReceta.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2025-09-17T17:04:03.338Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 25,
+              "Title": "FormHistorialProduccion.xaml",
+              "DocumentMoniker": "C:\\Users\\danie\\Source\\Repos\\PastasElvira\\CapaPresentacion\\CapaPresentacion\\FormHistorialProduccion.xaml",
+              "RelativeDocumentMoniker": "..\\CapaPresentacion\\CapaPresentacion\\FormHistorialProduccion.xaml",
+              "ToolTip": "C:\\Users\\danie\\Source\\Repos\\PastasElvira\\CapaPresentacion\\CapaPresentacion\\FormHistorialProduccion.xaml",
+              "RelativeToolTip": "..\\CapaPresentacion\\CapaPresentacion\\FormHistorialProduccion.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2025-09-17T16:59:40.021Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 26,
+              "Title": "FormEditarUsuario.xaml",
+              "DocumentMoniker": "C:\\Users\\danie\\Source\\Repos\\PastasElvira\\CapaPresentacion\\CapaPresentacion\\FormEditarUsuario.xaml",
+              "RelativeDocumentMoniker": "..\\CapaPresentacion\\CapaPresentacion\\FormEditarUsuario.xaml",
+              "ToolTip": "C:\\Users\\danie\\Source\\Repos\\PastasElvira\\CapaPresentacion\\CapaPresentacion\\FormEditarUsuario.xaml",
+              "RelativeToolTip": "..\\CapaPresentacion\\CapaPresentacion\\FormEditarUsuario.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2025-09-16T22:55:46.53Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 27,
+              "Title": "FormDetalleProduccion.xaml",
+              "DocumentMoniker": "C:\\Users\\danie\\Source\\Repos\\PastasElvira\\CapaPresentacion\\CapaPresentacion\\FormDetalleProduccion.xaml",
+              "RelativeDocumentMoniker": "..\\CapaPresentacion\\CapaPresentacion\\FormDetalleProduccion.xaml",
+              "ToolTip": "C:\\Users\\danie\\Source\\Repos\\PastasElvira\\CapaPresentacion\\CapaPresentacion\\FormDetalleProduccion.xaml",
+              "RelativeToolTip": "..\\CapaPresentacion\\CapaPresentacion\\FormDetalleProduccion.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2025-09-17T16:58:27.753Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 28,
+              "Title": "FormCostoFijo.xaml",
+              "DocumentMoniker": "C:\\Users\\danie\\Source\\Repos\\PastasElvira\\CapaPresentacion\\CapaPresentacion\\FormCostoFijo.xaml",
+              "RelativeDocumentMoniker": "..\\CapaPresentacion\\CapaPresentacion\\FormCostoFijo.xaml",
+              "ToolTip": "C:\\Users\\danie\\Source\\Repos\\PastasElvira\\CapaPresentacion\\CapaPresentacion\\FormCostoFijo.xaml",
+              "RelativeToolTip": "..\\CapaPresentacion\\CapaPresentacion\\FormCostoFijo.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2025-09-17T16:51:47.343Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 29,
+              "Title": "FormConsumoPorVenta.xaml",
+              "DocumentMoniker": "C:\\Users\\danie\\Source\\Repos\\PastasElvira\\CapaPresentacion\\CapaPresentacion\\FormConsumoPorVenta.xaml",
+              "RelativeDocumentMoniker": "..\\CapaPresentacion\\CapaPresentacion\\FormConsumoPorVenta.xaml",
+              "ToolTip": "C:\\Users\\danie\\Source\\Repos\\PastasElvira\\CapaPresentacion\\CapaPresentacion\\FormConsumoPorVenta.xaml",
+              "RelativeToolTip": "..\\CapaPresentacion\\CapaPresentacion\\FormConsumoPorVenta.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2025-09-17T16:51:44.339Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 30,
+              "Title": "FormCliente.xaml",
+              "DocumentMoniker": "C:\\Users\\danie\\Source\\Repos\\PastasElvira\\CapaPresentacion\\CapaPresentacion\\FormCliente.xaml",
+              "RelativeDocumentMoniker": "..\\CapaPresentacion\\CapaPresentacion\\FormCliente.xaml",
+              "ToolTip": "C:\\Users\\danie\\Source\\Repos\\PastasElvira\\CapaPresentacion\\CapaPresentacion\\FormCliente.xaml",
+              "RelativeToolTip": "..\\CapaPresentacion\\CapaPresentacion\\FormCliente.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2025-09-17T16:57:24.411Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 31,
+              "Title": "FormAlertas.xaml",
+              "DocumentMoniker": "C:\\Users\\danie\\Source\\Repos\\PastasElvira\\CapaPresentacion\\CapaPresentacion\\FormAlertas.xaml",
+              "RelativeDocumentMoniker": "..\\CapaPresentacion\\CapaPresentacion\\FormAlertas.xaml",
+              "ToolTip": "C:\\Users\\danie\\Source\\Repos\\PastasElvira\\CapaPresentacion\\CapaPresentacion\\FormAlertas.xaml",
+              "RelativeToolTip": "..\\CapaPresentacion\\CapaPresentacion\\FormAlertas.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2025-09-17T16:57:18.365Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 32,
+              "Title": "logo.png",
+              "DocumentMoniker": "C:\\Users\\danie\\Source\\Repos\\PastasElvira\\PastasElvira\\PastasElvira\\Resources\\logo.png",
+              "RelativeDocumentMoniker": "PastasElvira\\Resources\\logo.png",
+              "ToolTip": "C:\\Users\\danie\\Source\\Repos\\PastasElvira\\PastasElvira\\PastasElvira\\Resources\\logo.png",
+              "RelativeToolTip": "PastasElvira\\Resources\\logo.png",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001533|",
+              "WhenOpened": "2025-09-17T16:23:17.175Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 33,
+              "Title": "FormVenta.xaml.cs",
+              "DocumentMoniker": "C:\\Users\\danie\\Source\\Repos\\PastasElvira\\CapaPresentacion\\CapaPresentacion\\FormVenta.xaml.cs",
+              "RelativeDocumentMoniker": "..\\CapaPresentacion\\CapaPresentacion\\FormVenta.xaml.cs",
+              "ToolTip": "C:\\Users\\danie\\Source\\Repos\\PastasElvira\\CapaPresentacion\\CapaPresentacion\\FormVenta.xaml.cs",
+              "RelativeToolTip": "..\\CapaPresentacion\\CapaPresentacion\\FormVenta.xaml.cs",
+              "ViewState": "AgIAABYAAAAAAAAAAADwvyMAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-17T15:41:59.786Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 34,
+              "Title": "CN_Reporte.cs",
+              "DocumentMoniker": "C:\\Users\\danie\\Source\\Repos\\PastasElvira\\CapaNegocio\\CapaNegocio\\CN_Reporte.cs",
+              "RelativeDocumentMoniker": "..\\CapaNegocio\\CapaNegocio\\CN_Reporte.cs",
+              "ToolTip": "C:\\Users\\danie\\Source\\Repos\\PastasElvira\\CapaNegocio\\CapaNegocio\\CN_Reporte.cs",
+              "RelativeToolTip": "..\\CapaNegocio\\CapaNegocio\\CN_Reporte.cs",
+              "ViewState": "AgIAAIkAAAAAAAAAAAAAwKYAAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-17T03:39:23.802Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 35,
+              "Title": "CD_Reporte.cs",
+              "DocumentMoniker": "C:\\Users\\danie\\Source\\Repos\\PastasElvira\\CapaDatos\\CapaDatos\\CD_Reporte.cs",
+              "RelativeDocumentMoniker": "..\\CapaDatos\\CapaDatos\\CD_Reporte.cs",
+              "ToolTip": "C:\\Users\\danie\\Source\\Repos\\PastasElvira\\CapaDatos\\CapaDatos\\CD_Reporte.cs",
+              "RelativeToolTip": "..\\CapaDatos\\CapaDatos\\CD_Reporte.cs",
+              "ViewState": "AgIAAIUAAAAAAAAAAAAAAIUAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-17T00:17:14.635Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 36,
+              "Title": "ReporteVenta.cs",
+              "DocumentMoniker": "C:\\Users\\danie\\Source\\Repos\\PastasElvira\\CapaEntidad\\CapaEntidad\\ReporteVenta.cs",
+              "RelativeDocumentMoniker": "..\\CapaEntidad\\CapaEntidad\\ReporteVenta.cs",
+              "ToolTip": "C:\\Users\\danie\\Source\\Repos\\PastasElvira\\CapaEntidad\\CapaEntidad\\ReporteVenta.cs",
+              "RelativeToolTip": "..\\CapaEntidad\\CapaEntidad\\ReporteVenta.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-17T03:38:44.683Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 37,
+              "Title": "CD_Usuario.cs",
+              "DocumentMoniker": "C:\\Users\\danie\\Source\\Repos\\PastasElvira\\CapaDatos\\CapaDatos\\CD_Usuario.cs",
+              "RelativeDocumentMoniker": "..\\CapaDatos\\CapaDatos\\CD_Usuario.cs",
+              "ToolTip": "C:\\Users\\danie\\Source\\Repos\\PastasElvira\\CapaDatos\\CapaDatos\\CD_Usuario.cs",
+              "RelativeToolTip": "..\\CapaDatos\\CapaDatos\\CD_Usuario.cs",
+              "ViewState": "AgIAAGwAAAAAAAAAAAAAAHAAAABXAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-16T20:47:09.338Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 38,
+              "Title": "CN_Usuario.cs",
+              "DocumentMoniker": "C:\\Users\\danie\\Source\\Repos\\PastasElvira\\CapaNegocio\\CapaNegocio\\CN_Usuario.cs",
+              "RelativeDocumentMoniker": "..\\CapaNegocio\\CapaNegocio\\CN_Usuario.cs",
+              "ToolTip": "C:\\Users\\danie\\Source\\Repos\\PastasElvira\\CapaNegocio\\CapaNegocio\\CN_Usuario.cs",
+              "RelativeToolTip": "..\\CapaNegocio\\CapaNegocio\\CN_Usuario.cs",
+              "ViewState": "AgIAABgAAAAAAAAAAAAAABMAAABBAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-16T20:48:48.402Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 39,
+              "Title": "CD_DetalleProduccion.cs",
+              "DocumentMoniker": "C:\\Users\\danie\\Source\\Repos\\PastasElvira\\CapaDatos\\CapaDatos\\CD_DetalleProduccion.cs",
+              "RelativeDocumentMoniker": "..\\CapaDatos\\CapaDatos\\CD_DetalleProduccion.cs",
+              "ToolTip": "C:\\Users\\danie\\Source\\Repos\\PastasElvira\\CapaDatos\\CapaDatos\\CD_DetalleProduccion.cs",
+              "RelativeToolTip": "..\\CapaDatos\\CapaDatos\\CD_DetalleProduccion.cs",
+              "ViewState": "AgIAAB4AAAAAAAAAAAASwCoAAAAzAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-17T01:53:33.637Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 40,
+              "Title": "FormEditarUsuario.xaml.cs",
+              "DocumentMoniker": "C:\\Users\\danie\\Source\\Repos\\PastasElvira\\CapaPresentacion\\CapaPresentacion\\FormEditarUsuario.xaml.cs",
+              "RelativeDocumentMoniker": "..\\CapaPresentacion\\CapaPresentacion\\FormEditarUsuario.xaml.cs",
+              "ToolTip": "C:\\Users\\danie\\Source\\Repos\\PastasElvira\\CapaPresentacion\\CapaPresentacion\\FormEditarUsuario.xaml.cs",
+              "RelativeToolTip": "..\\CapaPresentacion\\CapaPresentacion\\FormEditarUsuario.xaml.cs",
+              "ViewState": "AgIAAIcAAAAAAAAAAAAAAIIAAAA0AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-17T01:48:54.178Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 41,
+              "Title": "CD_Venta.cs",
+              "DocumentMoniker": "C:\\Users\\danie\\Source\\Repos\\PastasElvira\\CapaDatos\\CapaDatos\\CD_Venta.cs",
+              "RelativeDocumentMoniker": "..\\CapaDatos\\CapaDatos\\CD_Venta.cs",
+              "ToolTip": "C:\\Users\\danie\\Source\\Repos\\PastasElvira\\CapaDatos\\CapaDatos\\CD_Venta.cs",
+              "RelativeToolTip": "..\\CapaDatos\\CapaDatos\\CD_Venta.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAAjAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-17T00:17:55.783Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 43,
+              "Title": "CD_Produccion.cs",
+              "DocumentMoniker": "C:\\Users\\danie\\Source\\Repos\\PastasElvira\\CapaDatos\\CapaDatos\\CD_Produccion.cs",
+              "RelativeDocumentMoniker": "..\\CapaDatos\\CapaDatos\\CD_Produccion.cs",
+              "ToolTip": "C:\\Users\\danie\\Source\\Repos\\PastasElvira\\CapaDatos\\CapaDatos\\CD_Produccion.cs",
+              "RelativeToolTip": "..\\CapaDatos\\CapaDatos\\CD_Produccion.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-17T00:17:10.784Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 42,
+              "Title": "CD_Producto.cs",
+              "DocumentMoniker": "C:\\Users\\danie\\Source\\Repos\\PastasElvira\\CapaDatos\\CapaDatos\\CD_Producto.cs",
+              "RelativeDocumentMoniker": "..\\CapaDatos\\CapaDatos\\CD_Producto.cs",
+              "ToolTip": "C:\\Users\\danie\\Source\\Repos\\PastasElvira\\CapaDatos\\CapaDatos\\CD_Producto.cs",
+              "RelativeToolTip": "..\\CapaDatos\\CapaDatos\\CD_Producto.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-17T00:17:12.833Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 44,
+              "Title": "CD_CostoFijo.cs",
+              "DocumentMoniker": "C:\\Users\\danie\\Source\\Repos\\PastasElvira\\CapaDatos\\CapaDatos\\CD_CostoFijo.cs",
+              "RelativeDocumentMoniker": "..\\CapaDatos\\CapaDatos\\CD_CostoFijo.cs",
+              "ToolTip": "C:\\Users\\danie\\Source\\Repos\\PastasElvira\\CapaDatos\\CapaDatos\\CD_CostoFijo.cs",
+              "RelativeToolTip": "..\\CapaDatos\\CapaDatos\\CD_CostoFijo.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-17T00:16:51.741Z",
               "EditorCaption": ""
             }
           ]

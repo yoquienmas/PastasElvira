@@ -20,6 +20,25 @@ namespace CapaPresentacion
             ListarProductos();
         }
 
+        // MÉTODO QUE FALTA - AGREGAR ESTO
+        private void btnLimpiar_Click(object sender, RoutedEventArgs e)
+        {
+            LimpiarCampos();
+        }
+
+        private void LimpiarCampos()
+        {
+            txtNombre.Text = "";
+            txtTipo.Text = "";
+            txtCostoProduccion.Text = "";
+            txtMargenGanancia.Text = "";
+            txtPrecio.Text = "";
+            txtStock.Text = "";
+            txtStockMinimo.Text = "";
+            chkVisible.IsChecked = true;
+            dgvProductos.SelectedItem = null;
+        }
+
         private void ListarProductos()
         {
             dgvProductos.ItemsSource = cnProducto.Listar();
@@ -52,7 +71,11 @@ namespace CapaPresentacion
             string mensaje;
             int id = cnProducto.Registrar(p, out mensaje);
             MessageBox.Show(mensaje);
-            if (id != 0) ListarProductos();
+            if (id != 0)
+            {
+                ListarProductos();
+                LimpiarCampos(); // Limpiar después de agregar
+            }
         }
 
         private void btnEditar_Click(object sender, RoutedEventArgs e)
@@ -81,7 +104,11 @@ namespace CapaPresentacion
                 string mensaje;
                 bool ok = cnProducto.Editar(seleccionado, out mensaje);
                 MessageBox.Show(mensaje);
-                if (ok) ListarProductos();
+                if (ok)
+                {
+                    ListarProductos();
+                    LimpiarCampos(); // Limpiar después de editar
+                }
             }
         }
 
@@ -92,7 +119,11 @@ namespace CapaPresentacion
                 string mensaje;
                 bool ok = cnProducto.Eliminar(seleccionado.IdProducto, out mensaje);
                 MessageBox.Show(mensaje);
-                if (ok) ListarProductos();
+                if (ok)
+                {
+                    ListarProductos();
+                    LimpiarCampos(); // Limpiar después de eliminar
+                }
             }
         }
 

@@ -7,10 +7,13 @@ namespace CapaEntidad
         public int IdVenta { get; set; }
         public DateTime Fecha { get; set; }
         public string Cliente { get; set; }
-        public string DNI { get; set; }
         public string Usuario { get; set; }
         public decimal Total { get; set; }
+        public int CantidadProductos { get; set; }
+        public int IdUsuario { get; set; }
+
+        // Agrega las propiedades faltantes:
+        public string DNI { get; set; }
         public string Productos { get; set; }
-        public int CantidadProductos { get; set; } // Agregar esta propiedad
     }
 }
