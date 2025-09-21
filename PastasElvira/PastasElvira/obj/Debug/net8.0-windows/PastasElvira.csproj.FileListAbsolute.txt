@@ -1,0 +1,13 @@
+C:\Users\danie\Source\Repos\PastasElvira\PastasElvira\PastasElvira\bin\Debug\net8.0-windows\PastasElvira.deps.json
+C:\Users\danie\Source\Repos\PastasElvira\PastasElvira\PastasElvira\bin\Debug\net8.0-windows\PastasElvira.dll
+C:\Users\danie\Source\Repos\PastasElvira\PastasElvira\PastasElvira\bin\Debug\net8.0-windows\PastasElvira.pdb
+C:\Users\danie\Source\Repos\PastasElvira\PastasElvira\PastasElvira\obj\Debug\net8.0-windows\PastasElvira.g.resources
+C:\Users\danie\Source\Repos\PastasElvira\PastasElvira\PastasElvira\obj\Debug\net8.0-windows\PastasElvira.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\danie\Source\Repos\PastasElvira\PastasElvira\PastasElvira\obj\Debug\net8.0-windows\PastasElvira.AssemblyInfoInputs.cache
+C:\Users\danie\Source\Repos\PastasElvira\PastasElvira\PastasElvira\obj\Debug\net8.0-windows\PastasElvira.AssemblyInfo.cs
+C:\Users\danie\Source\Repos\PastasElvira\PastasElvira\PastasElvira\obj\Debug\net8.0-windows\PastasElvira.csproj.CoreCompileInputs.cache
+C:\Users\danie\Source\Repos\PastasElvira\PastasElvira\PastasElvira\obj\Debug\net8.0-windows\PastasElvira.sourcelink.json
+C:\Users\danie\Source\Repos\PastasElvira\PastasElvira\PastasElvira\obj\Debug\net8.0-windows\PastasElvira.dll
+C:\Users\danie\Source\Repos\PastasElvira\PastasElvira\PastasElvira\obj\Debug\net8.0-windows\refint\PastasElvira.dll
+C:\Users\danie\Source\Repos\PastasElvira\PastasElvira\PastasElvira\obj\Debug\net8.0-windows\PastasElvira.pdb
+C:\Users\danie\Source\Repos\PastasElvira\PastasElvira\PastasElvira\obj\Debug\net8.0-windows\ref\PastasElvira.dll

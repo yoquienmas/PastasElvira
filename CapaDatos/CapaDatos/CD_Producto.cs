@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq; // Agrega esta línea para usar LINQ
 using CapaEntidad;
 using Microsoft.Data.SqlClient;
 
@@ -10,221 +11,340 @@ namespace CapaDatos
     {
         public List<Producto> Listar()
         {
-            List<Producto> lista = new List<Producto>();
+            List<Producto> productos = new List<Producto>();
 
-            try
+            using (SqlConnection oconexion = new SqlConnection(Conexion.cadena))
             {
-                using (SqlConnection conexion = new SqlConnection(Conexion.cadena))
+                try
                 {
-                    string query = "SELECT IdProducto, Nombre, Tipo, CostoProduccion, MargenGanancia, PrecioVenta, StockActual, StockMinimo, Visible FROM Producto";
+                    oconexion.Open();
+                    SqlCommand comando = new SqlCommand("SELECT IdProducto, Nombre, PrecioVenta, StockActual FROM Producto", oconexion);
 
-                    SqlCommand cmd = new SqlCommand(query, conexion);
-                    cmd.CommandType = CommandType.Text;
-
-                    conexion.Open();
-                    using (SqlDataReader dr = cmd.ExecuteReader())
+                    using (SqlDataReader reader = comando.ExecuteReader())
                     {
-                        while (dr.Read())
+                        while (reader.Read())
                         {
-                            lista.Add(new Producto()
+                            productos.Add(new Producto
                             {
-                                IdProducto = Convert.ToInt32(dr["IdProducto"]),
-                                Nombre = dr["Nombre"].ToString(),
-                                Tipo = dr["Tipo"].ToString(),
-                                CostoProduccion = Convert.ToDecimal(dr["CostoProduccion"]),
-                                MargenGanancia = Convert.ToDecimal(dr["MargenGanancia"]),
-                                PrecioVenta = Convert.ToDecimal(dr["PrecioVenta"]),
-                                StockActual = Convert.ToInt32(dr["StockActual"]),
-                                StockMinimo = Convert.ToInt32(dr["StockMinimo"]),
-                                Visible = Convert.ToBoolean(dr["Visible"])
+                                IdProducto = (int)reader["IdProducto"],
+                                Nombre = reader["Nombre"].ToString(),
+                                PrecioVenta = SafeConvertToDecimal(reader["PrecioVenta"]),
+                                StockActual = (int)reader["StockActual"]
                             });
                         }
                     }
                 }
-            }
-            catch (Exception)
-            {
-                lista = new List<Producto>();
+                catch (Exception ex)
+                {
+                    throw new Exception("Error al listar productos: " + ex.Message);
+                }
             }
 
-            return lista;
+            return productos;
         }
 
-        public int Registrar(Producto obj, out string mensaje)
+        // Agrega este método helper en la clase CD_Producto
+        private decimal SafeConvertToDecimal(object value)
         {
-            int idProductoGenerado = 0;
-            mensaje = string.Empty;
+            if (value == null || value == DBNull.Value)
+                return 0;
 
             try
             {
-                using (SqlConnection conexion = new SqlConnection(Conexion.cadena))
-                {
-                    string query = @"INSERT INTO Producto (Nombre, Tipo, CostoProduccion, MargenGanancia, PrecioVenta, StockActual, StockMinimo, Visible)
-                                     VALUES (@Nombre, @Tipo, @CostoProduccion, @MargenGanancia, @PrecioVenta, @StockActual, @StockMinimo, @Visible);
-                                     SELECT SCOPE_IDENTITY();";
-
-                    SqlCommand cmd = new SqlCommand(query, conexion);
-                    cmd.Parameters.AddWithValue("@Nombre", obj.Nombre);
-                    cmd.Parameters.AddWithValue("@Tipo", obj.Tipo);
-                    cmd.Parameters.AddWithValue("@CostoProduccion", obj.CostoProduccion);
-                    cmd.Parameters.AddWithValue("@MargenGanancia", obj.MargenGanancia);
-                    // ✅ CONVERSIÓN EXPLÍCITA de double a decimal
-                    cmd.Parameters.AddWithValue("@PrecioVenta", Convert.ToDecimal(obj.PrecioVenta));
-                    cmd.Parameters.AddWithValue("@StockActual", obj.StockActual);
-                    cmd.Parameters.AddWithValue("@StockMinimo", obj.StockMinimo);
-                    cmd.Parameters.AddWithValue("@Visible", obj.Visible);
-
-                    conexion.Open();
-                    idProductoGenerado = Convert.ToInt32(cmd.ExecuteScalar());
-                }
+                return Convert.ToDecimal(value);
             }
-            catch (Exception ex)
+            catch
             {
-                idProductoGenerado = 0;
-                mensaje = "Error al registrar producto: " + ex.Message;
+                return 0;
             }
-
-            return idProductoGenerado;
         }
 
-        public bool Editar(Producto obj, out string mensaje)
+        public int Registrar(Producto producto, out string mensaje)
         {
-            bool resultado = false;
             mensaje = string.Empty;
-
             try
             {
                 using (SqlConnection oconexion = new SqlConnection(Conexion.cadena))
                 {
-                    string query = @"UPDATE Producto 
-                                     SET Nombre = @Nombre, 
-                                         Tipo = @Tipo,
-                                         CostoProduccion = @CostoProduccion,
-                                         MargenGanancia = @MargenGanancia,
-                                         PrecioVenta = @PrecioVenta,
-                                         StockActual = @StockActual,
-                                         StockMinimo = @StockMinimo,
-                                         Visible = @Visible
-                                     WHERE IdProducto = @IdProducto";
-
-                    SqlCommand cmd = new SqlCommand(query, oconexion);
-                    cmd.Parameters.AddWithValue("@IdProducto", obj.IdProducto);
-                    cmd.Parameters.AddWithValue("@Nombre", obj.Nombre);
-                    cmd.Parameters.AddWithValue("@Tipo", obj.Tipo);
-                    cmd.Parameters.AddWithValue("@CostoProduccion", obj.CostoProduccion);
-                    cmd.Parameters.AddWithValue("@MargenGanancia", obj.MargenGanancia);
-                    // ✅ CONVERSIÓN EXPLÍCITA de double a decimal
-                    cmd.Parameters.AddWithValue("@PrecioVenta", Convert.ToDecimal(obj.PrecioVenta));
-                    cmd.Parameters.AddWithValue("@StockActual", obj.StockActual);
-                    cmd.Parameters.AddWithValue("@StockMinimo", obj.StockMinimo);
-                    cmd.Parameters.AddWithValue("@Visible", obj.Visible);
-
                     oconexion.Open();
-                    resultado = cmd.ExecuteNonQuery() > 0;
-                }
-            }
-            catch (Exception ex)
-            {
-                resultado = false;
-                mensaje = "Error al editar producto: " + ex.Message;
-            }
-
-            return resultado;
-        }
-
-        public bool Eliminar(int idProducto, out string mensaje)
-        {
-            bool resultado = false;
-            mensaje = string.Empty;
-
-            try
-            {
-                using (SqlConnection oconexion = new SqlConnection(Conexion.cadena))
-                {
-                    string query = "DELETE FROM Producto WHERE IdProducto = @IdProducto";
-
-                    SqlCommand cmd = new SqlCommand(query, oconexion);
-                    cmd.Parameters.AddWithValue("@IdProducto", idProducto);
-
-                    oconexion.Open();
-                    resultado = cmd.ExecuteNonQuery() > 0;
-                }
-            }
-            catch (Exception ex)
-            {
-                resultado = false;
-                mensaje = "Error al eliminar producto: " + ex.Message;
-            }
-
-            return resultado;
-        }
-
-        public Producto ObtenerProducto(int idProducto)
-        {
-            Producto producto = new Producto();
-
-            using (SqlConnection oconexion = new SqlConnection(Conexion.cadena))
-            {
-                SqlCommand cmd = new SqlCommand("SELECT * FROM Producto WHERE IdProducto = @id", oconexion);
-                cmd.Parameters.AddWithValue("@id", idProducto);
-
-                oconexion.Open();
-                using (SqlDataReader dr = cmd.ExecuteReader())
-                {
-                    if (dr.Read())
+                    using (var command = new SqlCommand())
                     {
-                        producto = new Producto()
-                        {
-                            IdProducto = Convert.ToInt32(dr["IdProducto"]),
-                            Nombre = dr["Nombre"].ToString(),
-                            Tipo = dr["Tipo"].ToString(),
-                            CostoProduccion = Convert.ToDecimal(dr["CostoProduccion"]),
-                            MargenGanancia = Convert.ToDecimal(dr["MargenGanancia"]),
-                            PrecioVenta = Convert.ToDecimal(dr["PrecioVenta"]),
-                            StockActual = Convert.ToInt32(dr["StockActual"]),
-                            StockMinimo = Convert.ToInt32(dr["StockMinimo"]),
-                            Visible = Convert.ToBoolean(dr["Visible"])
-                        };
+                        command.Connection = oconexion;
+                        command.CommandText = @"
+                    INSERT INTO Producto (Nombre, Tipo, PrecioVenta, CostoProduccion, 
+                                        MargenGanancia, StockActual, StockMinimo, Visible)
+                    VALUES (@Nombre, @Tipo, @PrecioVenta, @CostoProduccion, 
+                            @MargenGanancia, @StockActual, @StockMinimo, @Visible);
+                    SELECT SCOPE_IDENTITY();";
+
+                        command.Parameters.AddWithValue("@Nombre", producto.Nombre);
+                        command.Parameters.AddWithValue("@Tipo", producto.Tipo);
+                        command.Parameters.AddWithValue("@PrecioVenta", producto.PrecioVenta);
+                        command.Parameters.AddWithValue("@CostoProduccion", producto.CostoProduccion);
+                        command.Parameters.AddWithValue("@MargenGanancia", producto.MargenGanancia);
+                        command.Parameters.AddWithValue("@StockActual", producto.StockActual);
+                        command.Parameters.AddWithValue("@StockMinimo", producto.StockMinimo);
+                        command.Parameters.AddWithValue("@Visible", producto.Visible);
+
+                        // Ejecutar y obtener el ID del nuevo producto
+                        int idGenerado = Convert.ToInt32(command.ExecuteScalar());
+
+                        mensaje = "Producto registrado correctamente";
+                        return idGenerado;
                     }
-                }
-            }
-            return producto;
-        }
-
-        public bool CalcularCostoProducto(int idProducto, out decimal costoTotal, out decimal precioSugerido, out string mensaje)
-        {
-            costoTotal = 0;
-            precioSugerido = 0;
-            mensaje = string.Empty;
-
-            try
-            {
-                using (SqlConnection conexion = new SqlConnection(Conexion.cadena))
-                {
-                    SqlCommand cmd = new SqlCommand("CalcularCostoProducto", conexion);
-                    cmd.CommandType = CommandType.StoredProcedure;
-
-                    cmd.Parameters.AddWithValue("@IdProducto", idProducto);
-
-                    // Parámetros de salida
-                    cmd.Parameters.Add("@CostoTotal", SqlDbType.Decimal).Direction = ParameterDirection.Output;
-                    cmd.Parameters.Add("@PrecioSugerido", SqlDbType.Decimal).Direction = ParameterDirection.Output;
-
-                    conexion.Open();
-                    cmd.ExecuteNonQuery();
-
-                    costoTotal = Convert.ToDecimal(cmd.Parameters["@CostoTotal"].Value);
-                    precioSugerido = Convert.ToDecimal(cmd.Parameters["@PrecioSugerido"].Value);
-                    mensaje = "Costo calculado correctamente";
-
-                    return true;
                 }
             }
             catch (Exception ex)
             {
                 mensaje = ex.Message;
-                return false;
+                return 0; // Devuelve 0 en caso de error
+            }
+        }
+        public bool Editar(Producto producto, out string mensaje)
+            {
+                mensaje = string.Empty;
+                try
+                {
+                    using (SqlConnection oconexion = new SqlConnection(Conexion.cadena))
+                    {
+                        oconexion.Open();
+                        using (var command = new SqlCommand())
+                        {
+                            command.Connection = oconexion;
+                            command.CommandText = @"
+                            UPDATE Producto 
+                            SET Nombre = @Nombre, Tipo = @Tipo, PrecioVenta = @PrecioVenta, 
+                                CostoProduccion = @CostoProduccion, MargenGanancia = @MargenGanancia,
+                                StockActual = @StockActual, StockMinimo = @StockMinimo, Visible = @Visible
+                            WHERE IdProducto = @IdProducto";
+                            command.Parameters.AddWithValue("@IdProducto", producto.IdProducto);
+                            command.Parameters.AddWithValue("@Nombre", producto.Nombre);
+                            command.Parameters.AddWithValue("@Tipo", producto.Tipo);
+                            command.Parameters.AddWithValue("@PrecioVenta", producto.PrecioVenta);
+                            command.Parameters.AddWithValue("@CostoProduccion", producto.CostoProduccion);
+                            command.Parameters.AddWithValue("@MargenGanancia", producto.MargenGanancia);
+                            command.Parameters.AddWithValue("@StockActual", producto.StockActual);
+                            command.Parameters.AddWithValue("@StockMinimo", producto.StockMinimo);
+                            command.Parameters.AddWithValue("@Visible", producto.Visible);
+
+                            int result = command.ExecuteNonQuery();
+                            mensaje = "Producto actualizado correctamente";
+                            return result > 0;
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    mensaje = ex.Message;
+                    return false;
+                }
+            }
+
+            public bool Eliminar(int idProducto, out string mensaje)
+            {
+                mensaje = string.Empty;
+                try
+                {
+                    using (SqlConnection oconexion = new SqlConnection(Conexion.cadena))
+                    {
+                        oconexion.Open();
+                        using (var command = new SqlCommand())
+                        {
+                            command.Connection = oconexion;
+                            command.CommandText = "DELETE FROM Producto WHERE IdProducto = @IdProducto";
+                            command.Parameters.AddWithValue("@IdProducto", idProducto);
+
+                            int result = command.ExecuteNonQuery();
+                            mensaje = "Producto eliminado correctamente";
+                            return result > 0;
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    mensaje = ex.Message;
+                    return false;
+                }
+            }
+
+            // MÉTODOS CORREGIDOS (SQL y nombre)
+            public List<string> ListarTiposProducto()
+            {
+                List<string> listaTipos = new List<string>();
+
+                try
+                {
+                    using (SqlConnection conexion = new SqlConnection(Conexion.cadena))
+                    {
+                        // Consulta para obtener los tipos únicos de la tabla Producto, filtrando por la columna 'Visible'
+                        string query = "SELECT DISTINCT Tipo FROM Producto WHERE Visible = 1";
+
+                        SqlCommand cmd = new SqlCommand(query, conexion);
+                        cmd.CommandType = CommandType.Text;
+
+                        conexion.Open();
+                        using (SqlDataReader dr = cmd.ExecuteReader())
+                        {
+                            while (dr.Read())
+                            {
+                                listaTipos.Add(dr["Tipo"].ToString());
+                            }
+                        }
+                    }
+                }
+                catch (Exception)
+                {
+                    listaTipos = new List<string>();
+                }
+
+                return listaTipos;
+            }
+
+            // MÉTODOS NUEVOS (ya implementados anteriormente)
+            public List<Producto> ObtenerProductosParaVerificar()
+            {
+                List<Producto> productos = new List<Producto>();
+
+                using (SqlConnection oconexion = new SqlConnection(Conexion.cadena))
+                {
+                    oconexion.Open();
+                    using (var command = new SqlCommand())
+                    {
+                        command.Connection = oconexion;
+                        command.CommandText = "SELECT * FROM Producto WHERE Visible = 1";
+                        command.CommandType = CommandType.Text;
+
+                        using (var reader = command.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                productos.Add(new Producto
+                                {
+                                    IdProducto = (int)reader["IdProducto"],
+                                    Nombre = reader["Nombre"].ToString(),
+                                    Tipo = reader["Tipo"].ToString(),
+                                    StockActual = (int)reader["StockActual"],
+                                    StockMinimo = (int)reader["StockMinimo"]
+                                });
+                            }
+                        }
+                    }
+                }
+                return productos;
+            }
+
+            public bool ActualizarCostoProducto(int idProducto, decimal nuevoCosto)
+            {
+                using (SqlConnection oconexion = new SqlConnection(Conexion.cadena))
+                {
+                    oconexion.Open();
+                    using (var command = new SqlCommand())
+                    {
+                        command.Connection = oconexion;
+                        command.CommandText = "UPDATE Producto SET CostoProduccion = @Costo WHERE IdProducto = @IdProducto";
+                        command.Parameters.AddWithValue("@Costo", nuevoCosto);
+                        command.Parameters.AddWithValue("@IdProducto", idProducto);
+                        command.CommandType = CommandType.Text;
+
+                        return command.ExecuteNonQuery() > 0;
+                    }
+                }
+            }
+
+            public bool ActualizarStockProducto(int idProducto, int cantidad)
+            {
+                using (SqlConnection oconexion = new SqlConnection(Conexion.cadena))
+                {
+                    oconexion.Open();
+                    using (var command = new SqlCommand())
+                    {
+                        command.Connection = oconexion;
+                        command.CommandText = "UPDATE Producto SET StockActual = StockActual + @Cantidad WHERE IdProducto = @IdProducto";
+                        command.Parameters.AddWithValue("@Cantidad", cantidad);
+                        command.Parameters.AddWithValue("@IdProducto", idProducto);
+                        command.CommandType = CommandType.Text;
+
+                        return command.ExecuteNonQuery() > 0;
+                    }
+                }
+            }
+
+            public decimal CalcularCostoMateriasPrimas(int idProducto)
+            {
+                decimal costoTotal = 0;
+
+                using (SqlConnection oconexion = new SqlConnection(Conexion.cadena))
+                {
+                    oconexion.Open();
+                    using (var command = new SqlCommand())
+                    {
+                        command.Connection = oconexion;
+                        command.CommandText = @"
+                        SELECT SUM(mp.PrecioUnitario * dr.CantidadNecesaria) as CostoTotal
+                        FROM DetalleReceta dr
+                        INNER JOIN MateriaPrima mp ON dr.IdMateria = mp.IdMateria
+                        WHERE dr.IdProducto = @IdProducto";
+                        command.Parameters.AddWithValue("@IdProducto", idProducto);
+
+                        var result = command.ExecuteScalar();
+                        if (result != null && result != DBNull.Value)
+                        {
+                            costoTotal = Convert.ToDecimal(result);
+                        }
+                    }
+                }
+                return costoTotal;
+            }
+
+            public decimal CalcularCostosFijosUnitarios()
+            {
+                using (SqlConnection oconexion = new SqlConnection(Conexion.cadena))
+                {
+                    oconexion.Open();
+                    using (var command = new SqlCommand())
+                    {
+                        command.Connection = oconexion;
+                        command.CommandText = @"
+                        DECLARE @TotalCostosFijos DECIMAL(10,2) = (SELECT ISNULL(SUM(Monto), 0) FROM CostosFijos WHERE Activo = 1)
+                        DECLARE @TotalProductos INT = (SELECT COUNT(*) FROM Producto WHERE Visible = 1)
+                        SELECT CASE WHEN @TotalProductos > 0 THEN @TotalCostosFijos / @TotalProductos ELSE 0 END";
+                        return Convert.ToDecimal(command.ExecuteScalar());
+                    }
+                }
+            }
+
+            public Producto ObtenerProductoPorId(int idProducto)
+            {
+                using (SqlConnection oconexion = new SqlConnection(Conexion.cadena))
+                {
+                    oconexion.Open();
+                    using (var command = new SqlCommand())
+                    {
+                        command.Connection = oconexion;
+                        command.CommandText = "SELECT * FROM Producto WHERE IdProducto = @IdProducto";
+                        command.Parameters.AddWithValue("@IdProducto", idProducto);
+
+                        using (var reader = command.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                return new Producto
+                                {
+                                    IdProducto = (int)reader["IdProducto"],
+                                    Nombre = reader["Nombre"].ToString(),
+                                    Tipo = reader["Tipo"].ToString(),
+                                    PrecioVenta = Convert.ToDecimal(reader["PrecioVenta"]),
+                                    CostoProduccion = Convert.ToDecimal(reader["CostoProduccion"]),
+                                    MargenGanancia = Convert.ToDecimal(reader["MargenGanancia"]),
+                                    StockActual = (int)reader["StockActual"],
+                                    StockMinimo = (int)reader["StockMinimo"],
+                                    Visible = (bool)reader["Visible"]
+                                };
+                            }
+                        }
+                    }
+                }
+                return null;
             }
         }
     }
-}

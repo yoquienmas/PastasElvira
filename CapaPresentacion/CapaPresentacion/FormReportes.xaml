@@ -41,27 +41,37 @@
                 </Grid.ColumnDefinitions>
 
                 <GroupBox Header="FILTROS" Grid.Column="0" FontWeight="Bold" Foreground="#a36b00">
-                    <StackPanel x:Name="panelFiltros" Orientation="Horizontal" Margin="10" Visibility="Collapsed">
-                        <TextBlock Text="Fecha Inicio:" VerticalAlignment="Center" Margin="0,0,5,0" Foreground="#5c3a00"/>
-                        <DatePicker x:Name="dtpFechaInicio" Width="120" Margin="0,0,15,0"/>
-
-                        <TextBlock Text="Fecha Fin:" VerticalAlignment="Center" Margin="0,0,5,0" Foreground="#5c3a00"/>
-                        <DatePicker x:Name="dtpFechaFin" Width="120" Margin="0,0,15,0"/>
-
-                        <ComboBox x:Name="cboClientes" Width="200" DisplayMemberPath="Nombre" SelectedValuePath="IdCliente"
-                                  Visibility="Collapsed" Margin="0,0,15,0"/>
-
-                        <StackPanel x:Name="panelFiltrosCliente" Orientation="Horizontal" Visibility="Collapsed" Margin="0,0,15,0">
-                            <TextBlock Text="DNI:" VerticalAlignment="Center" Margin="0,0,5,0" Foreground="#5c3a00"/>
-                            <TextBox x:Name="txtFiltroDNI" Width="120" Margin="0,0,15,0" KeyDown="TxtFiltroDNI_KeyDown" ToolTip="Buscar por DNI del cliente"/>
-                            <TextBlock Text="Producto:" VerticalAlignment="Center" Margin="0,0,5,0" Foreground="#5c3a00"/>
-                            <TextBox x:Name="txtFiltroProducto" Width="200" Margin="0,0,15,0" KeyDown="TxtFiltroProducto_KeyDown" ToolTip="Buscar por nombre de producto"/>
+                    <StackPanel x:Name="panelFiltros" Orientation="Vertical" Margin="10">
+                        <!-- Filtros generales (Fecha) -->
+                        <StackPanel x:Name="panelFiltrosFecha" Orientation="Horizontal" Margin="0,0,0,10" Visibility="Visible">
+                            <TextBlock Text="Fecha Inicio:" VerticalAlignment="Center" Margin="0,0,5,0" Foreground="#5c3a00"/>
+                            <DatePicker x:Name="dtpFechaInicio" Width="120" Margin="0,0,15,0"/>
+                            <TextBlock Text="Fecha Fin:" VerticalAlignment="Center" Margin="0,0,5,0" Foreground="#5c3a00"/>
+                            <DatePicker x:Name="dtpFechaFin" Width="120" Margin="0,0,15,0"/>
                         </StackPanel>
 
-                        <Button x:Name="btnGenerarReporte" Content="Generar Reporte" Width="120" Height="35"
-                                Background="#2196F3" Foreground="White" FontWeight="Bold" Click="btnGenerarReporte_Click"/>
-                        <Button x:Name="btnLimpiarFiltros" Content="Limpiar" Width="80" Height="35" Margin="10,0,0,0"
-                                Background="#FF9800" Foreground="White" Click="BtnLimpiarFiltros_Click"/>
+                        <!-- Filtros específicos para Ventas por Cliente -->
+                        <StackPanel x:Name="panelFiltrosCliente" Orientation="Horizontal" Margin="0,0,0,10" Visibility="Collapsed">
+                            <TextBlock Text="Cliente:" VerticalAlignment="Center" Margin="0,0,5,0" Foreground="#5c3a00"/>
+                            <ComboBox x:Name="cboClientes" Width="200" DisplayMemberPath="Nombre" SelectedValuePath="IdCliente"
+                                      Margin="0,0,15,0"/>
+
+                            <TextBlock Text="DNI:" VerticalAlignment="Center" Margin="0,0,5,0" Foreground="#5c3a00"/>
+                            <TextBox x:Name="txtFiltroDNI" Width="120" Margin="0,0,15,0" 
+                                     KeyDown="TxtFiltroDNI_KeyDown" ToolTip="Buscar por DNI del cliente"/>
+
+                            <TextBlock Text="Producto:" VerticalAlignment="Center" Margin="0,0,5,0" Foreground="#5c3a00"/>
+                            <TextBox x:Name="txtFiltroProducto" Width="200" Margin="0,0,15,0" 
+                                     KeyDown="TxtFiltroProducto_KeyDown" ToolTip="Buscar por nombre de producto"/>
+                        </StackPanel>
+
+                        <!-- Botones de acción -->
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                            <Button x:Name="btnGenerarReporte" Content="Generar Reporte" Width="120" Height="35"
+                                    Background="#2196F3" Foreground="White" FontWeight="Bold" Click="btnGenerarReporte_Click"/>
+                            <Button x:Name="btnLimpiarFiltros" Content="Limpiar Filtros" Width="120" Height="35" Margin="10,0,0,0"
+                                    Background="#FF9800" Foreground="White" Click="BtnLimpiarFiltros_Click"/>
+                        </StackPanel>
                     </StackPanel>
                 </GroupBox>
 
@@ -76,13 +86,16 @@
                     </StackPanel>
                 </GroupBox>
             </Grid>
-
             <GroupBox Header="RESULTADOS DEL REPORTE" Grid.Row="3" Margin="0,10,0,0" FontWeight="Bold" Foreground="#a36b00">
                 <TabControl x:Name="tcMain" Background="White" BorderBrush="#e2a42d" BorderThickness="2" Margin="5">
                     <TabItem Header="📋 Vista de Datos">
                         <Border Background="White" CornerRadius="10" Padding="5" BorderBrush="#e2a42d" BorderThickness="2">
                             <DataGrid x:Name="dgvReporte" AutoGenerateColumns="False" IsReadOnly="True"
-                                      Background="White" BorderThickness="0"/>
+                          Background="White" BorderThickness="0" SelectionChanged="dgvReporte_SelectionChanged">
+                                <DataGrid.Columns>
+                                    <!-- Las columnas se configurarán dinámicamente en el código -->
+                                </DataGrid.Columns>
+                            </DataGrid>
                         </Border>
                     </TabItem>
                     <TabItem Header="📈 Resumen">

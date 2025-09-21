@@ -3,30 +3,30 @@ using CapaEntidad;
 using System;
 using System.Collections.Generic;
 
-namespace CapaNegocio
-{
-    public class CN_Cliente
+    namespace CapaNegocio
     {
-        private CD_Cliente cd_cliente = new CD_Cliente();
-
-        public List<Cliente> Listar()
+        public class CN_Cliente
         {
-            return cd_cliente.Listar();
-        }
+            private CD_Cliente cdCliente = new CD_Cliente();
 
-        public bool Registrar(Cliente cliente, out string mensaje)
-        {
-            return cd_cliente.Registrar(cliente, out mensaje);
-        }
+            public List<Cliente> ListarClientes()
+            {
+                return cdCliente.ListarClientes();
+            }
 
-        public bool Editar(Cliente cliente, out string mensaje)
-        {
-            return cd_cliente.Editar(cliente, out mensaje);
-        }
+            public bool Registrar(Cliente cliente, out string mensaje)
+            {
+                return cdCliente.Registrar(cliente, out mensaje);
+            }
 
-        public bool Eliminar(int idCliente, out string mensaje)
-        {
-            return cd_cliente.Eliminar(idCliente, out mensaje);
+            public bool Editar(Cliente cliente, out string mensaje)
+            {
+                return cdCliente.Editar(cliente, out mensaje);
+            }
+
+            public bool Eliminar(int idCliente, out string mensaje)
+            {
+                return cdCliente.Eliminar(idCliente, out mensaje);
+            }
         }
     }
-}

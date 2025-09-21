@@ -109,5 +109,17 @@ namespace CapaPresentacion
             this.Close(); // Cerrar esta ventana
         }
         #endregion
+
+        private void btnProduccionReceta_Click(object sender, RoutedEventArgs e)
+        {
+            FormReceta formreceta = new FormReceta();
+            formreceta.Show();
+        }
+
+        private void btnCostosFijos_Click(object sender, RoutedEventArgs e)
+        {
+            FormCostoFijo formCostoFijo = new FormCostoFijo();
+            formCostoFijo.Show();
+        }
     }
 }

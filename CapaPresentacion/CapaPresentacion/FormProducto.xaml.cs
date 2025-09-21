@@ -1,145 +1,208 @@
-﻿using System;
-using System.Windows;
-using System.Windows.Controls;
+﻿using CapaDatos;
 using CapaEntidad;
 using CapaNegocio;
+using System;
+using System.Windows;
+using System.Windows.Controls;
 
-namespace CapaPresentacion
-{
-    public partial class FormProducto : Window
+    namespace CapaPresentacion
     {
-        private readonly CN_Producto cnProducto = new CN_Producto();
-
-        public FormProducto()
+        public partial class FormProducto : Window
         {
-            InitializeComponent();
-        }
+            private readonly CN_Producto cnProducto = new CN_Producto();
 
-        private void Window_Loaded(object sender, RoutedEventArgs e)
-        {
-            ListarProductos();
-        }
+            public FormProducto()
+            {
+                InitializeComponent();
+            }
 
-        // MÉTODO QUE FALTA - AGREGAR ESTO
-        private void btnLimpiar_Click(object sender, RoutedEventArgs e)
-        {
-            LimpiarCampos();
-        }
+            private void Window_Loaded(object sender, RoutedEventArgs e)
+            {
+                ListarProductos();
+                CargarTiposProducto();
+            }
 
-        private void LimpiarCampos()
-        {
-            txtNombre.Text = "";
-            txtTipo.Text = "";
-            txtCostoProduccion.Text = "";
-            txtMargenGanancia.Text = "";
-            txtPrecio.Text = "";
-            txtStock.Text = "";
-            txtStockMinimo.Text = "";
-            chkVisible.IsChecked = true;
-            dgvProductos.SelectedItem = null;
-        }
+            private void btnLimpiar_Click(object sender, RoutedEventArgs e)
+            {
+                LimpiarCampos();
+            }
 
-        private void ListarProductos()
+            private void LimpiarCampos()
+            {
+                txtNombre.Text = "";
+                cboTipo.Text = "";
+                txtCostoProduccion.Text = "";
+                txtMargenGanancia.Text = "";
+                txtPrecio.Text = "";
+                txtStock.Text = "";
+                txtStockMinimo.Text = "";
+                chkVisible.IsChecked = true;
+                dgvProductos.SelectedItem = null;
+            }
+
+            private void ListarProductos()
+            {
+                try
+                {
+                    dgvProductos.ItemsSource = cnProducto.Listar();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error al cargar productos: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+
+        private void CargarTiposProducto()
         {
-            dgvProductos.ItemsSource = cnProducto.Listar();
+            try
+            {
+                cboTipo.ItemsSource = cnProducto.ListarTiposProducto();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al cargar tipos de producto: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private void btnAgregar_Click(object sender, RoutedEventArgs e)
-        {
-            if (!decimal.TryParse(txtCostoProduccion.Text, out decimal costo) ||
-                !decimal.TryParse(txtMargenGanancia.Text, out decimal margen) ||
-                !decimal.TryParse(txtPrecio.Text, out decimal precio) ||
-                !int.TryParse(txtStock.Text, out int stock) ||
-                !int.TryParse(txtStockMinimo.Text, out int stockMin))
             {
-                MessageBox.Show("Verifique los valores numéricos.", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
-                return;
-            }
-
-            Producto p = new Producto
-            {
-                Nombre = txtNombre.Text,
-                Tipo = txtTipo.Text,
-                CostoProduccion = costo,
-                MargenGanancia = margen,
-                PrecioVenta = precio,
-                StockActual = stock,
-                StockMinimo = stockMin,
-                Visible = chkVisible.IsChecked ?? true
-            };
-
-            string mensaje;
-            int id = cnProducto.Registrar(p, out mensaje);
-            MessageBox.Show(mensaje);
-            if (id != 0)
-            {
-                ListarProductos();
-                LimpiarCampos(); // Limpiar después de agregar
-            }
-        }
-
-        private void btnEditar_Click(object sender, RoutedEventArgs e)
-        {
-            if (dgvProductos.SelectedItem is Producto seleccionado)
-            {
-                if (!decimal.TryParse(txtCostoProduccion.Text, out decimal costo) ||
-                    !decimal.TryParse(txtMargenGanancia.Text, out decimal margen) ||
-                    !decimal.TryParse(txtPrecio.Text, out decimal precio) ||
-                    !int.TryParse(txtStock.Text, out int stock) ||
-                    !int.TryParse(txtStockMinimo.Text, out int stockMin))
+                try
                 {
-                    MessageBox.Show("Verifique los valores numéricos.", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
-                    return;
-                }
+                    if (string.IsNullOrEmpty(txtNombre.Text))
+                    {
+                        MessageBox.Show("El nombre es obligatorio.", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        return;
+                    }
 
-                seleccionado.Nombre = txtNombre.Text;
-                seleccionado.Tipo = txtTipo.Text;
-                seleccionado.CostoProduccion = costo;
-                seleccionado.MargenGanancia = margen;
-                seleccionado.PrecioVenta = precio;
-                seleccionado.StockActual = stock;
-                seleccionado.StockMinimo = stockMin;
-                seleccionado.Visible = chkVisible.IsChecked ?? true;
+                    var producto = new Producto
+                    {
+                        Nombre = txtNombre.Text,
+                        Tipo = cboTipo.SelectedValue?.ToString() ?? cboTipo.Text,
+                        CostoProduccion = 0,
+                        MargenGanancia = 0,
+                        PrecioVenta = 0,
+                        StockActual = 0,
+                        StockMinimo = string.IsNullOrEmpty(txtStockMinimo.Text) ? 0 : int.Parse(txtStockMinimo.Text),
+                        Visible = chkVisible.IsChecked ?? true
+                    };
 
                 string mensaje;
-                bool ok = cnProducto.Editar(seleccionado, out mensaje);
+                bool ok = cnProducto.Registrar(producto, out mensaje);
                 MessageBox.Show(mensaje);
+
                 if (ok)
                 {
                     ListarProductos();
-                    LimpiarCampos(); // Limpiar después de editar
+                    LimpiarCampos();
+                    EventAggregator.Publish(new ProductoActualizadoEvent());
                 }
             }
-        }
-
-        private void btnEliminar_Click(object sender, RoutedEventArgs e)
-        {
-            if (dgvProductos.SelectedItem is Producto seleccionado)
-            {
-                string mensaje;
-                bool ok = cnProducto.Eliminar(seleccionado.IdProducto, out mensaje);
-                MessageBox.Show(mensaje);
-                if (ok)
+                catch (Exception ex)
                 {
-                    ListarProductos();
-                    LimpiarCampos(); // Limpiar después de eliminar
+                    MessageBox.Show($"Error al agregar producto: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
-        }
 
-        private void dgvProductos_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (dgvProductos.SelectedItem is Producto p)
+            private void btnEditar_Click(object sender, RoutedEventArgs e)
             {
-                txtNombre.Text = p.Nombre;
-                txtTipo.Text = p.Tipo;
-                txtCostoProduccion.Text = p.CostoProduccion.ToString("0.00");
-                txtMargenGanancia.Text = p.MargenGanancia.ToString("0.00");
-                txtPrecio.Text = p.PrecioVenta.ToString("0.00");
-                txtStock.Text = p.StockActual.ToString();
-                txtStockMinimo.Text = p.StockMinimo.ToString();
-                chkVisible.IsChecked = p.Visible;
+                try
+                {
+                    if (dgvProductos.SelectedItem is Producto seleccionado)
+                    {
+                        if (!decimal.TryParse(txtCostoProduccion.Text, out decimal costo) ||
+                            !decimal.TryParse(txtMargenGanancia.Text, out decimal margen) ||
+                            !decimal.TryParse(txtPrecio.Text, out decimal precio) ||
+                            !int.TryParse(txtStock.Text, out int stock) ||
+                            !int.TryParse(txtStockMinimo.Text, out int stockMin))
+                        {
+                            MessageBox.Show("Verifique los valores numéricos.", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                            return;
+                        }
+
+                        seleccionado.Nombre = txtNombre.Text;
+                        seleccionado.Tipo = cboTipo.Text;
+                        seleccionado.CostoProduccion = costo;
+                        seleccionado.MargenGanancia = margen;
+                        seleccionado.PrecioVenta = precio;
+                        seleccionado.StockActual = stock;
+                        seleccionado.StockMinimo = stockMin;
+                        seleccionado.Visible = chkVisible.IsChecked ?? true;
+
+                        string mensaje;
+                        bool ok = cnProducto.Editar(seleccionado, out mensaje);
+                        MessageBox.Show(mensaje);
+
+                        if (ok)
+                        {
+                            ListarProductos();
+                            LimpiarCampos();
+                            EventAggregator.Publish(new ProductoActualizadoEvent());
+                            EventAggregator.Publish(new AlertasActualizadasEvent());
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error al editar producto: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+
+            private void btnEliminar_Click(object sender, RoutedEventArgs e)
+            {
+                try
+                {
+                    if (dgvProductos.SelectedItem is Producto seleccionado)
+                    {
+                        var confirmacion = MessageBox.Show($"¿Está seguro de eliminar el producto: {seleccionado.Nombre}?",
+                            "Confirmar Eliminación", MessageBoxButton.YesNo, MessageBoxImage.Question);
+
+                        if (confirmacion == MessageBoxResult.Yes)
+                        {
+                            string mensaje;
+                            bool ok = cnProducto.Eliminar(seleccionado.IdProducto, out mensaje);
+                            MessageBox.Show(mensaje);
+
+                            if (ok)
+                            {
+                                ListarProductos();
+                                LimpiarCampos();
+                                EventAggregator.Publish(new ProductoActualizadoEvent());
+                                EventAggregator.Publish(new AlertasActualizadasEvent());
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error al eliminar producto: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+
+            private void dgvProductos_SelectionChanged(object sender, SelectionChangedEventArgs e)
+            {
+                try
+                {
+                    if (dgvProductos.SelectedItem is Producto producto)
+                    {
+                        txtNombre.Text = producto.Nombre;
+                        cboTipo.Text = producto.Tipo;
+                        txtCostoProduccion.Text = producto.CostoProduccion.ToString("0.00");
+                        txtMargenGanancia.Text = producto.MargenGanancia.ToString("0.00");
+                        txtPrecio.Text = producto.PrecioVenta.ToString("0.00");
+                        txtStock.Text = producto.StockActual.ToString();
+                        txtStockMinimo.Text = producto.StockMinimo.ToString();
+                        chkVisible.IsChecked = producto.Visible;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error al cargar datos del producto: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+
+            private void cboTipo_SelectionChanged(object sender, SelectionChangedEventArgs e)
+            {
+                // Lógica opcional si es necesaria
             }
         }
     }
-}

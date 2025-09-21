@@ -3,172 +3,230 @@ using System;
 using System.Data;
 
 namespace CapaDatos
-{
-    public class CD_Usuario
     {
-        private SqlConnection conexion = new SqlConnection(Conexion.cadena);
-
-        // Método para login - CORREGIDO
-        public bool Login(string NombreUsuario, string clave)
+        public class CD_Usuario
         {
-            try
-            {
-                conexion.Open();
-                SqlCommand comando = new SqlCommand("SELECT COUNT(*) FROM Usuario WHERE NombreUsuario = @NombreUsuario AND clave = @clave AND activo = 1", conexion);
-                comando.Parameters.AddWithValue("@NombreUsuario", NombreUsuario);
-                comando.Parameters.AddWithValue("@Clave", clave);
+            private SqlConnection conexion = new SqlConnection(Conexion.cadena);
 
-                int result = (int)comando.ExecuteScalar();
-                return result > 0;
-            }
-            catch (Exception ex)
+            // Método para login
+            public bool Login(string NombreUsuario, string clave)
             {
-                throw new Exception("Error en login: " + ex.Message);
-            }
-            finally
-            {
-                if (conexion.State == ConnectionState.Open)
-                    conexion.Close();
-            }
-        }
+                try
+                {
+                    conexion.Open();
+                    SqlCommand comando = new SqlCommand("SELECT COUNT(*) FROM Usuario WHERE NombreUsuario = @NombreUsuario AND clave = @clave AND activo = 1", conexion);
+                    comando.Parameters.AddWithValue("@NombreUsuario", NombreUsuario);
+                    comando.Parameters.AddWithValue("@Clave", clave);
 
-        // Método para obtener usuario por nombre - CORREGIDO
-        public DataTable ObtenerUsuarioPorNombre(string NombreUsuario)
-        {
-            try
-            {
-                conexion.Open();
-                // CAMBIÉ: "Usuario" por "Usuarios" y "NombreUsuario" por "Usuario"
-                SqlCommand comando = new SqlCommand("SELECT * FROM Usuario WHERE NombreUsuario = @NombreUsuario", conexion);
-                comando.Parameters.AddWithValue("@NombreUsuario", NombreUsuario);
+                    int result = (int)comando.ExecuteScalar();
+                    return result > 0;
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Error en login: " + ex.Message);
+                }
+                finally
+                {
+                    if (conexion.State == ConnectionState.Open)
+                        conexion.Close();
+                }
+            }
 
-                SqlDataAdapter adaptador = new SqlDataAdapter(comando);
-                DataTable tabla = new DataTable();
-                adaptador.Fill(tabla);
-                return tabla;
-            }
-            catch (Exception ex)
+            // Método para obtener usuario por nombre
+            public DataTable ObtenerUsuarioPorNombre(string NombreUsuario)
             {
-                throw new Exception("Error al obtener usuario: " + ex.Message);
-            }
-            finally
-            {
-                if (conexion.State == ConnectionState.Open)
-                    conexion.Close();
-            }
-        }
+                try
+                {
+                    conexion.Open();
+                    SqlCommand comando = new SqlCommand("SELECT * FROM Usuario WHERE NombreUsuario = @NombreUsuario", conexion);
+                    comando.Parameters.AddWithValue("@NombreUsuario", NombreUsuario);
 
-        // Métodos existentes - TODOS CORREGIDOS para usar "Usuario"
-        public DataTable MostrarUsuarios()
-        {
-            try
-            {
-                conexion.Open();
-                SqlCommand comando = new SqlCommand("SELECT * FROM Usuario", conexion);
-                SqlDataAdapter adaptador = new SqlDataAdapter(comando);
-                DataTable tabla = new DataTable();
-                adaptador.Fill(tabla);
-                return tabla;
+                    SqlDataAdapter adaptador = new SqlDataAdapter(comando);
+                    DataTable tabla = new DataTable();
+                    adaptador.Fill(tabla);
+                    return tabla;
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Error al obtener usuario: " + ex.Message);
+                }
+                finally
+                {
+                    if (conexion.State == ConnectionState.Open)
+                        conexion.Close();
+                }
             }
-            catch (Exception ex)
-            {
-                throw new Exception("Error al mostrar usuarios: " + ex.Message);
-            }
-            finally
-            {
-                if (conexion.State == ConnectionState.Open)
-                    conexion.Close();
-            }
-        }
 
-        public DataTable MostrarUsuarioPorId(string idUsuario)
-        {
-            try
+            // Método para obtener usuario por ID
+            public DataTable ObtenerUsuarioPorId(int idUsuario)
             {
-                conexion.Open();
-                SqlCommand comando = new SqlCommand("SELECT * FROM Usuario WHERE IdUsuario = @IdUsuario", conexion);
-                comando.Parameters.AddWithValue("@IdUsuario", Convert.ToInt32(idUsuario));
+                try
+                {
+                    conexion.Open();
+                    SqlCommand comando = new SqlCommand("SELECT * FROM Usuario WHERE IdUsuario = @IdUsuario", conexion);
+                    comando.Parameters.AddWithValue("@IdUsuario", idUsuario);
 
-                SqlDataAdapter adaptador = new SqlDataAdapter(comando);
-                DataTable tabla = new DataTable();
-                adaptador.Fill(tabla);
-                return tabla;
+                    SqlDataAdapter adaptador = new SqlDataAdapter(comando);
+                    DataTable tabla = new DataTable();
+                    adaptador.Fill(tabla);
+                    return tabla;
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Error al obtener usuario: " + ex.Message);
+                }
+                finally
+                {
+                    if (conexion.State == ConnectionState.Open)
+                        conexion.Close();
+                }
             }
-            catch (Exception ex)
-            {
-                throw new Exception("Error al mostrar usuario por ID: " + ex.Message);
-            }
-            finally
-            {
-                if (conexion.State == ConnectionState.Open)
-                    conexion.Close();
-            }
-        }
 
-        public void InsertarUsuario(string NombreUsuario, string clave, string rol, string activo)
-        {
-            try
+            // Mostrar todos los usuarios
+            public DataTable MostrarUsuarios()
             {
-                conexion.Open();
-                SqlCommand comando = new SqlCommand("INSERT INTO Usuario (NombreUsuario, clave, Rol, activo) VALUES (@Usuario, @Clave, @Rol, @Activo)", conexion);
-                comando.Parameters.AddWithValue("@NombreUsuario", NombreUsuario);
-                comando.Parameters.AddWithValue("@Clave", clave);
-                comando.Parameters.AddWithValue("@Rol", rol);
-                comando.Parameters.AddWithValue("@Activo", Convert.ToInt32(activo));
-                comando.ExecuteNonQuery();
+                try
+                {
+                    conexion.Open();
+                    SqlCommand comando = new SqlCommand("SELECT * FROM Usuario", conexion);
+                    SqlDataAdapter adaptador = new SqlDataAdapter(comando);
+                    DataTable tabla = new DataTable();
+                    adaptador.Fill(tabla);
+                    return tabla;
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Error al mostrar usuarios: " + ex.Message);
+                }
+                finally
+                {
+                    if (conexion.State == ConnectionState.Open)
+                        conexion.Close();
+                }
             }
-            catch (Exception ex)
-            {
-                throw new Exception("Error al insertar usuario: " + ex.Message);
-            }
-            finally
-            {
-                if (conexion.State == ConnectionState.Open)
-                    conexion.Close();
-            }
-        }
-        public void EditarUsuario(string idUsuario, string NombreUsuario, string clave, string rol, string activo)
-        {
-            try
-            {
-                conexion.Open();
-                SqlCommand comando = new SqlCommand("UPDATE Usuario SET NombreUsuario = @NombreUsuario, Clave = @Clave, Rol = @Rol, Activo = @Activo WHERE IdUsuario = @IdUsuario", conexion);
-                comando.Parameters.AddWithValue("@IdUsuario", Convert.ToInt32(idUsuario));
-                comando.Parameters.AddWithValue("@NombreUsuario", NombreUsuario);
-                comando.Parameters.AddWithValue("@Clave", clave);
-                comando.Parameters.AddWithValue("@Rol", rol);
-                comando.Parameters.AddWithValue("@Activo", Convert.ToInt32(activo));
-                comando.ExecuteNonQuery();
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Error al editar usuario: " + ex.Message);
-            }
-            finally
-            {
-                if (conexion.State == ConnectionState.Open)
-                    conexion.Close();
-            }
-        }
 
-        public void EliminarUsuario(string idUsuario)
-        {
-            try
+            // Insertar usuario completo
+            public bool InsertarUsuario(string nombreUsuario, string nombre, string apellido, string documento,
+                                      string telefono, string email, string cuil, string direccion,
+                                      string clave, string rol, bool activo)
             {
-                conexion.Open();
-                SqlCommand comando = new SqlCommand("DELETE FROM Usuario WHERE IdUsuario = @IdUsuario", conexion);
-                comando.Parameters.AddWithValue("@IdUsuario", Convert.ToInt32(idUsuario));
-                comando.ExecuteNonQuery();
+                try
+                {
+                    conexion.Open();
+                    SqlCommand comando = new SqlCommand(@"
+                    INSERT INTO Usuario (NombreUsuario, Nombre, Apellido, Documento, Telefono, Email, Cuil, Direccion, Clave, Rol, Activo, FechaCreacion, UsuarioCreacion)
+                    VALUES (@NombreUsuario, @Nombre, @Apellido, @Documento, @Telefono, @Email, @Cuil, @Direccion, @Clave, @Rol, @Activo, GETDATE(), @UsuarioCreacion)", conexion);
+
+                    comando.Parameters.AddWithValue("@NombreUsuario", nombreUsuario);
+                    comando.Parameters.AddWithValue("@Nombre", nombre);
+                    comando.Parameters.AddWithValue("@Apellido", apellido);
+                    comando.Parameters.AddWithValue("@Documento", documento);
+                    comando.Parameters.AddWithValue("@Telefono", telefono);
+                    comando.Parameters.AddWithValue("@Email", email);
+                    comando.Parameters.AddWithValue("@Cuil", cuil);
+                    comando.Parameters.AddWithValue("@Direccion", direccion);
+                    comando.Parameters.AddWithValue("@Clave", clave);
+                    comando.Parameters.AddWithValue("@Rol", rol);
+                    comando.Parameters.AddWithValue("@Activo", activo);
+                    comando.Parameters.AddWithValue("@UsuarioCreacion", "Sistema");
+
+                    int result = comando.ExecuteNonQuery();
+                    return result > 0;
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Error al insertar usuario: " + ex.Message);
+                }
+                finally
+                {
+                    if (conexion.State == ConnectionState.Open)
+                        conexion.Close();
+                }
             }
-            catch (Exception ex)
+
+            // Editar usuario completo
+            public bool EditarUsuario(int idUsuario, string nombreUsuario, string nombre, string apellido,
+                                    string documento, string telefono, string email, string cuil,
+                                    string direccion, string clave, string rol, bool activo)
             {
-                throw new Exception("Error al eliminar usuario: " + ex.Message);
+                try
+                {
+                    conexion.Open();
+
+                    string query = @"UPDATE Usuario SET 
+                                NombreUsuario = @NombreUsuario, 
+                                Nombre = @Nombre, 
+                                Apellido = @Apellido, 
+                                Documento = @Documento, 
+                                Telefono = @Telefono, 
+                                Email = @Email, 
+                                Cuil = @Cuil, 
+                                Direccion = @Direccion, 
+                                Rol = @Rol, 
+                                Activo = @Activo";
+
+                    // Solo actualizar clave si se proporciona una nueva
+                    if (!string.IsNullOrEmpty(clave))
+                    {
+                        query += ", Clave = @Clave";
+                    }
+
+                    query += " WHERE IdUsuario = @IdUsuario";
+
+                    SqlCommand comando = new SqlCommand(query, conexion);
+
+                    comando.Parameters.AddWithValue("@IdUsuario", idUsuario);
+                    comando.Parameters.AddWithValue("@NombreUsuario", nombreUsuario);
+                    comando.Parameters.AddWithValue("@Nombre", nombre);
+                    comando.Parameters.AddWithValue("@Apellido", apellido);
+                    comando.Parameters.AddWithValue("@Documento", documento);
+                    comando.Parameters.AddWithValue("@Telefono", telefono);
+                    comando.Parameters.AddWithValue("@Email", email);
+                    comando.Parameters.AddWithValue("@Cuil", cuil);
+                    comando.Parameters.AddWithValue("@Direccion", direccion);
+                    comando.Parameters.AddWithValue("@Rol", rol);
+                    comando.Parameters.AddWithValue("@Activo", activo);
+
+                    if (!string.IsNullOrEmpty(clave))
+                    {
+                        comando.Parameters.AddWithValue("@Clave", clave);
+                    }
+
+                    int result = comando.ExecuteNonQuery();
+                    return result > 0;
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Error al editar usuario: " + ex.Message);
+                }
+                finally
+                {
+                    if (conexion.State == ConnectionState.Open)
+                        conexion.Close();
+                }
             }
-            finally
+
+            // Eliminar usuario
+            public bool EliminarUsuario(int idUsuario)
             {
-                if (conexion.State == ConnectionState.Open)
-                    conexion.Close();
+                try
+                {
+                    conexion.Open();
+                    SqlCommand comando = new SqlCommand("DELETE FROM Usuario WHERE IdUsuario = @IdUsuario", conexion);
+                    comando.Parameters.AddWithValue("@IdUsuario", idUsuario);
+
+                    int result = comando.ExecuteNonQuery();
+                    return result > 0;
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Error al eliminar usuario: " + ex.Message);
+                }
+                finally
+                {
+                    if (conexion.State == ConnectionState.Open)
+                        conexion.Close();
+                }
             }
         }
     }
-}

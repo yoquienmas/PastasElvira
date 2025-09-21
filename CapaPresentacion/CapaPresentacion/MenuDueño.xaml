@@ -81,9 +81,6 @@
                                         <Button Content="⚙️ GESTIÓN DE USUARIOS" Width="180" Height="60" Margin="5"
                                                 Background="#FF5722" Foreground="White" FontWeight="Bold" FontSize="14"
                                                 Click="btnGestionUsuarios_Click"/>
-                                        <Button Content="📉 COSTOS FIJOS" Width="180" Height="60" Margin="5"
-                                                Background="#00BCD4" Foreground="White" FontWeight="Bold" FontSize="14"
-                                                Click="btnCostosFijos_Click"/>
                                     </WrapPanel>
 
                                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">

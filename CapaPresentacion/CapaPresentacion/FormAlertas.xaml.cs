@@ -10,6 +10,7 @@ namespace CapaPresentacion
     {
         private CN_Alerta cnAlerta = new CN_Alerta();
         private CN_Producto cnProducto = new CN_Producto();
+        private bool _suscribirEventos = true; // Nueva variable para controlar suscripciones
 
         public FormAlertas()
         {
@@ -20,6 +21,40 @@ namespace CapaPresentacion
         {
             CargarAlertas();
             ActualizarEstadisticas();
+
+            // Suscribirse a eventos del sistema
+            if (_suscribirEventos)
+            {
+                EventAggregator.Subscribe<ProductoActualizadoEvent>(e => {
+                    Dispatcher.Invoke(() => {
+                        CargarAlertas();
+                        ActualizarEstadisticas();
+                    });
+                });
+
+                EventAggregator.Subscribe<MateriaPrimaActualizadaEvent>(e => {
+                    Dispatcher.Invoke(() => {
+                        CargarAlertas();
+                        ActualizarEstadisticas();
+                    });
+                });
+
+                EventAggregator.Subscribe<ProduccionRegistradaEvent>(e => {
+                    Dispatcher.Invoke(() => {
+                        CargarAlertas();
+                        ActualizarEstadisticas();
+                    });
+                });
+
+                EventAggregator.Subscribe<RecetaActualizadaEvent>(e => {
+                    Dispatcher.Invoke(() => {
+                        CargarAlertas();
+                        ActualizarEstadisticas();
+                    });
+                });
+
+                _suscribirEventos = false;
+            }
         }
 
         private void CargarAlertas()
@@ -55,6 +90,9 @@ namespace CapaPresentacion
                 CargarAlertas();
                 ActualizarEstadisticas();
                 MessageBox.Show("Verificación de alertas completada", "Éxito", MessageBoxButton.OK, MessageBoxImage.Information);
+
+                // Publicar evento para que otros formularios sepan que se generaron alertas
+                EventAggregator.Publish(new AlertasActualizadasEvent());
             }
             catch (Exception ex)
             {
@@ -69,8 +107,22 @@ namespace CapaPresentacion
 
             if (confirmacion == MessageBoxResult.Yes)
             {
-                // Implementar limpieza de alertas antiguas
-                MessageBox.Show("Funcionalidad de limpieza en desarrollo", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+                bool resultado = cnAlerta.LimpiarAlertasAntiguas();
+                if (resultado)
+                {
+                    CargarAlertas();
+                    ActualizarEstadisticas();
+                    MessageBox.Show("Alertas antiguas eliminadas correctamente", "Éxito",
+                                   MessageBoxButton.OK, MessageBoxImage.Information);
+
+                    // Publicar evento
+                    EventAggregator.Publish(new AlertasActualizadasEvent());
+                }
+                else
+                {
+                    MessageBox.Show("Error al limpiar alertas", "Error",
+                                   MessageBoxButton.OK, MessageBoxImage.Error);
+                }
             }
         }
 
@@ -87,14 +139,14 @@ namespace CapaPresentacion
                 if (alerta.Tipo == "Producto")
                 {
                     // Abrir formulario de producción para reponer stock
-                    MessageBox.Show($"Abrir formulario de producción para: {alerta.NombreProducto}", "Resolver Alerta",
-                        MessageBoxButton.OK, MessageBoxImage.Information);
+                    FormProduccion formProduccion = new FormProduccion();
+                    formProduccion.Show();
                 }
                 else
                 {
                     // Abrir formulario de materias primas
-                    MessageBox.Show($"Abrir formulario de materias primas para: {alerta.NombreProducto}", "Resolver Alerta",
-                        MessageBoxButton.OK, MessageBoxImage.Information);
+                    FormMateria formMateria = new FormMateria();
+                    formMateria.Show();
                 }
 
                 // Marcar como resuelta (eliminar alerta)
@@ -103,8 +155,17 @@ namespace CapaPresentacion
                 {
                     CargarAlertas();
                     ActualizarEstadisticas();
+
+                    // Publicar evento
+                    EventAggregator.Publish(new AlertasActualizadasEvent());
                 }
             }
+        }
+
+        // Nuevo método para forzar verificación de alertas desde otros formularios
+        public void VerificarAlertasDesdeExterno()
+        {
+            btnVerificar_Click(null, null);
         }
     }
 }

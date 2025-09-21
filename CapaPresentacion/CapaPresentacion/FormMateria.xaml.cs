@@ -8,6 +8,7 @@ namespace CapaPresentacion
 {
     public partial class FormMateria : Window
     {
+        private bool _suscribirEventos = true;
         private CN_MateriaPrima cnMateriaPrima = new CN_MateriaPrima();
 
         public FormMateria()
@@ -18,6 +19,13 @@ namespace CapaPresentacion
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             ListarMateriasPrimas();
+
+            // Suscribirse a eventos
+            if (_suscribirEventos)
+            {
+                EventAggregator.Subscribe<MateriaPrimaActualizadaEvent>(e => ListarMateriasPrimas());
+                _suscribirEventos = false;
+            }
         }
 
         // MÉTODO QUE FALTA - AGREGAR ESTO
@@ -58,6 +66,9 @@ namespace CapaPresentacion
             {
                 LimpiarCampos();
                 ListarMateriasPrimas();
+                EventAggregator.Publish(new MateriaPrimaActualizadaEvent()); // Nueva línea
+                EventAggregator.Publish(new AlertasActualizadasEvent()); // Nueva línea
+
             }
         }
 
@@ -87,6 +98,9 @@ namespace CapaPresentacion
                 {
                     LimpiarCampos();
                     ListarMateriasPrimas();
+                    EventAggregator.Publish(new MateriaPrimaActualizadaEvent()); // Nueva línea
+                    EventAggregator.Publish(new AlertasActualizadasEvent()); // Nueva línea
+
                 }
             }
         }
@@ -103,6 +117,9 @@ namespace CapaPresentacion
                 {
                     LimpiarCampos();
                     ListarMateriasPrimas();
+                    EventAggregator.Publish(new MateriaPrimaActualizadaEvent()); // Nueva línea
+                    EventAggregator.Publish(new AlertasActualizadasEvent()); // Nueva línea
+
                 }
             }
         }

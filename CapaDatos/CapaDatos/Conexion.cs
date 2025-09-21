@@ -2,6 +2,6 @@
 {
     public class Conexion
     {
-        public static string cadena = "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=PastasElviraDB;Integrated Security=True";
+        public static string cadena = "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=PastasElviraDB;Integrated Security=True;MultipleActiveResultSets=True";
     }
 }

@@ -2,6 +2,7 @@
 using System.Data;
 using Microsoft.Data.SqlClient;
 using System.Collections.Generic;
+using System;
 
 namespace CapaDatos
 {
@@ -13,7 +14,7 @@ namespace CapaDatos
 
             using (SqlConnection oconexion = new SqlConnection(Conexion.cadena))
             {
-                SqlCommand cmd = new SqlCommand("SELECT * FROM CostoFijoProduccion ORDER BY Concepto", oconexion);
+                SqlCommand cmd = new SqlCommand("SELECT IdCosto, Concepto, Monto, Activo FROM CostoFijoProduccion ORDER BY Concepto", oconexion);
                 oconexion.Open();
 
                 using (SqlDataReader dr = cmd.ExecuteReader())
@@ -36,27 +37,29 @@ namespace CapaDatos
         public bool Registrar(CostoFijo costo, out string mensaje)
         {
             mensaje = string.Empty;
-            
+
             try
             {
                 using (SqlConnection oconexion = new SqlConnection(Conexion.cadena))
                 {
-                    SqlCommand cmd = new SqlCommand("INSERT INTO CostoFijoProduccion (Concepto, Monto, Activo) VALUES (@concepto, @monto, @activo)", oconexion);
+                    oconexion.Open(); // Abre la conexión aquí
+
+                    SqlCommand cmd = new SqlCommand("INSERT INTO CostoFijoProduccion (Concepto, Monto, Activo) VALUES (@concepto, @monto, @activo); SELECT SCOPE_IDENTITY();", oconexion); // Obtener el Id insertado si lo necesitas
                     cmd.Parameters.AddWithValue("@concepto", costo.Concepto);
                     cmd.Parameters.AddWithValue("@monto", costo.Monto);
                     cmd.Parameters.AddWithValue("@activo", costo.Activo);
 
-                    oconexion.Open();
-                    bool resultado = cmd.ExecuteNonQuery() > 0;
+                    int rowsAffected = cmd.ExecuteNonQuery(); // Ejecutar el INSERT
+                    bool resultado = rowsAffected > 0;
                     mensaje = resultado ? "Costo fijo registrado correctamente" : "No se pudo registrar el costo fijo";
-                    
+
                     if (resultado && costo.Activo)
                     {
-                        RecalcularTodosLosProductos(oconexion);
+                        RecalcularTodosLosProductos(oconexion); // La conexión ya está abierta
                     }
-                    
+
                     return resultado;
-                }
+                } // La conexión se cierra automáticamente aquí
             }
             catch (Exception ex)
             {
@@ -68,36 +71,41 @@ namespace CapaDatos
         public bool Editar(CostoFijo costo, out string mensaje)
         {
             mensaje = string.Empty;
-            
+
             try
             {
                 using (SqlConnection oconexion = new SqlConnection(Conexion.cadena))
                 {
                     oconexion.Open();
-                    
+
                     // 1. Obtener estado anterior para comparar
-                    SqlCommand cmdEstadoAnterior = new SqlCommand("SELECT Activo FROM CostoFijoProduccion WHERE IdCosto = @id", oconexion);
-                    cmdEstadoAnterior.Parameters.AddWithValue("@id", costo.IdCosto);
-                    bool estadoAnterior = Convert.ToBoolean(cmdEstadoAnterior.ExecuteScalar());
-                    
-                    // 2. Actualizar el costo fijo
-                    SqlCommand cmd = new SqlCommand("UPDATE CostoFijoProduccion SET Concepto = @concepto, Monto = @monto, Activo = @activo WHERE IdCosto = @id", oconexion);
-                    cmd.Parameters.AddWithValue("@id", costo.IdCosto);
-                    cmd.Parameters.AddWithValue("@concepto", costo.Concepto);
-                    cmd.Parameters.AddWithValue("@monto", costo.Monto);
-                    cmd.Parameters.AddWithValue("@activo", costo.Activo);
-                    
-                    bool resultado = cmd.ExecuteNonQuery() > 0;
-                    mensaje = resultado ? "Costo fijo actualizado correctamente" : "No se pudo actualizar el costo fijo";
-                    
-                    // 3. Si cambió el estado o monto de un costo activo, recalcular productos
-                    if (resultado && (estadoAnterior != costo.Activo || costo.Activo))
+                    // Usar un comando separado y cerrarlo antes de la siguiente operación
+                    bool estadoAnterior;
+                    using (SqlCommand cmdEstadoAnterior = new SqlCommand("SELECT Activo FROM CostoFijoProduccion WHERE IdCosto = @id", oconexion))
                     {
-                        RecalcularTodosLosProductos(oconexion);
-                    }
-                    
-                    return resultado;
-                }
+                        cmdEstadoAnterior.Parameters.AddWithValue("@id", costo.IdCosto);
+                        estadoAnterior = Convert.ToBoolean(cmdEstadoAnterior.ExecuteScalar());
+                    } // cmdEstadoAnterior se libera aquí
+
+                    // 2. Actualizar el costo fijo
+                    using (SqlCommand cmd = new SqlCommand("UPDATE CostoFijoProduccion SET Concepto = @concepto, Monto = @monto, Activo = @activo WHERE IdCosto = @id", oconexion))
+                    {
+                        cmd.Parameters.AddWithValue("@id", costo.IdCosto);
+                        cmd.Parameters.AddWithValue("@concepto", costo.Concepto);
+                        cmd.Parameters.AddWithValue("@monto", costo.Monto);
+                        cmd.Parameters.AddWithValue("@activo", costo.Activo);
+
+                        bool resultado = cmd.ExecuteNonQuery() > 0;
+                        mensaje = resultado ? "Costo fijo actualizado correctamente" : "No se pudo actualizar el costo fijo";
+
+                        // 3. Si cambió el estado o monto de un costo activo, recalcular productos
+                        if (resultado && (estadoAnterior != costo.Activo || costo.Activo))
+                        {
+                            RecalcularTodosLosProductos(oconexion);
+                        }
+                        return resultado;
+                    } // cmd se libera aquí
+                } // oconexion se cierra y libera aquí
             }
             catch (Exception ex)
             {
@@ -109,33 +117,37 @@ namespace CapaDatos
         public bool Eliminar(int idCosto, out string mensaje)
         {
             mensaje = string.Empty;
-            
+
             try
             {
                 using (SqlConnection oconexion = new SqlConnection(Conexion.cadena))
                 {
                     oconexion.Open();
-                    
+
                     // 1. Verificar si el costo estaba activo
-                    SqlCommand cmdVerificar = new SqlCommand("SELECT Activo FROM CostoFijoProduccion WHERE IdCosto = @id", oconexion);
-                    cmdVerificar.Parameters.AddWithValue("@id", idCosto);
-                    bool estabaActivo = Convert.ToBoolean(cmdVerificar.ExecuteScalar());
-                    
-                    // 2. Eliminar el costo
-                    SqlCommand cmd = new SqlCommand("DELETE FROM CostoFijoProduccion WHERE IdCosto = @id", oconexion);
-                    cmd.Parameters.AddWithValue("@id", idCosto);
-                    
-                    bool resultado = cmd.ExecuteNonQuery() > 0;
-                    mensaje = resultado ? "Costo fijo eliminado correctamente" : "No se pudo eliminar el costo fijo";
-                    
-                    // 3. Si el costo eliminado estaba activo, recalcular productos
-                    if (resultado && estabaActivo)
+                    bool estabaActivo;
+                    using (SqlCommand cmdVerificar = new SqlCommand("SELECT Activo FROM CostoFijoProduccion WHERE IdCosto = @id", oconexion))
                     {
-                        RecalcularTodosLosProductos(oconexion);
-                    }
-                    
-                    return resultado;
-                }
+                        cmdVerificar.Parameters.AddWithValue("@id", idCosto);
+                        estabaActivo = Convert.ToBoolean(cmdVerificar.ExecuteScalar());
+                    } // cmdVerificar se libera aquí
+
+                    // 2. Eliminar el costo
+                    using (SqlCommand cmd = new SqlCommand("DELETE FROM CostoFijoProduccion WHERE IdCosto = @id", oconexion))
+                    {
+                        cmd.Parameters.AddWithValue("@id", idCosto);
+
+                        bool resultado = cmd.ExecuteNonQuery() > 0;
+                        mensaje = resultado ? "Costo fijo eliminado correctamente" : "No se pudo eliminar el costo fijo";
+
+                        // 3. Si el costo eliminado estaba activo, recalcular productos
+                        if (resultado && estabaActivo)
+                        {
+                            RecalcularTodosLosProductos(oconexion);
+                        }
+                        return resultado;
+                    } // cmd se libera aquí
+                } // oconexion se cierra y libera aquí
             }
             catch (Exception ex)
             {
@@ -146,23 +158,33 @@ namespace CapaDatos
 
         private void RecalcularTodosLosProductos(SqlConnection conexion)
         {
-            // Obtener todos los productos
-            SqlCommand cmd = new SqlCommand("SELECT IdProducto FROM Producto WHERE Visible = 1", conexion);
-            
-            using (SqlDataReader dr = cmd.ExecuteReader())
+            // Lista para almacenar los IDs de productos antes de procesarlos
+            List<int> productoIds = new List<int>();
+
+            // Primero, obtener todos los IdProducto y cerrar el DataReader
+            using (SqlCommand cmdSelectIds = new SqlCommand("SELECT IdProducto FROM Producto WHERE Visible = 1", conexion))
             {
-                while (dr.Read())
+                using (SqlDataReader dr = cmdSelectIds.ExecuteReader())
                 {
-                    int idProducto = Convert.ToInt32(dr["IdProducto"]);
-                    
-                    // Recalcular costo para cada producto
-                    SqlCommand cmdRecalcular = new SqlCommand("CalcularCostoProducto", conexion);
+                    while (dr.Read())
+                    {
+                        productoIds.Add(Convert.ToInt32(dr["IdProducto"]));
+                    }
+                } // El dr se cierra y libera aquí. Ahora la conexión está libre.
+            } // cmdSelectIds se libera aquí
+
+            // Ahora, iterar sobre los IDs y recalcular cada producto
+            foreach (int idProducto in productoIds)
+            {
+                // Para cada producto, usar un nuevo SqlCommand (la conexión sigue abierta)
+                using (SqlCommand cmdRecalcular = new SqlCommand("CalcularCostoProducto", conexion))
+                {
                     cmdRecalcular.CommandType = CommandType.StoredProcedure;
                     cmdRecalcular.Parameters.AddWithValue("@IdProducto", idProducto);
                     cmdRecalcular.Parameters.Add("@CostoTotal", SqlDbType.Decimal).Direction = ParameterDirection.Output;
                     cmdRecalcular.Parameters.Add("@PrecioSugerido", SqlDbType.Decimal).Direction = ParameterDirection.Output;
                     cmdRecalcular.ExecuteNonQuery();
-                }
+                } // cmdRecalcular se libera aquí
             }
         }
     }

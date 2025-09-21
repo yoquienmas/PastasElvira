@@ -9,6 +9,7 @@ namespace CapaPresentacion
 {
     public partial class FormDetalleProduccion : Window
     {
+        private bool _suscribirEventos = true;
         private CN_DetalleProduccion cnDetalle = new CN_DetalleProduccion();
         private CN_Produccion cnProduccion = new CN_Produccion();
         private CN_MateriaPrima cnMateria = new CN_MateriaPrima();
@@ -22,6 +23,18 @@ namespace CapaPresentacion
         {
             cmbProduccion.ItemsSource = cnProduccion.Listar();
             cmbMateria.ItemsSource = cnMateria.Listar();
+
+            // Suscribirse a eventos
+            if (_suscribirEventos)
+            {
+                EventAggregator.Subscribe<ProduccionRegistradaEvent>(e => {
+                    cmbProduccion.ItemsSource = cnProduccion.Listar();
+                });
+                EventAggregator.Subscribe<MateriaPrimaActualizadaEvent>(e => {
+                    cmbMateria.ItemsSource = cnMateria.Listar();
+                });
+                _suscribirEventos = false;
+            }
         }
 
         private void CargarDetalles()
@@ -58,7 +71,13 @@ namespace CapaPresentacion
             int id = cnDetalle.Registrar(detalle, out mensaje);
             MessageBox.Show(mensaje);
 
-            if (id != 0) CargarDetalles();
+            if (id != 0)
+            {
+                CargarDetalles();
+                EventAggregator.Publish(new ProduccionRegistradaEvent()); // Nueva línea
+                EventAggregator.Publish(new AlertasActualizadasEvent()); // Nueva línea
+
+            }
         }
 
         private void btnEliminar_Click(object sender, RoutedEventArgs e)
@@ -68,7 +87,13 @@ namespace CapaPresentacion
                 string mensaje;
                 bool ok = cnDetalle.Eliminar(seleccionado.IdDetalleProduccion, out mensaje);
                 MessageBox.Show(mensaje);
-                if (ok) CargarDetalles();
+                if (ok)
+                {
+                    CargarDetalles();
+                    EventAggregator.Publish(new ProduccionRegistradaEvent()); // Nueva línea
+                    EventAggregator.Publish(new AlertasActualizadasEvent()); // Nueva línea
+
+                }
             }
         }
     }

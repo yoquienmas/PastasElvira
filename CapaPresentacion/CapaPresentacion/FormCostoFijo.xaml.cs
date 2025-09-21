@@ -7,184 +7,129 @@ using System.Windows.Controls;
 
 namespace CapaPresentacion
 {
-    public partial class FormCostoFijo : Window
-    {
-        private CN_CostoFijo cnCostoFijo = new CN_CostoFijo();
-        private CN_Producto cnProducto = new CN_Producto();
-        private List<CostoFijo> listaCostos;
-        private CostoFijo costoSelccionado = null;
-
-        public FormCostoFijo()
+        public partial class FormCostoFijo : Window
         {
-            InitializeComponent();
-        }
+            private bool _suscribirEventos = true;
+            private CN_CostoFijo cnCostoFijo = new CN_CostoFijo();
+            private CN_Producto cnProducto = new CN_Producto();
+            private List<CostoFijo> listaCostos;
+            private CostoFijo costoSelccionado = null;
 
-        private void Window_Loaded(object sender, RoutedEventArgs e)
-        {
-            CargarCostosFijos();
-            LimpiarFormulario();
-            ActualizarEstadisticas();
-        }
-
-        private void CargarCostosFijos()
-        {
-            listaCostos = cnCostoFijo.Listar();
-            dgvCostosFijos.ItemsSource = listaCostos;
-        }
-
-        private void ActualizarEstadisticas()
-        {
-            decimal totalCostos = 0;
-            decimal costosActivos = 0;
-            int cantidadActivos = 0;
-
-            foreach (var costo in listaCostos)
+            public FormCostoFijo()
             {
-                totalCostos += costo.Monto;
-                if (costo.Activo)
-                {
-                    costosActivos += costo.Monto;
-                    cantidadActivos++;
-                }
+                InitializeComponent();
             }
 
-            txtTotalCostos.Text = $"Total Costos: {totalCostos:C} ({listaCostos.Count} conceptos)";
-            txtCostosActivos.Text = $"Costos Activos: {costosActivos:C} ({cantidadActivos} activos)";
-
-            txtImpactoInfo.Text = $"💡 Los costos activos se distribuyen entre todos los productos afectando el precio final.";
-        }
-
-        private void LimpiarFormulario()
-        {
-            costoSelccionado = null;
-            txtConcepto.Text = "";
-            txtMonto.Text = "";
-            chkActivo.IsChecked = true;
-            btnGuardar.Content = "Guardar";
-            btnEliminar.IsEnabled = false;
-        }
-
-        private void btnNuevo_Click(object sender, RoutedEventArgs e)
-        {
-            LimpiarFormulario();
-        }
-
-        private void btnGuardar_Click(object sender, RoutedEventArgs e)
-        {
-            // Validaciones
-            if (string.IsNullOrWhiteSpace(txtConcepto.Text))
+            private void Window_Loaded(object sender, RoutedEventArgs e)
             {
-                MessageBox.Show("El concepto es obligatorio", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
-                return;
-            }
-
-            if (!decimal.TryParse(txtMonto.Text, out decimal monto) || monto <= 0)
-            {
-                MessageBox.Show("Ingrese un monto válido mayor a cero", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
-                return;
-            }
-
-            CostoFijo costo = new CostoFijo
-            {
-                Concepto = txtConcepto.Text.Trim(),
-                Monto = monto,
-                Activo = chkActivo.IsChecked ?? true
-            };
-
-            // Si hay costo seleccionado, es una edición
-            if (costoSelccionado != null)
-            {
-                costo.IdCosto = costoSelccionado.IdCosto;
-            }
-
-            string mensaje;
-            bool resultado;
-
-            if (costoSelccionado == null)
-            {
-                resultado = cnCostoFijo.Registrar(costo, out mensaje);
-            }
-            else
-            {
-                resultado = cnCostoFijo.Editar(costo, out mensaje);
-            }
-
-            if (resultado)
-            {
-                MessageBox.Show(mensaje, "Éxito", MessageBoxButton.OK, MessageBoxImage.Information);
                 CargarCostosFijos();
-                ActualizarEstadisticas();
                 LimpiarFormulario();
+                ActualizarEstadisticas();
 
-                // Si se activó/desactivó un costo, recalcular productos
-                if (costoSelccionado != null && costoSelccionado.Activo != costo.Activo)
+                // Suscribirse a eventos
+                if (_suscribirEventos)
                 {
-                    RecalcularProductos();
+                    EventAggregator.Subscribe<CostoFijoActualizadoEvent>(e => {
+                        CargarCostosFijos();
+                        ActualizarEstadisticas();
+                    });
+                    _suscribirEventos = false;
                 }
             }
-            else
-            {
-                MessageBox.Show(mensaje, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-        }
 
-        private void btnEliminar_Click(object sender, RoutedEventArgs e)
-        {
-            if (costoSelccionado == null)
+            private void CargarCostosFijos()
             {
-                MessageBox.Show("Seleccione un costo para eliminar", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
-                return;
+                listaCostos = cnCostoFijo.Listar();
+                dgvCostosFijos.ItemsSource = listaCostos;
             }
 
-            var confirmacion = MessageBox.Show($"¿Está seguro de eliminar el costo: '{costoSelccionado.Concepto}'?",
-                "Confirmar Eliminación", MessageBoxButton.YesNo, MessageBoxImage.Question);
-
-            if (confirmacion == MessageBoxResult.Yes)
+            private void ActualizarEstadisticas()
             {
+                decimal totalCostos = 0;
+                decimal costosActivos = 0;
+                int cantidadActivos = 0;
+
+                foreach (var costo in listaCostos)
+                {
+                    totalCostos += costo.Monto;
+                    if (costo.Activo)
+                    {
+                        costosActivos += costo.Monto;
+                        cantidadActivos++;
+                    }
+                }
+
+                txtTotalCostos.Text = $"Total Costos: {totalCostos:C} ({listaCostos.Count} conceptos)";
+                txtCostosActivos.Text = $"Costos Activos: {costosActivos:C} ({cantidadActivos} activos)";
+
+                txtImpactoInfo.Text = $"💡 Los costos activos se distribuyen entre todos los productos afectando el precio final.";
+            }
+
+            private void LimpiarFormulario()
+            {
+                costoSelccionado = null;
+                txtConcepto.Text = "";
+                txtMonto.Text = "";
+                chkActivo.IsChecked = true;
+                btnGuardar.Content = "Guardar";
+                btnEliminar.IsEnabled = false;
+            }
+
+            private void btnNuevo_Click(object sender, RoutedEventArgs e)
+            {
+                LimpiarFormulario();
+            }
+
+            private void btnGuardar_Click(object sender, RoutedEventArgs e)
+            {
+                // Validaciones
+                if (string.IsNullOrWhiteSpace(txtConcepto.Text))
+                {
+                    MessageBox.Show("El concepto es obligatorio", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+
+                if (!decimal.TryParse(txtMonto.Text, out decimal monto) || monto <= 0)
+                {
+                    MessageBox.Show("Ingrese un monto válido mayor a cero", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+
+                CostoFijo costo = new CostoFijo
+                {
+                    Concepto = txtConcepto.Text.Trim(),
+                    Monto = monto,
+                    Activo = chkActivo.IsChecked ?? true
+                };
+
+                // Si hay costo seleccionado, es una edición
+                if (costoSelccionado != null)
+                {
+                    costo.IdCosto = costoSelccionado.IdCosto;
+                }
+
                 string mensaje;
-                bool resultado = cnCostoFijo.Eliminar(costoSelccionado.IdCosto, out mensaje);
+                bool resultado;
 
-                MessageBox.Show(mensaje, resultado ? "Éxito" : "Error",
-                    MessageBoxButton.OK, resultado ? MessageBoxImage.Information : MessageBoxImage.Error);
+                if (costoSelccionado == null)
+                {
+                    resultado = cnCostoFijo.Registrar(costo, out mensaje);
+                }
+                else
+                {
+                    resultado = cnCostoFijo.Editar(costo, out mensaje);
+                }
 
                 if (resultado)
                 {
+                    MessageBox.Show(mensaje, "Éxito", MessageBoxButton.OK, MessageBoxImage.Information);
                     CargarCostosFijos();
                     ActualizarEstadisticas();
                     LimpiarFormulario();
-                    RecalcularProductos();
-                }
-            }
-        }
+                    EventAggregator.Publish(new CostoFijoActualizadoEvent());
+                    EventAggregator.Publish(new AlertasActualizadasEvent());
 
-        private void dgvCostosFijos_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (dgvCostosFijos.SelectedItem is CostoFijo costo)
-            {
-                costoSelccionado = costo;
-                txtConcepto.Text = costo.Concepto;
-                txtMonto.Text = costo.Monto.ToString("F2");
-                chkActivo.IsChecked = costo.Activo;
-                btnGuardar.Content = "Actualizar";
-                btnEliminar.IsEnabled = true;
-            }
-        }
-
-        private void BtnToggleEstado_Click(object sender, RoutedEventArgs e)
-        {
-            if (dgvCostosFijos.SelectedItem is CostoFijo costo)
-            {
-                costo.Activo = !costo.Activo;
-
-                string mensaje;
-                bool resultado = cnCostoFijo.Editar(costo, out mensaje);
-
-                if (resultado)
-                {
-                    MessageBox.Show($"Costo {(costo.Activo ? "activado" : "desactivado")} correctamente",
-                                    "Éxito", MessageBoxButton.OK, MessageBoxImage.Information);
-                    CargarCostosFijos();
-                    ActualizarEstadisticas();
+                    // Recalculamos productos después de guardar
                     RecalcularProductos();
                 }
                 else
@@ -192,42 +137,101 @@ namespace CapaPresentacion
                     MessageBox.Show(mensaje, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
-        }
 
-        private void btnRecalcularCostos_Click(object sender, RoutedEventArgs e)
-        {
-            var confirmacion = MessageBox.Show("¿Está seguro de recalcular todos los precios? Esto actualizará el costo y precio de todos los productos basado en los costos actuales.",
-                "Confirmar Recalculo", MessageBoxButton.YesNo, MessageBoxImage.Question);
-
-            if (confirmacion == MessageBoxResult.Yes)
+            private void btnEliminar_Click(object sender, RoutedEventArgs e)
             {
-                RecalcularProductos();
-                MessageBox.Show("Precios recalculados correctamente para todos los productos", "Éxito", MessageBoxButton.OK, MessageBoxImage.Information);
-            }
-        }
-
-        private void RecalcularProductos()
-        {
-            try
-            {
-                var productos = cnProducto.Listar();
-                int productosActualizados = 0;
-
-                foreach (var producto in productos)
+                if (costoSelccionado == null)
                 {
-                    decimal costo, precio;
-                    string mensaje;
-                    bool ok = cnProducto.CalcularCostoProducto(producto.IdProducto, out costo, out precio, out mensaje);
-
-                    if (ok) productosActualizados++;
+                    MessageBox.Show("Seleccione un costo para eliminar", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
                 }
 
-                txtImpactoInfo.Text = $"✅ {productosActualizados} productos actualizados con los nuevos costos";
+                var confirmacion = MessageBox.Show($"¿Está seguro de eliminar el costo: '{costoSelccionado.Concepto}'?",
+                    "Confirmar Eliminación", MessageBoxButton.YesNo, MessageBoxImage.Question);
+
+                if (confirmacion == MessageBoxResult.Yes)
+                {
+                    string mensaje;
+                    bool resultado = cnCostoFijo.Eliminar(costoSelccionado.IdCosto, out mensaje);
+
+                    MessageBox.Show(mensaje, resultado ? "Éxito" : "Error",
+                        MessageBoxButton.OK, resultado ? MessageBoxImage.Information : MessageBoxImage.Error);
+
+                    if (resultado)
+                    {
+                        CargarCostosFijos();
+                        ActualizarEstadisticas();
+                        LimpiarFormulario();
+                        EventAggregator.Publish(new CostoFijoActualizadoEvent());
+                        EventAggregator.Publish(new AlertasActualizadasEvent());
+                        RecalcularProductos();
+                    }
+                }
             }
-            catch (Exception ex)
+
+            private void dgvCostosFijos_SelectionChanged(object sender, SelectionChangedEventArgs e)
             {
-                MessageBox.Show($"Error al recalcular productos: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                if (dgvCostosFijos.SelectedItem is CostoFijo costo)
+                {
+                    costoSelccionado = costo;
+                    txtConcepto.Text = costo.Concepto;
+                    txtMonto.Text = costo.Monto.ToString("F2");
+                    chkActivo.IsChecked = costo.Activo;
+                    btnGuardar.Content = "Actualizar";
+                    btnEliminar.IsEnabled = true;
+                }
+            }
+
+            private void BtnToggleEstado_Click(object sender, RoutedEventArgs e)
+            {
+                if (dgvCostosFijos.SelectedItem is CostoFijo costo)
+                {
+                    costo.Activo = !costo.Activo;
+
+                    string mensaje;
+                    bool resultado = cnCostoFijo.Editar(costo, out mensaje);
+
+                    if (resultado)
+                    {
+                        MessageBox.Show($"Costo {(costo.Activo ? "activado" : "desactivado")} correctamente",
+                                        "Éxito", MessageBoxButton.OK, MessageBoxImage.Information);
+                        CargarCostosFijos();
+                        ActualizarEstadisticas();
+                        EventAggregator.Publish(new CostoFijoActualizadoEvent());
+                        EventAggregator.Publish(new AlertasActualizadasEvent());
+                        RecalcularProductos();
+                    }
+                    else
+                    {
+                        MessageBox.Show(mensaje, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                }
+            }
+
+            private void btnRecalcularCostos_Click(object sender, RoutedEventArgs e)
+            {
+                var confirmacion = MessageBox.Show("¿Está seguro de recalcular todos los precios? Esto actualizará el costo y precio de todos los productos basado en los costos actuales.",
+                    "Confirmar Recalculo", MessageBoxButton.YesNo, MessageBoxImage.Question);
+
+                if (confirmacion == MessageBoxResult.Yes)
+                {
+                    RecalcularProductos();
+                    MessageBox.Show("Precios recalculados correctamente para todos los productos", "Éxito", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+            }
+
+            private void RecalcularProductos()
+            {
+                try
+                {
+                    // CORRECCIÓN: Llamar al método correcto sin parámetros
+                    cnProducto.RecalcularTodosLosProductos();
+                    txtImpactoInfo.Text = $"✅ Todos los productos actualizados con los nuevos costos";
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error al recalcular productos: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
             }
         }
     }
-}

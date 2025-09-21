@@ -3,47 +3,57 @@ using System.Data;
 using CapaDatos;
 
 namespace CapaNegocio
-{
-    public class CN_Usuario
     {
-        private CD_Usuario objetoCD = new CD_Usuario();
-
-        // Método para login
-        public bool Login(string NombreUsuario, string clave)
+        public class CN_Usuario
         {
-            return objetoCD.Login(NombreUsuario, clave);
-        }
+            private CD_Usuario objetoCD = new CD_Usuario();
 
-        // Método para obtener usuario por nombre
-        public DataTable ObtenerUsuarioPorNombre(string NombreUsuario)
-        {
-            return objetoCD.ObtenerUsuarioPorNombre(NombreUsuario);
-        }
+            // Método para login
+            public bool Login(string NombreUsuario, string clave)
+            {
+                return objetoCD.Login(NombreUsuario, clave);
+            }
 
-        // Métodos existentes
-        public DataTable MostrarUsuarios()
-        {
-            return objetoCD.MostrarUsuarios();
-        }
+            // Método para obtener usuario por nombre
+            public DataTable ObtenerUsuarioPorNombre(string NombreUsuario)
+            {
+                return objetoCD.ObtenerUsuarioPorNombre(NombreUsuario);
+            }
 
-        public DataTable MostrarUsuarioPorId(string idUsuario)
-        {
-            return objetoCD.MostrarUsuarioPorId(idUsuario);
-        }
+            // Método para obtener usuario por ID
+            public DataTable ObtenerUsuarioPorId(int idUsuario)
+            {
+                return objetoCD.ObtenerUsuarioPorId(idUsuario);
+            }
 
-        public void InsertarUsuario(string NombreUsuario, string clave, string rol, string activo)
-        {
-            objetoCD.InsertarUsuario(NombreUsuario, clave, rol, activo);
-        }
+            // Mostrar todos los usuarios
+            public DataTable MostrarUsuarios()
+            {
+                return objetoCD.MostrarUsuarios();
+            }
 
-        public void EditarUsuario(string idUsuario, string NombreUsuario, string clave, string rol, string activo)
-        {
-            objetoCD.EditarUsuario(idUsuario, NombreUsuario, clave, rol, activo);
-        }
+            // Insertar usuario completo
+            public bool InsertarUsuario(string nombreUsuario, string nombre, string apellido, string documento,
+                                      string telefono, string email, string cuil, string direccion,
+                                      string clave, string rol, bool activo)
+            {
+                return objetoCD.InsertarUsuario(nombreUsuario, nombre, apellido, documento, telefono,
+                                              email, cuil, direccion, clave, rol, activo);
+            }
 
-        public void EliminarUsuario(string idUsuario)
-        {
-            objetoCD.EliminarUsuario(idUsuario);
+            // Editar usuario completo
+            public bool EditarUsuario(int idUsuario, string nombreUsuario, string nombre, string apellido,
+                                    string documento, string telefono, string email, string cuil,
+                                    string direccion, string clave, string rol, bool activo)
+            {
+                return objetoCD.EditarUsuario(idUsuario, nombreUsuario, nombre, apellido, documento,
+                                            telefono, email, cuil, direccion, clave, rol, activo);
+            }
+
+            // Eliminar usuario
+            public bool EliminarUsuario(int idUsuario)
+            {
+                return objetoCD.EliminarUsuario(idUsuario);
+            }
         }
     }
-}

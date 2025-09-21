@@ -28,7 +28,7 @@ namespace CapaPresentacion
 
         private void CargarClientes()
         {
-            listaClientes = cnCliente.Listar();
+            listaClientes = cnCliente.ListarClientes();
             dgvClientes.ItemsSource = listaClientes;
         }
 
@@ -36,6 +36,7 @@ namespace CapaPresentacion
         {
             clienteSeleccionado = null;
             txtNombre.Text = "";
+            txtApellido.Text = "";
             txtDocumento.Text = "";
             txtTelefono.Text = "";
             txtEmail.Text = "";
@@ -52,6 +53,7 @@ namespace CapaPresentacion
         private void LimpiarEstilosValidacion()
         {
             txtNombre.BorderBrush = System.Windows.Media.Brushes.Gray;
+            txtApellido.BorderBrush = System.Windows.Media.Brushes.Gray;
             txtDocumento.BorderBrush = System.Windows.Media.Brushes.Gray;
             txtTelefono.BorderBrush = System.Windows.Media.Brushes.Gray;
             txtEmail.BorderBrush = System.Windows.Media.Brushes.Gray;
@@ -72,10 +74,11 @@ namespace CapaPresentacion
             Cliente cliente = new Cliente
             {
                 Nombre = txtNombre.Text.Trim(),
+                Apellido = txtApellido.Text.Trim(),
                 Documento = txtDocumento.Text.Trim(),
                 Telefono = string.IsNullOrWhiteSpace(txtTelefono.Text) ? null : txtTelefono.Text.Trim(),
                 Email = string.IsNullOrWhiteSpace(txtEmail.Text) ? null : txtEmail.Text.Trim(),
-                Cuil = string.IsNullOrWhiteSpace(txtCuil.Text) ? null : txtCuil.Text.Trim(),
+                Cuil = string.IsNullOrWhiteSpace(txtCuil.Text) ? "" : txtCuil.Text.Replace("-", "").Replace(" ", "").Trim(),
                 Direccion = string.IsNullOrWhiteSpace(txtDireccion.Text) ? null : txtDireccion.Text.Trim()
             };
 
@@ -84,12 +87,10 @@ namespace CapaPresentacion
 
             if (clienteSeleccionado == null)
             {
-                // Registrar nuevo cliente
                 resultado = cnCliente.Registrar(cliente, out mensaje);
             }
             else
             {
-                // Si hay cliente seleccionado pero se usa el botón Guardar en lugar de Editar
                 cliente.IdCliente = clienteSeleccionado.IdCliente;
                 resultado = cnCliente.Editar(cliente, out mensaje);
             }
@@ -117,15 +118,16 @@ namespace CapaPresentacion
             if (!ValidarFormulario())
                 return;
 
-            // Crear objeto cliente con los datos actualizados
+            // Crear objeto cliente con los datos actualizados (CORREGIDO)
             Cliente cliente = new Cliente
             {
-                IdCliente = clienteSeleccionado.IdCliente,
+                IdCliente = clienteSeleccionado.IdCliente, // ← AÑADIR ESTA LÍNEA
                 Nombre = txtNombre.Text.Trim(),
+                Apellido = txtApellido.Text.Trim(),
                 Documento = txtDocumento.Text.Trim(),
                 Telefono = string.IsNullOrWhiteSpace(txtTelefono.Text) ? null : txtTelefono.Text.Trim(),
                 Email = string.IsNullOrWhiteSpace(txtEmail.Text) ? null : txtEmail.Text.Trim(),
-                Cuil = string.IsNullOrWhiteSpace(txtCuil.Text) ? null : txtCuil.Text.Trim(),
+                Cuil = string.IsNullOrWhiteSpace(txtCuil.Text) ? null : txtCuil.Text.Replace("-", "").Replace(" ", "").Trim(),
                 Direccion = string.IsNullOrWhiteSpace(txtDireccion.Text) ? null : txtDireccion.Text.Trim()
             };
 
@@ -142,7 +144,7 @@ namespace CapaPresentacion
                 LimpiarFormulario();
             }
         }
-
+        
         private bool ValidarFormulario()
         {
             bool esValido = true;
@@ -162,6 +164,19 @@ namespace CapaPresentacion
                 esValido = false;
             }
 
+            if (string.IsNullOrWhiteSpace(txtApellido.Text))
+            {
+                txtApellido.BorderBrush = System.Windows.Media.Brushes.Red;
+                MessageBox.Show("El apellido es obligatorio", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                esValido = false;
+            }
+
+            else if (txtApellido.Text.Trim().Length < 3)
+            {
+                txtApellido.BorderBrush = System.Windows.Media.Brushes.Red;
+                MessageBox.Show("El nombre debe tener al menos 3 caracteres", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                esValido = false;
+            }
             // Validar Documento
             if (string.IsNullOrWhiteSpace(txtDocumento.Text))
             {
@@ -196,7 +211,7 @@ namespace CapaPresentacion
             if (!string.IsNullOrWhiteSpace(txtCuil.Text) && !EsCuilValido(txtCuil.Text.Trim()))
             {
                 txtCuil.BorderBrush = System.Windows.Media.Brushes.Red;
-                MessageBox.Show("El CUIL no tiene un formato válido", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show("El CUIL debe tener exactamente 11 dígitos numéricos", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
                 esValido = false;
             }
 
@@ -230,8 +245,11 @@ namespace CapaPresentacion
 
         private bool EsCuilValido(string cuil)
         {
-            // Validar formato básico de CUIL (xx-xxxxxxxx-x)
-            return Regex.IsMatch(cuil, @"^\d{2}-\d{8}-\d{1}$");
+            // Validar que tenga exactamente 11 dígitos numéricos (ignorando guiones y espacios)
+            string cuilLimpio = cuil.Replace("-", "").Replace(" ", "").Trim();
+
+            // Debe tener exactamente 11 dígitos y ser numérico
+            return cuilLimpio.Length == 11 && long.TryParse(cuilLimpio, out _);
         }
 
         private void btnEliminar_Click(object sender, RoutedEventArgs e)
@@ -268,6 +286,7 @@ namespace CapaPresentacion
             {
                 clienteSeleccionado = cliente;
                 txtNombre.Text = cliente.Nombre;
+                txtApellido.Text = cliente.Apellido;
                 txtDocumento.Text = cliente.Documento;
                 txtTelefono.Text = cliente.Telefono;
                 txtEmail.Text = cliente.Email;
@@ -329,14 +348,17 @@ namespace CapaPresentacion
         }
 
         // Formato automático para CUIL
+        // Limpiar formato al perder el foco (opcional, para mostrar en la UI)
         private void txtCuil_LostFocus(object sender, RoutedEventArgs e)
         {
-            if (!string.IsNullOrWhiteSpace(txtCuil.Text) && txtCuil.Text.Length >= 11)
+            if (!string.IsNullOrWhiteSpace(txtCuil.Text))
             {
-                string cuil = txtCuil.Text.Replace("-", "").Trim();
-                if (cuil.Length == 11)
+                string cuilLimpio = txtCuil.Text.Replace("-", "").Replace(" ", "").Trim();
+
+                if (cuilLimpio.Length == 11 && long.TryParse(cuilLimpio, out _))
                 {
-                    txtCuil.Text = $"{cuil.Substring(0, 2)}-{cuil.Substring(2, 8)}-{cuil.Substring(10, 1)}";
+                    // Opcional: Mostrar formateado en UI pero guardar sin formato
+                    txtCuil.Text = $"{cuilLimpio.Substring(0, 2)}-{cuilLimpio.Substring(2, 8)}-{cuilLimpio.Substring(10, 1)}";
                 }
             }
         }

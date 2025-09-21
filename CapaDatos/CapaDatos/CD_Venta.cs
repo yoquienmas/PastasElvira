@@ -7,92 +7,131 @@ namespace CapaDatos
 {
     public class CD_Venta
     {
-        
-        public bool Registrar(Venta objVenta, out string mensaje)
-        {
-            bool registroExitoso = false;
-            mensaje = string.Empty;
-            int idVentaGenerado = 0;
+        private SqlConnection conexion = new SqlConnection(Conexion.cadena);
 
-            
+        public bool VerificarStockDisponible(int idProducto, int cantidad)
+        {
+            using (SqlConnection oconexion = new SqlConnection(Conexion.cadena))
+            {
+                oconexion.Open();
+                using (var command = new SqlCommand())
+                {
+                    command.Connection = oconexion;
+                    command.CommandText = "SELECT StockActual FROM Producto WHERE IdProducto = @IdProducto";
+                    command.Parameters.AddWithValue("@IdProducto", idProducto);
+
+                    int stockActual = Convert.ToInt32(command.ExecuteScalar());
+                    return stockActual >= cantidad;
+                }
+            }
+        }
+
+        public bool ActualizarStockProducto(int idProducto, int cantidad)
+        {
+            using (SqlConnection oconexion = new SqlConnection(Conexion.cadena))
+            {
+                oconexion.Open();
+                using (var command = new SqlCommand())
+                {
+                    command.Connection = oconexion;
+                    command.CommandText = "UPDATE Producto SET StockActual = StockActual + @Cantidad WHERE IdProducto = @IdProducto";
+                    command.Parameters.AddWithValue("@Cantidad", cantidad);
+                    command.Parameters.AddWithValue("@IdProducto", idProducto);
+
+                    return command.ExecuteNonQuery() > 0;
+                }
+            }
+        }
+
+        public bool Registrar(Venta venta, out string mensaje)
+        {
             try
             {
-                
-                using (SqlConnection con = new SqlConnection(Conexion.cadena))
+                using (SqlConnection oconexion = new SqlConnection(Conexion.cadena))
                 {
-                    con.Open();
-          
-                    SqlTransaction transaction = con.BeginTransaction();
-
-                    try
+                    oconexion.Open();
+                    using (var command = new SqlCommand())
                     {
-                       
-                        SqlCommand cmdVenta = new SqlCommand("SP_REGISTRAR_VENTA", con, transaction);
-                        cmdVenta.CommandType = CommandType.StoredProcedure;
+                        command.Connection = oconexion;
+                        command.CommandText = @"
+                            INSERT INTO Ventas (FechaVenta, Total)
+                            VALUES (@FechaVenta, @Total);
+                            SELECT SCOPE_IDENTITY();";
+                        command.Parameters.AddWithValue("@FechaVenta", venta.FechaVenta);
+                        command.Parameters.AddWithValue("@Total", venta.Total);
 
-                        cmdVenta.Parameters.AddWithValue("@Fecha", objVenta.Fecha);
-                        cmdVenta.Parameters.AddWithValue("@Total", objVenta.Total);
-                        cmdVenta.Parameters.Add("@IdVentaResultado", SqlDbType.Int).Direction = ParameterDirection.Output;
-                        cmdVenta.Parameters.Add("@Mensaje", SqlDbType.NVarChar, 200).Direction = ParameterDirection.Output;
+                        venta.IdVenta = Convert.ToInt32(command.ExecuteScalar());
 
-                        cmdVenta.ExecuteNonQuery();
-
-                        idVentaGenerado = Convert.ToInt32(cmdVenta.Parameters["@IdVentaResultado"].Value);
-                        mensaje = cmdVenta.Parameters["@Mensaje"].Value.ToString();
-
-                        if (idVentaGenerado > 0)
+                        // Registrar detalles de venta
+                        foreach (var item in venta.Items)
                         {
-                            foreach (ItemVenta item in objVenta.Items)
+                            using (var commandDetalle = new SqlCommand())
                             {
-                                SqlCommand cmdItem = new SqlCommand("SP_REGISTRAR_ITEM_VENTA", con, transaction);
-                                cmdItem.CommandType = CommandType.StoredProcedure;
-                                cmdItem.Parameters.AddWithValue("@IdVenta", idVentaGenerado);
-                                cmdItem.Parameters.AddWithValue("@IdProducto", item.IdProducto);
-                                cmdItem.Parameters.AddWithValue("@Cantidad", item.Cantidad);
-                                cmdItem.Parameters.AddWithValue("@PrecioUnitario", item.PrecioUnitario);
-                                cmdItem.Parameters.Add("@Respuesta", SqlDbType.Bit).Direction = ParameterDirection.Output;
+                                commandDetalle.Connection = oconexion;
+                                commandDetalle.CommandText = @"
+                                    INSERT INTO DetalleVenta (IdVenta, IdProducto, Cantidad, PrecioUnitario, Subtotal)
+                                    VALUES (@IdVenta, @IdProducto, @Cantidad, @PrecioUnitario, @Subtotal)";
+                                commandDetalle.Parameters.AddWithValue("@IdVenta", venta.IdVenta);
+                                commandDetalle.Parameters.AddWithValue("@IdProducto", item.IdProducto);
+                                commandDetalle.Parameters.AddWithValue("@Cantidad", item.Cantidad);
+                                commandDetalle.Parameters.AddWithValue("@PrecioUnitario", item.PrecioUnitario);
+                                commandDetalle.Parameters.AddWithValue("@Subtotal", item.Subtotal);
 
-                                cmdItem.ExecuteNonQuery();
-
-                               
-                                SqlCommand cmdStock = new SqlCommand("SP_ACTUALIZAR_STOCK", con, transaction);
-                                cmdStock.CommandType = CommandType.StoredProcedure;
-                                cmdStock.Parameters.AddWithValue("@IdProducto", item.IdProducto);
-                                cmdStock.Parameters.AddWithValue("@CantidadVendida", item.Cantidad);
-                                cmdStock.ExecuteNonQuery();
+                                commandDetalle.ExecuteNonQuery();
                             }
+                        }
 
-                            
-                            transaction.Commit();
-                            registroExitoso = true;
-                            mensaje = "Venta registrada exitosamente.";
-                        }
-                        else
-                        {
-                           
-                            transaction.Rollback();
-                            registroExitoso = false;
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                       
-                        transaction.Rollback();
-                        registroExitoso = false;
-                        mensaje = "Error al registrar la venta: " + ex.Message;
+                        mensaje = "Venta registrada exitosamente";
+                        return true;
                     }
                 }
             }
             catch (Exception ex)
             {
-               
-                registroExitoso = false;
-                mensaje = "Error de conexión con la base de datos: " + ex.Message;
+                mensaje = $"Error al registrar venta: {ex.Message}";
+                return false;
+            }
+        }
+        public List<ItemVenta> ObtenerDetallesVenta(int idVenta)
+        {
+            List<ItemVenta> detalles = new List<ItemVenta>();
+
+            using (SqlConnection oconexion = new SqlConnection(Conexion.cadena))
+            {
+                try
+                {
+                    oconexion.Open();
+                    SqlCommand comando = new SqlCommand(@"
+                SELECT dv.IdProducto, p.Nombre as NombreProducto, 
+                       dv.Cantidad, dv.PrecioUnitario, dv.Subtotal
+                FROM DetalleVenta dv
+                INNER JOIN Producto p ON dv.IdProducto = p.IdProducto
+                WHERE dv.IdVenta = @IdVenta", oconexion);
+
+                    comando.Parameters.AddWithValue("@IdVenta", idVenta);
+
+                    using (SqlDataReader reader = comando.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            detalles.Add(new ItemVenta
+                            {
+                                IdProducto = (int)reader["IdProducto"],
+                                NombreProducto = reader["NombreProducto"].ToString(),
+                                Cantidad = (int)reader["Cantidad"],
+                                PrecioUnitario = Convert.ToDecimal(reader["PrecioUnitario"]),
+                                // Subtotal se calcula automáticamente en la propiedad
+                            });
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Error al obtener detalles de venta: " + ex.Message);
+                }
             }
 
-            return registroExitoso;
+            return detalles;
         }
-
-       
     }
 }

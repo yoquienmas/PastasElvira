@@ -36,7 +36,7 @@ namespace CapaPresentacion
                 txtVentasMes.Text = totalVentasMes.ToString("C");
 
                 // 2. Total clientes
-                var clientes = cnCliente.Listar();
+                var clientes = cnCliente.ListarClientes();
                 txtTotalClientes.Text = clientes.Count.ToString();
 
                 // 3. Productos vendidos (aproximado)
@@ -114,12 +114,6 @@ namespace CapaPresentacion
         {
             FormGestionUsuarios formgestionusuarios = new FormGestionUsuarios();
             formgestionusuarios.Show();
-        }
-
-        private void btnCostosFijos_Click(object sender, RoutedEventArgs e)
-        {
-            FormCostoFijo formCostoFijo = new FormCostoFijo();
-            formCostoFijo.Show();
         }
 
         private void BtnCerrarSesion_Click(object sender, RoutedEventArgs e)

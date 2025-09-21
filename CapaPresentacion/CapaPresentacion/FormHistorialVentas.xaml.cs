@@ -1,9 +1,14 @@
-﻿using CapaEntidad;
+﻿using CapaDatos;
+using CapaEntidad;
 using CapaNegocio;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Input;
+using System.Windows.Media;
 
 namespace CapaPresentacion
 {
@@ -12,6 +17,8 @@ namespace CapaPresentacion
         private int _idUsuario;
         private string _nombreUsuario;
         private CN_Reporte cnReporte = new CN_Reporte();
+        private CN_Venta cnVenta = new CN_Venta();
+        private List<ReporteVenta> ventasOriginales; // Para almacenar todas las ventas
 
         // Constructor que acepta parámetros
         public FormHistorialVentas(int idUsuario, string nombreUsuario)
@@ -41,27 +48,66 @@ namespace CapaPresentacion
             DateTime fechaInicio = dtpFechaInicio.SelectedDate.Value;
             DateTime fechaFin = dtpFechaFin.SelectedDate.Value;
 
-            // MODIFICADO: Ya no hay controles de filtro en el XAML
-            string dniCliente = ""; // Filtro vacío
-            string nombreProducto = ""; // Filtro vacío
+            if (fechaInicio > fechaFin)
+            {
+                MessageBox.Show("La fecha de inicio no puede ser mayor a la fecha fin.", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
 
-            List<ReporteVenta> lista = cnReporte.ObtenerVentasPorVendedor(
-                _idUsuario, fechaInicio, fechaFin, dniCliente, nombreProducto);
+            try
+            {
+                // Obtener todas las ventas sin filtros adicionales
+                ventasOriginales = cnReporte.ObtenerVentasPorVendedor(
+                    _idUsuario, fechaInicio, fechaFin, "", "");
 
-            dgvHistorialVentas.ItemsSource = lista;
+                // Aplicar filtros actuales
+                AplicarFiltros();
+
+                if (ventasOriginales.Count == 0)
+                {
+                    MessageBox.Show("No se encontraron ventas en el rango seleccionado.", "Información", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al cargar ventas: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void AplicarFiltros()
+        {
+            if (ventasOriginales == null) return;
+
+            var ventasFiltradas = ventasOriginales.ToList();
+
+            // Filtrar por DNI
+            if (!string.IsNullOrWhiteSpace(txtFiltroDNI.Text))
+            {
+                ventasFiltradas = ventasFiltradas
+                    .Where(v => v.DNI != null &&
+                           v.DNI.IndexOf(txtFiltroDNI.Text, StringComparison.OrdinalIgnoreCase) >= 0)
+                    .ToList();
+            }
+
+            // Filtrar por producto
+            if (!string.IsNullOrWhiteSpace(txtFiltroProducto.Text))
+            {
+                ventasFiltradas = ventasFiltradas
+                    .Where(v => v.Productos != null &&
+                           v.Productos.IndexOf(txtFiltroProducto.Text, StringComparison.OrdinalIgnoreCase) >= 0)
+                    .ToList();
+            }
+
+            // Mostrar en el DataGrid
+            dgvHistorialVentas.ItemsSource = ventasFiltradas;
 
             // Calcular y mostrar total
-            decimal totalVentas = 0;
-            foreach (var venta in lista)
-            {
-                totalVentas += venta.Total;
-            }
+            decimal totalVentas = ventasFiltradas.Sum(v => v.Total);
             txtTotalVentas.Text = totalVentas.ToString("C");
 
-            if (lista.Count == 0)
-            {
-                MessageBox.Show("No se encontraron ventas en el rango seleccionado.", "Información", MessageBoxButton.OK, MessageBoxImage.Information);
-            }
+            // Mostrar cantidad de resultados
+            MessageBox.Show($"Se encontraron {ventasFiltradas.Count} ventas con los filtros aplicados.",
+                           "Resultados", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
         private void btnConsultar_Click(object sender, RoutedEventArgs e)
@@ -71,13 +117,149 @@ namespace CapaPresentacion
 
         private void btnLimpiarFiltros_Click(object sender, RoutedEventArgs e)
         {
-            // MODIFICADO: Ya no hay controles que limpiar, solo recargar
-            CargarVentas();
+            // Limpiar campos de filtro
+            txtFiltroDNI.Text = "";
+            txtFiltroProducto.Text = "";
+
+            // Recargar ventas sin filtros
+            if (ventasOriginales != null)
+            {
+                AplicarFiltros();
+            }
+            else
+            {
+                CargarVentas();
+            }
+        }
+
+        private void BtnVerDetalles_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                var button = sender as Button;
+                if (button != null && button.DataContext is ReporteVenta ventaSeleccionada)
+                {
+                    MostrarDetallesVenta(ventaSeleccionada.IdVenta);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al mostrar detalles: {ex.Message}", "Error",
+                              MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void MostrarDetallesVenta(int idVenta)
+        {
+            try
+            {
+                // Obtener los detalles de la venta usando ItemVenta
+                var detalles = cnVenta.ObtenerDetallesVenta(idVenta);
+
+                if (detalles == null || detalles.Count == 0)
+                {
+                    MessageBox.Show("No se encontraron detalles para esta venta.", "Información",
+                                  MessageBoxButton.OK, MessageBoxImage.Information);
+                    return;
+                }
+
+                // Crear ventana de detalles
+                var ventanaDetalles = new Window
+                {
+                    Title = $"Detalles de Venta # {idVenta}",
+                    Width = 600,
+                    Height = 400,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                    Owner = this,
+                    Background = Brushes.White,
+                    Padding = new Thickness(20)
+                };
+
+                // Crear DataGrid para mostrar detalles
+                var dgvDetalles = new DataGrid
+                {
+                    AutoGenerateColumns = false,
+                    IsReadOnly = true,
+                    Margin = new Thickness(0, 10, 0, 0)
+                };
+
+                dgvDetalles.Columns.Add(new DataGridTextColumn
+                {
+                    Header = "Producto",
+                    Binding = new Binding("NombreProducto"),
+                    Width = new DataGridLength(2, DataGridLengthUnitType.Star)
+                });
+                dgvDetalles.Columns.Add(new DataGridTextColumn
+                {
+                    Header = "Cantidad",
+                    Binding = new Binding("Cantidad"),
+                    Width = 80
+                });
+                dgvDetalles.Columns.Add(new DataGridTextColumn
+                {
+                    Header = "Precio Unit.",
+                    Binding = new Binding("PrecioUnitario") { StringFormat = "C" },
+                    Width = 100
+                });
+                dgvDetalles.Columns.Add(new DataGridTextColumn
+                {
+                    Header = "Subtotal",
+                    Binding = new Binding("Subtotal") { StringFormat = "C" },
+                    Width = 100
+                });
+
+                dgvDetalles.ItemsSource = detalles;
+
+                // Calcular total
+                decimal total = detalles.Sum(d => d.Subtotal);
+
+                var stackPanel = new StackPanel();
+                stackPanel.Children.Add(new TextBlock
+                {
+                    Text = $"Detalles de la Venta #{idVenta}",
+                    FontSize = 16,
+                    FontWeight = FontWeights.Bold,
+                    Margin = new Thickness(0, 0, 0, 10)
+                });
+                stackPanel.Children.Add(dgvDetalles);
+                stackPanel.Children.Add(new TextBlock
+                {
+                    Text = $"Total: {total:C}",
+                    FontSize = 14,
+                    FontWeight = FontWeights.Bold,
+                    Margin = new Thickness(0, 10, 0, 0),
+                    HorizontalAlignment = HorizontalAlignment.Right
+                });
+
+                ventanaDetalles.Content = stackPanel;
+                ventanaDetalles.ShowDialog();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al cargar detalles: {ex.Message}", "Error",
+                              MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void TxtFiltroDNI_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter && ventasOriginales != null)
+            {
+                AplicarFiltros();
+            }
+        }
+
+        private void TxtFiltroProducto_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter && ventasOriginales != null)
+            {
+                AplicarFiltros();
+            }
         }
 
         private void dgvHistorialVentas_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            // Tu código existente aquí
+            // Tu código existente aquí para manejar la selección
         }
     }
 }

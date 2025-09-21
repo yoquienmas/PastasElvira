@@ -37,13 +37,21 @@
                     </Grid.RowDefinitions>
 
                     <TextBlock Text="Nombre:" Grid.Row="0" Grid.Column="0" Margin="0,5,5,5" VerticalAlignment="Center" Foreground="#5c3a00"/>
-                    <TextBox x:Name="txtNombre" Grid.Row="0" Grid.Column="1" Margin="0,5,10,5"/>
+                    <TextBox x:Name="txtNombre" Grid.Row="0" Grid.Column="1" Margin="0,20,10,13"/>
 
                     <TextBlock Text="Tipo:" Grid.Row="0" Grid.Column="2" Margin="0,5,5,5" VerticalAlignment="Center" Foreground="#5c3a00"/>
-                    <TextBox x:Name="txtTipo" Grid.Row="0" Grid.Column="3" Margin="0,5,10,5"/>
-
+                    <ComboBox x:Name="cboTipo" SelectionChanged="cboTipo_SelectionChanged" DisplayMemberPath="." SelectedValuePath="." Margin="123,20,10,10" Grid.Column="2" Grid.ColumnSpan="2"/>
                     <TextBlock Text="Costo Producción:" Grid.Row="0" Grid.Column="4" Margin="0,5,5,5" VerticalAlignment="Center" Foreground="#5c3a00"/>
-                    <TextBox x:Name="txtCostoProduccion" Grid.Row="0" Grid.Column="5" Margin="0,5,0,5"/>
+                    <TextBox x:Name="txtCostoProduccion" Grid.Row="0" Grid.Column="4" Margin="118,18,0,11" Grid.ColumnSpan="2" RenderTransformOrigin="0.5,0.5">
+                        <TextBox.RenderTransform>
+                            <TransformGroup>
+                                <ScaleTransform ScaleY="-1"/>
+                                <SkewTransform/>
+                                <RotateTransform Angle="-0.091"/>
+                                <TranslateTransform/>
+                            </TransformGroup>
+                        </TextBox.RenderTransform>
+                    </TextBox>
 
                     <TextBlock Text="Margen Ganancia (%):" Grid.Row="1" Grid.Column="0" Margin="0,5,5,5" VerticalAlignment="Center" Foreground="#5c3a00"/>
                     <TextBox x:Name="txtMargenGanancia" Grid.Row="1" Grid.Column="1" Margin="0,5,10,5"/>
@@ -55,7 +63,7 @@
                     <TextBox x:Name="txtStock" Grid.Row="1" Grid.Column="5" Margin="0,5,0,5"/>
 
                     <TextBlock Text="Stock Mínimo:" Grid.Row="2" Grid.Column="0" Margin="0,5,5,5" VerticalAlignment="Center" Foreground="#5c3a00"/>
-                    <TextBox x:Name="txtStockMinimo" Grid.Row="2" Grid.Column="1" Margin="0,5,10,5"/>
+                    <TextBox x:Name="txtStockMinimo" Grid.Row="2" Grid.Column="1" Margin="0,5,10,10"/>
 
                     <CheckBox x:Name="chkVisible" Content="Producto Visible" Grid.Row="2" Grid.Column="2" IsChecked="True" Foreground="#5c3a00" Margin="0,5,0,5" VerticalAlignment="Center"/>
 
@@ -78,19 +86,13 @@
 
             <Border Grid.Row="2" Margin="0,20,0,0" Background="White" CornerRadius="10" Padding="5"
                     BorderBrush="#e2a42d" BorderThickness="2">
-                <DataGrid x:Name="dgvProductos" AutoGenerateColumns="False" IsReadOnly="True"
-                          SelectionMode="Single" SelectionChanged="dgvProductos_SelectionChanged"
-                          Background="White" BorderThickness="0">
+                <DataGrid x:Name="dgvProductos" AutoGenerateColumns="False">
                     <DataGrid.Columns>
-                        <DataGridTextColumn Header="ID" Binding="{Binding IdProducto}" Width="60"/>
-                        <DataGridTextColumn Header="Nombre" Binding="{Binding Nombre}" Width="*"/>
-                        <DataGridTextColumn Header="Tipo" Binding="{Binding Tipo}" Width="120"/>
-                        <DataGridTextColumn Header="Costo" Binding="{Binding CostoProduccion, StringFormat=C}" Width="120"/>
-                        <DataGridTextColumn Header="Margen (%)" Binding="{Binding MargenGanancia}" Width="100"/>
-                        <DataGridTextColumn Header="Precio" Binding="{Binding PrecioVenta, StringFormat=C}" Width="120"/>
-                        <DataGridTextColumn Header="Stock" Binding="{Binding StockActual}" Width="80"/>
-                        <DataGridTextColumn Header="Stock Min" Binding="{Binding StockMinimo}" Width="100"/>
-                        <DataGridCheckBoxColumn Header="Visible" Binding="{Binding Visible}" Width="80"/>
+                        <DataGridTextColumn Header="Nombre" Binding="{Binding Nombre}"/>
+                        <DataGridTextColumn Header="Tipo" Binding="{Binding Tipo}"/>
+                        <DataGridTextColumn Header="Precio" Binding="{Binding PrecioVenta, StringFormat=C}"/>
+                        <DataGridTextColumn Header="Stock" Binding="{Binding StockActual}"/>
+                        <DataGridTextColumn Header="Estado" Binding="{Binding Visible}"/>
                     </DataGrid.Columns>
                 </DataGrid>
             </Border>

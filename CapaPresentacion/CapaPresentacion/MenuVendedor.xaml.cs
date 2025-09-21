@@ -74,17 +74,15 @@ namespace CapaPresentacion
         private void btnNuevaVenta_Click(object sender, RoutedEventArgs e)
         {
             // Reemplaza la llamada a SetVendedor con el constructor adecuado
-            FormVenta formVenta = new FormVenta();
+            FormVenta formVenta = new FormVenta(_idVendedor, _nombreVendedor);
             formVenta.Show();
         }
 
         private void btnMisVentas_Click(object sender, RoutedEventArgs e)
         {
-            // Comenta esta línea si FormMisVentas no existe todavía
-            // FormMisVentas formMisVentas = new FormMisVentas(_idVendedor);
-            // formMisVentas.Show();
-
-            MessageBox.Show("Funcionalidad en desarrollo", "Información", MessageBoxButton.OK, MessageBoxImage.Information);
+            // CORRECCIÓN: Pasar ambos parámetros requeridos al constructor
+            FormHistorialVentas formhistorialventas = new FormHistorialVentas(_idVendedor, _nombreVendedor);
+            formhistorialventas.Show();
         }
 
         private void btnGestionClientes_Click(object sender, RoutedEventArgs e)
@@ -105,6 +103,7 @@ namespace CapaPresentacion
                 MessageBox.Show("Por favor, seleccione una venta para ver su detalle", "Advertencia", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
+
         private void BtnCerrarSesion_Click(object sender, RoutedEventArgs e)
         {
             // Buscar y mostrar la ventana de login principal

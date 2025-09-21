@@ -1,167 +1,152 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
+﻿using CapaDatos;
 using CapaEntidad;
 using Microsoft.Data.SqlClient;
+using System;
+using System.Collections.Generic;
+using System.Data;
 
 
-namespace CapaDatos
-{
-    public class CD_Alerta
+    namespace CapaDatos
     {
-        public List<AlertaStock> ListarAlertas()
+        public class CD_Alerta
         {
-            List<AlertaStock> lista = new List<AlertaStock>();
-
-            using (SqlConnection oconexion = new SqlConnection(Conexion.cadena))
+            public List<AlertaStock> ListarAlertas()
             {
-                SqlCommand cmd = new SqlCommand(@"
-                    SELECT a.IdAlerta, a.IdProducto, p.Nombre as NombreProducto, 
-                           a.FechaAlerta, a.Mensaje, p.StockActual, p.StockMinimo, 'Producto' as Tipo
-                    FROM AlertaStock a
-                    INNER JOIN Producto p ON a.IdProducto = p.IdProducto
-                    ORDER BY a.FechaAlerta DESC", oconexion);
+                List<AlertaStock> alertas = new List<AlertaStock>();
 
-                oconexion.Open();
-
-                using (SqlDataReader dr = cmd.ExecuteReader())
+                using (SqlConnection oconexion = new SqlConnection(Conexion.cadena))
                 {
-                    while (dr.Read())
+                    oconexion.Open();
+                    using (var command = new SqlCommand())
                     {
-                        lista.Add(new AlertaStock()
+                        command.Connection = oconexion;
+                        command.CommandText = "SELECT * FROM AlertaStock ORDER BY FechaAlerta DESC";
+                        command.CommandType = CommandType.Text;
+
+                        using (var reader = command.ExecuteReader())
                         {
-                            IdAlerta = Convert.ToInt32(dr["IdAlerta"]),
-                            IdProducto = Convert.ToInt32(dr["IdProducto"]),
-                            NombreProducto = dr["NombreProducto"].ToString(),
-                            FechaAlerta = Convert.ToDateTime(dr["FechaAlerta"]),
-                            Mensaje = dr["Mensaje"].ToString(),
-                            StockActual = Convert.ToInt32(dr["StockActual"]),
-                            StockMinimo = Convert.ToInt32(dr["StockMinimo"]),
-                            Tipo = dr["Tipo"].ToString()
-                        });
+                            while (reader.Read())
+                            {
+                                alertas.Add(new AlertaStock
+                                {
+                                    IdAlerta = (int)reader["IdAlerta"],
+                                    IdProducto = (int)reader["IdProducto"],
+                                    FechaAlerta = (DateTime)reader["FechaAlerta"],
+                                    Mensaje = reader["Mensaje"].ToString()
+                                });
+                            }
+                        }
                     }
                 }
-            }
-            return lista;
-        }
 
-        public bool RegistrarAlerta(int idProducto, string mensaje)
-        {
-            try
+                return alertas;
+            }
+
+            public int ObtenerCantidadAlertasPendientes()
             {
                 using (SqlConnection oconexion = new SqlConnection(Conexion.cadena))
                 {
-                    SqlCommand cmd = new SqlCommand("INSERT INTO AlertaStock (IdProducto, FechaAlerta, Mensaje) VALUES (@idProducto, GETDATE(), @mensaje)", oconexion);
-                    cmd.Parameters.AddWithValue("@idProducto", idProducto);
-                    cmd.Parameters.AddWithValue("@mensaje", mensaje);
-
                     oconexion.Open();
-                    return cmd.ExecuteNonQuery() > 0;
+                    using (var command = new SqlCommand())
+                    {
+                        command.Connection = oconexion;
+                        command.CommandText = "SELECT COUNT(*) FROM AlertaStock WHERE CAST(FechaAlerta AS DATE) = CAST(GETDATE() AS DATE)";
+                        command.CommandType = CommandType.Text;
+
+                        return Convert.ToInt32(command.ExecuteScalar());
+                    }
                 }
             }
-            catch
-            {
-                return false;
-            }
-        }
 
-        public bool EliminarAlerta(int idAlerta)
-        {
-            try
+            public bool VerificarYGenerarAlertas()
+            {
+                try
+                {
+                    // Lógica para verificar y generar alertas
+                    return true;
+                }
+                catch
+                {
+                    return false;
+                }
+            }
+
+            public bool EliminarAlerta(int idAlerta)
             {
                 using (SqlConnection oconexion = new SqlConnection(Conexion.cadena))
                 {
-                    SqlCommand cmd = new SqlCommand("DELETE FROM AlertaStock WHERE IdAlerta = @id", oconexion);
-                    cmd.Parameters.AddWithValue("@id", idAlerta);
-
                     oconexion.Open();
-                    return cmd.ExecuteNonQuery() > 0;
-                }
-            }
-            catch
-            {
-                return false;
-            }
-        }
-
-        public void VerificarYGenerarAlertas()
-        {
-            using (SqlConnection oconexion = new SqlConnection(Conexion.cadena))
-            {
-                oconexion.Open();
-
-                // Verificar productos con stock bajo
-                SqlCommand cmdProductos = new SqlCommand(@"
-                    SELECT p.IdProducto, p.Nombre, p.StockActual, p.StockMinimo
-                    FROM Producto p
-                    WHERE p.StockActual <= p.StockMinimo 
-                    AND p.Visible = 1
-                    AND NOT EXISTS (
-                        SELECT 1 FROM AlertaStock a 
-                        WHERE a.IdProducto = p.IdProducto 
-                        AND CAST(a.FechaAlerta AS DATE) = CAST(GETDATE() AS DATE)
-                    )", oconexion);
-
-                using (SqlDataReader dr = cmdProductos.ExecuteReader())
-                {
-                    while (dr.Read())
+                    using (var command = new SqlCommand())
                     {
-                        int idProducto = Convert.ToInt32(dr["IdProducto"]);
-                        string nombre = dr["Nombre"].ToString();
-                        int stockActual = Convert.ToInt32(dr["StockActual"]);
-                        int stockMinimo = Convert.ToInt32(dr["StockMinimo"]);
+                        command.Connection = oconexion;
+                        command.CommandText = "DELETE FROM AlertaStock WHERE IdAlerta = @IdAlerta";
+                        command.Parameters.AddWithValue("@IdAlerta", idAlerta);
+                        command.CommandType = CommandType.Text;
 
-                        string mensaje = $"ALERTA: Producto '{nombre}' con stock bajo. Actual: {stockActual}, Mínimo: {stockMinimo}";
-
-                        // Registrar alerta
-                        RegistrarAlerta(idProducto, mensaje);
-                    }
-                }
-
-                // Verificar materias primas con stock bajo (opcional)
-                SqlCommand cmdMaterias = new SqlCommand(@"
-                    SELECT m.IdMateria, m.Nombre, m.CantidadDisponible, m.StockMinimo
-                    FROM MateriaPrima m
-                    WHERE m.CantidadDisponible <= m.StockMinimo 
-                    AND NOT EXISTS (
-                        SELECT 1 FROM AlertaStock a 
-                        WHERE a.IdProducto = m.IdMateria 
-                        AND CAST(a.FechaAlerta AS DATE) = CAST(GETDATE() AS DATE)
-                        AND a.Mensaje LIKE '%materia prima%'
-                    )", oconexion);
-
-                using (SqlDataReader dr = cmdMaterias.ExecuteReader())
-                {
-                    while (dr.Read())
-                    {
-                        int idMateria = Convert.ToInt32(dr["IdMateria"]);
-                        string nombre = dr["Nombre"].ToString();
-                        float stockActual = Convert.ToSingle(dr["CantidadDisponible"]);
-                        int stockMinimo = Convert.ToInt32(dr["StockMinimo"]);
-
-                        string mensaje = $"ALERTA: Materia prima '{nombre}' con stock bajo. Actual: {stockActual}, Mínimo: {stockMinimo}";
-
-                        // Registrar alerta (usamos IdProducto = -idMateria para diferenciar)
-                        RegistrarAlerta(-idMateria, mensaje);
+                        return command.ExecuteNonQuery() > 0;
                     }
                 }
             }
-        }
 
-        public int ObtenerCantidadAlertasPendientes()
-        {
-            using (SqlConnection oconexion = new SqlConnection(Conexion.cadena))
+            public bool LimpiarAlertasAntiguas()
             {
-                SqlCommand cmd = new SqlCommand(@"
-                    SELECT COUNT(*) 
-                    FROM AlertaStock a
-                    INNER JOIN Producto p ON a.IdProducto = p.IdProducto
-                    WHERE CAST(a.FechaAlerta AS DATE) = CAST(GETDATE() AS DATE)
-                    AND p.StockActual <= p.StockMinimo", oconexion);
+                using (SqlConnection oconexion = new SqlConnection(Conexion.cadena))
+                {
+                    oconexion.Open();
+                    using (var command = new SqlCommand())
+                    {
+                        command.Connection = oconexion;
+                        command.CommandText = "DELETE FROM AlertaStock WHERE FechaAlerta < DATEADD(day, -7, GETDATE())";
+                        command.CommandType = CommandType.Text;
 
-                oconexion.Open();
-                return Convert.ToInt32(cmd.ExecuteScalar());
+                        return command.ExecuteNonQuery() > 0;
+                    }
+                }
+            }
+
+            public bool GenerarAlertaProducto(int idProducto, string nombre, int stockActual, int stockMinimo)
+            {
+                using (SqlConnection oconexion = new SqlConnection(Conexion.cadena))
+                {
+                    oconexion.Open();
+                    using (var command = new SqlCommand())
+                    {
+                        command.Connection = oconexion;
+                        command.CommandText = @"
+                        INSERT INTO AlertaStock (IdProducto, FechaAlerta, Mensaje)
+                        VALUES (@IdProducto, GETDATE(), 
+                                'Stock bajo del producto: ' + @Nombre + '. Actual: ' + CAST(@StockActual AS VARCHAR) + ', Mínimo: ' + CAST(@StockMinimo AS VARCHAR))";
+                        command.Parameters.AddWithValue("@IdProducto", idProducto);
+                        command.Parameters.AddWithValue("@Nombre", nombre);
+                        command.Parameters.AddWithValue("@StockActual", stockActual);
+                        command.Parameters.AddWithValue("@StockMinimo", stockMinimo);
+                        command.CommandType = CommandType.Text;
+
+                        return command.ExecuteNonQuery() > 0;
+                    }
+                }
+            }
+
+            public bool GenerarAlertaMateriaPrima(int idMateria, string nombre, float cantidadActual, int stockMinimo)
+            {
+                using (SqlConnection oconexion = new SqlConnection(Conexion.cadena))
+                {
+                    oconexion.Open();
+                    using (var command = new SqlCommand())
+                    {
+                        command.Connection = oconexion;
+                        command.CommandText = @"
+                        INSERT INTO AlertaStock (IdProducto, FechaAlerta, Mensaje)
+                        VALUES (0, GETDATE(), 
+                                'Stock bajo de materia prima: ' + @Nombre + '. Actual: ' + CAST(@CantidadActual AS VARCHAR) + ', Mínimo: ' + CAST(@StockMinimo AS VARCHAR))";
+                        command.Parameters.AddWithValue("@Nombre", nombre);
+                        command.Parameters.AddWithValue("@CantidadActual", cantidadActual);
+                        command.Parameters.AddWithValue("@StockMinimo", stockMinimo);
+                        command.CommandType = CommandType.Text;
+
+                        return command.ExecuteNonQuery() > 0;
+                    }
+                }
             }
         }
     }
-}

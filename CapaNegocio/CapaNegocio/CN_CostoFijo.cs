@@ -27,5 +27,6 @@ namespace CapaNegocio
         {
             return cd_costoFijo.Eliminar(idCosto, out mensaje);
         }
+
     }
 }

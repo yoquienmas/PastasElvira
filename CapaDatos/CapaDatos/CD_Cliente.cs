@@ -4,135 +4,140 @@ using System.Data;
 using Microsoft.Data.SqlClient;
 using CapaEntidad;
 
-namespace CapaDatos
-{
-    public class CD_Cliente
+    namespace CapaDatos
     {
-        public List<Cliente> Listar()
+        public class CD_Cliente
         {
-            List<Cliente> lista = new List<Cliente>();
+        public List<Cliente> ListarClientes()
+        {
+            List<Cliente> clientes = new List<Cliente>();
 
-            using (SqlConnection conexion = new SqlConnection(Conexion.cadena))
+            using (SqlConnection oconexion = new SqlConnection(Conexion.cadena))
             {
                 try
                 {
-                    SqlCommand cmd = new SqlCommand("SELECT * FROM Cliente ORDER BY Nombre", conexion);
-                    conexion.Open();
+                    oconexion.Open();
+                    // CONSULTA COMPLETA con todas las columnas
+                    SqlCommand comando = new SqlCommand(@"SELECT IdCliente, Nombre, Apellido, Documento, 
+                                    Telefono, Email, Direccion, Cuil, Activo, FechaCreacion 
+                                    FROM Cliente ORDER BY Nombre", oconexion);
 
-                    using (SqlDataReader dr = cmd.ExecuteReader())
+                    using (SqlDataReader reader = comando.ExecuteReader())
                     {
-                        while (dr.Read())
+                        while (reader.Read())
                         {
-                            lista.Add(new Cliente()
+                            clientes.Add(new Cliente
                             {
-                                IdCliente = Convert.ToInt32(dr["IdCliente"]),
-                                Nombre = dr["Nombre"].ToString(),
-                                Documento = dr["Documento"].ToString(),
-                                Telefono = dr["Telefono"] != DBNull.Value ? dr["Telefono"].ToString() : "",
-                                Email = dr["Email"] != DBNull.Value ? dr["Email"].ToString() : "",
-                                Cuil = dr["Cuil"].ToString(),
-                                Direccion = dr["Direccion"] != DBNull.Value ? dr["Direccion"].ToString() : ""
+                                IdCliente = (int)reader["IdCliente"],
+                                Nombre = reader["Nombre"].ToString(),
+                                Apellido = reader["Apellido"].ToString(),
+                                Documento = reader["Documento"].ToString(),
+                                Telefono = reader["Telefono"].ToString(),
+                                Email = reader["Email"].ToString(),
+                                Direccion = reader["Direccion"].ToString(),
+                                Cuil = reader["Cuil"].ToString(),
+                                Activo = (bool)reader["Activo"],
+                                FechaCreacion = (DateTime)reader["FechaCreacion"]
                             });
                         }
                     }
                 }
                 catch (Exception ex)
                 {
-                    lista = new List<Cliente>();
+                    throw new Exception("Error al listar clientes: " + ex.Message);
                 }
             }
-            return lista;
+
+            return clientes;
         }
 
         public bool Registrar(Cliente cliente, out string mensaje)
         {
             mensaje = string.Empty;
-            bool resultado = false;
-
             try
             {
                 using (SqlConnection oconexion = new SqlConnection(Conexion.cadena))
                 {
-                    SqlCommand cmd = new SqlCommand("INSERT INTO Cliente (Nombre, Documento, Telefono, Email, Cuil, Direccion) VALUES (@nombre, @documento, @telefono, @email, @direccion)", oconexion);
-
-                    cmd.Parameters.AddWithValue("@nombre", cliente.Nombre);
-                    cmd.Parameters.AddWithValue("@documento", cliente.Documento);
-                    cmd.Parameters.AddWithValue("@telefono", cliente.Telefono ?? (object)DBNull.Value);
-                    cmd.Parameters.AddWithValue("@email", cliente.Email ?? (object)DBNull.Value);
-                    cmd.Parameters.AddWithValue("@cuil", cliente.Cuil);
-                    cmd.Parameters.AddWithValue("@direccion", cliente.Direccion ?? (object)DBNull.Value);
-
                     oconexion.Open();
-                    resultado = cmd.ExecuteNonQuery() > 0;
-                    mensaje = resultado ? "Cliente registrado correctamente" : "No se pudo registrar el cliente";
+                    SqlCommand comando = new SqlCommand(@"INSERT INTO Cliente (Nombre, Apellido, Documento, Telefono, Email, Direccion, Cuil, Activo, FechaCreacion) 
+                                             VALUES (@Nombre, @Apellido, @Documento, @Telefono, @Email, @Direccion, @Cuil, @Activo, GETDATE())", oconexion);
+
+                    comando.Parameters.AddWithValue("@Nombre", cliente.Nombre);
+                    comando.Parameters.AddWithValue("@Apellido", cliente.Apellido);
+                    comando.Parameters.AddWithValue("@Documento", cliente.Documento);
+                    comando.Parameters.AddWithValue("@Telefono", (object)cliente.Telefono ?? DBNull.Value);
+                    comando.Parameters.AddWithValue("@Email", (object)cliente.Email ?? DBNull.Value);
+                    comando.Parameters.AddWithValue("@Direccion", (object)cliente.Direccion ?? DBNull.Value);
+                    comando.Parameters.AddWithValue("@Cuil", (object)cliente.Cuil ?? DBNull.Value);
+                    comando.Parameters.AddWithValue("@Activo", cliente.Activo);
+
+                    int result = comando.ExecuteNonQuery();
+                    mensaje = "Cliente registrado correctamente";
+                    return result > 0;
                 }
             }
             catch (Exception ex)
             {
-                resultado = false;
                 mensaje = ex.Message;
+                return false;
             }
-
-            return resultado;
         }
 
         public bool Editar(Cliente cliente, out string mensaje)
         {
             mensaje = string.Empty;
-            bool resultado = false;
-
             try
             {
                 using (SqlConnection oconexion = new SqlConnection(Conexion.cadena))
                 {
-                    SqlCommand cmd = new SqlCommand("UPDATE Cliente SET Nombre = @nombre, Documento = @documento, Telefono = @telefono, Email = @email, Cuil = @cuil, Direccion = @direccion WHERE IdCliente = @id", oconexion);
-
-                    cmd.Parameters.AddWithValue("@id", cliente.IdCliente);
-                    cmd.Parameters.AddWithValue("@nombre", cliente.Nombre);
-                    cmd.Parameters.AddWithValue("@documento", cliente.Documento);
-                    cmd.Parameters.AddWithValue("@telefono", cliente.Telefono ?? (object)DBNull.Value);
-                    cmd.Parameters.AddWithValue("@email", cliente.Email ?? (object)DBNull.Value);
-                    cmd.Parameters.AddWithValue("@cuil", cliente.Cuil);
-                    cmd.Parameters.AddWithValue("@direccion", cliente.Direccion ?? (object)DBNull.Value);
-
                     oconexion.Open();
-                    resultado = cmd.ExecuteNonQuery() > 0;
-                    mensaje = resultado ? "Cliente actualizado correctamente" : "No se pudo actualizar el cliente";
+                    SqlCommand comando = new SqlCommand(@"UPDATE Cliente SET Nombre = @Nombre, Apellido = @Apellido, Documento = @Documento, 
+                                             Telefono = @Telefono, Email = @Email, Direccion = @Direccion, Cuil = @Cuil, Activo = @Activo 
+                                             WHERE IdCliente = @IdCliente", oconexion);
+
+                    comando.Parameters.AddWithValue("@IdCliente", cliente.IdCliente);
+                    comando.Parameters.AddWithValue("@Nombre", cliente.Nombre);
+                    comando.Parameters.AddWithValue("@Apellido", cliente.Apellido);
+                    comando.Parameters.AddWithValue("@Documento", cliente.Documento);
+                    comando.Parameters.AddWithValue("@Telefono", (object)cliente.Telefono ?? DBNull.Value);
+                    comando.Parameters.AddWithValue("@Email", (object)cliente.Email ?? DBNull.Value);
+                    comando.Parameters.AddWithValue("@Direccion", (object)cliente.Direccion ?? DBNull.Value);
+                    comando.Parameters.AddWithValue("@Cuil", (object)cliente.Cuil ?? DBNull.Value);
+                    comando.Parameters.AddWithValue("@Activo", cliente.Activo);
+
+                    int result = comando.ExecuteNonQuery();
+                    mensaje = "Cliente actualizado correctamente";
+                    return result > 0;
                 }
             }
             catch (Exception ex)
             {
-                resultado = false;
                 mensaje = ex.Message;
+                return false;
             }
-
-            return resultado;
         }
 
         public bool Eliminar(int idCliente, out string mensaje)
-        {
-            mensaje = string.Empty;
-            bool resultado = false;
-
-            try
             {
-                using (SqlConnection oconexion = new SqlConnection(Conexion.cadena))
+                mensaje = string.Empty;
+                try
                 {
-                    SqlCommand cmd = new SqlCommand("DELETE FROM Cliente WHERE IdCliente = @id", oconexion);
-                    cmd.Parameters.AddWithValue("@id", idCliente);
+                    using (SqlConnection oconexion = new SqlConnection(Conexion.cadena))
+                    {
+                        oconexion.Open();
+                        SqlCommand comando = new SqlCommand("UPDATE Cliente SET Activo = 0 WHERE IdCliente = @IdCliente", oconexion);
+                        comando.Parameters.AddWithValue("@IdCliente", idCliente);
 
-                    oconexion.Open();
-                    resultado = cmd.ExecuteNonQuery() > 0;
-                    mensaje = resultado ? "Cliente eliminado correctamente" : "No se pudo eliminar el cliente";
+                        int result = comando.ExecuteNonQuery();
+                        mensaje = "Cliente eliminado correctamente";
+                        return result > 0;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    mensaje = ex.Message;
+                    return false;
                 }
             }
-            catch (Exception ex)
-            {
-                resultado = false;
-                mensaje = ex.Message;
-            }
-
-            return resultado;
         }
     }
-}

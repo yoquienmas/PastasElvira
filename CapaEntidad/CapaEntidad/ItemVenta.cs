@@ -1,4 +1,6 @@
-﻿namespace CapaEntidad
+﻿using System;
+using System.Collections.Generic;
+namespace CapaEntidad
 {
     public class ItemVenta
     {
@@ -6,11 +8,6 @@
         public string NombreProducto { get; set; }
         public int Cantidad { get; set; }
         public decimal PrecioUnitario { get; set; }
-
-        // Propiedad calculada
-        public decimal Subtotal
-        {
-            get { return Cantidad * PrecioUnitario; }
-        }
+        public decimal Subtotal => Cantidad * PrecioUnitario;
     }
 }
