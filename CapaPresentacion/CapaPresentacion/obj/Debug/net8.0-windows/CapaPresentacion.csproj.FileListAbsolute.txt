@@ -113,3 +113,7 @@ C:\Users\danie\Source\Repos\PastasElvira\CapaPresentacion\CapaPresentacion\obj\D
 C:\Users\danie\Source\Repos\PastasElvira\CapaPresentacion\CapaPresentacion\obj\Debug\net8.0-windows\MenuDueño.g.cs
 C:\Users\danie\Source\Repos\PastasElvira\CapaPresentacion\CapaPresentacion\obj\Debug\net8.0-windows\MenuVendedor.g.cs
 C:\Users\danie\Source\Repos\PastasElvira\CapaPresentacion\CapaPresentacion\obj\Debug\net8.0-windows\MenuVendedor.baml
+C:\Users\danie\Source\Repos\PastasElvira\CapaPresentacion\CapaPresentacion\bin\Debug\net8.0-windows\LiveCharts.dll
+C:\Users\danie\Source\Repos\PastasElvira\CapaPresentacion\CapaPresentacion\bin\Debug\net8.0-windows\LiveCharts.Wpf.dll
+C:\Users\danie\Source\Repos\PastasElvira\CapaPresentacion\CapaPresentacion\obj\Debug\net8.0-windows\FormProductosDisponibles.baml
+C:\Users\danie\Source\Repos\PastasElvira\CapaPresentacion\CapaPresentacion\obj\Debug\net8.0-windows\FormProductosDisponibles.g.cs

@@ -90,6 +90,9 @@ namespace CapaPresentacion
                         _nombreUsuarioLogueado = row["NombreUsuario"].ToString();
                         _rolUsuarioLogueado = row["Rol"].ToString();
 
+                        // ✅ CORRECCIÓN: Obtener el NOMBRE COMPLETO
+                        string nombreCompleto = $"{row["Nombre"]} {row["Apellido"]}";
+
                         // CERRAR esta ventana de login y ABRIR la ventana correspondiente
                         this.Hide(); // Ocultar ventana de login
 
@@ -105,7 +108,8 @@ namespace CapaPresentacion
                                 menuAdmin.Show();
                                 break;
                             case "VENDEDOR":
-                                MenuVendedor menuVendedor = new MenuVendedor(_idUsuarioLogueado, _nombreUsuarioLogueado);
+                                // ✅ CORRECCIÓN: Pasar el NOMBRE COMPLETO
+                                MenuVendedor menuVendedor = new MenuVendedor(_idUsuarioLogueado, nombreCompleto);
                                 menuVendedor.Show();
                                 break;
                             default:

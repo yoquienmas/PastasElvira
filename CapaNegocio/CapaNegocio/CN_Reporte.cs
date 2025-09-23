@@ -3,6 +3,7 @@ using CapaEntidad;
 using Microsoft.Data.SqlClient;
 using System;
 using System.Collections.Generic;
+using System.Data;
 
 namespace CapaNegocio
 {
@@ -47,7 +48,7 @@ namespace CapaNegocio
         }
 
         public List<ReporteVenta> ObtenerVentasPorVendedor(int idUsuario, DateTime fechaInicio, DateTime fechaFin,
-                                                         string dniCliente = "", string nombreProducto = "")
+                                                            string dniCliente = "", string nombreProducto = "")
         {
             List<ReporteVenta> lista = new List<ReporteVenta>();
 
@@ -55,32 +56,33 @@ namespace CapaNegocio
             {
                 try
                 {
+                    // ✅ CONSULTA CORREGIDA
                     string query = @"
-                    SELECT 
-                        v.IdVenta, 
-                        v.Fecha, 
-                        c.NombreCompleto as Cliente,
-                        c.DNI as DniCliente,
-                        u.NombreUsuario as Vendedor,
-                        v.Total,
-                        v.IdUsuario,
-                        STUFF((
-                            SELECT ', ' + p.Nombre + ' (' + CAST(dv.Cantidad AS VARCHAR) + ')'
-                            FROM DetalleVenta dv
-                            INNER JOIN Producto p ON dv.IdProducto = p.IdProducto
-                            WHERE dv.IdVenta = v.IdVenta
-                            FOR XML PATH('')
-                        ), 1, 2, '') as Productos
-                    FROM Venta v 
-                    INNER JOIN Cliente c ON v.IdCliente = c.IdCliente
-                    INNER JOIN Usuario u ON v.IdUsuario = u.IdUsuario
-                    WHERE CONVERT(DATE, v.Fecha) BETWEEN @FechaInicio AND @FechaFin
-                    AND v.IdUsuario = @IdVendedor";
+                        SELECT 
+                            v.IdVenta, 
+                            v.Fecha, 
+                            c.Nombre + ' ' + c.Apellido as Cliente,
+                            c.Documento as DniCliente,
+                            u.NombreUsuario as Vendedor,
+                            v.Total,
+                            v.IdUsuario,
+                            STUFF((
+                                SELECT ', ' + p.Nombre + ' (' + CAST(dv.Cantidad AS VARCHAR) + ')'
+                                FROM DetalleVenta dv
+                                INNER JOIN Producto p ON dv.IdProducto = p.IdProducto
+                                WHERE dv.IdVenta = v.IdVenta
+                                FOR XML PATH('')
+                            ), 1, 2, '') as Productos
+                        FROM Venta v 
+                        INNER JOIN Cliente c ON v.IdCliente = c.IdCliente
+                        INNER JOIN Usuario u ON v.IdUsuario = u.IdUsuario
+                        WHERE CONVERT(DATE, v.Fecha) BETWEEN @FechaInicio AND @FechaFin
+                        AND v.IdUsuario = @IdVendedor";
 
                     // Agregar filtros opcionales
                     if (!string.IsNullOrEmpty(dniCliente))
                     {
-                        query += " AND c.DNI LIKE @DniCliente";
+                        query += " AND c.Documento LIKE @DniCliente";
                     }
 
                     if (!string.IsNullOrEmpty(nombreProducto))
@@ -124,18 +126,90 @@ namespace CapaNegocio
                                 Usuario = dr["Vendedor"].ToString(),
                                 IdUsuario = Convert.ToInt32(dr["IdUsuario"]),
                                 Total = Convert.ToDecimal(dr["Total"]),
-                                Productos = dr["Productos"].ToString()
+                                Productos = dr["Productos"] != DBNull.Value ? dr["Productos"].ToString() : "Sin productos"
                             });
                         }
                     }
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"Error: {ex.Message}");
-                    lista = new List<ReporteVenta>();
+                    // ✅ CORREGIDO: Usar throw en lugar de MessageBox
+                    throw new Exception($"Error al obtener ventas por vendedor: {ex.Message}");
                 }
             }
             return lista;
+        }
+
+        // ✅ MÉTODO DE DIAGNÓSTICO CORREGIDO (sin MessageBox)
+        public DataTable DiagnosticarVentasEnBD(int idUsuario, DateTime fechaInicio, DateTime fechaFin)
+        {
+            DataTable resultado = new DataTable();
+            resultado.Columns.Add("Tipo", typeof(string));
+            resultado.Columns.Add("Valor", typeof(string));
+
+            using (SqlConnection oconexion = new SqlConnection(conexion))
+            {
+                try
+                {
+                    oconexion.Open();
+
+                    // 1. Verificar si hay ventas en general
+                    SqlCommand cmdCount = new SqlCommand("SELECT COUNT(*) FROM Venta", oconexion);
+                    int totalVentas = (int)cmdCount.ExecuteScalar();
+                    resultado.Rows.Add("Total ventas en BD", totalVentas.ToString());
+
+                    // 2. Verificar ventas específicas del vendedor
+                    SqlCommand cmdVendedor = new SqlCommand(@"
+                        SELECT COUNT(*) FROM Venta 
+                        WHERE IdUsuario = @IdUsuario 
+                        AND Fecha BETWEEN @FechaInicio AND @FechaFin", oconexion);
+
+                    cmdVendedor.Parameters.AddWithValue("@IdUsuario", idUsuario);
+                    cmdVendedor.Parameters.AddWithValue("@FechaInicio", fechaInicio);
+                    cmdVendedor.Parameters.AddWithValue("@FechaFin", fechaFin);
+
+                    int ventasVendedor = (int)cmdVendedor.ExecuteScalar();
+                    resultado.Rows.Add($"Ventas del vendedor {idUsuario}", ventasVendedor.ToString());
+
+                    // 3. Verificar estructura de tablas
+                    SqlCommand cmdEstructura = new SqlCommand(@"
+                        SELECT TABLE_NAME, COLUMN_NAME, DATA_TYPE 
+                        FROM INFORMATION_SCHEMA.COLUMNS 
+                        WHERE TABLE_NAME IN ('Venta', 'Cliente', 'Usuario') 
+                        ORDER BY TABLE_NAME, ORDINAL_POSITION", oconexion);
+
+                    using (SqlDataReader reader = cmdEstructura.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            string columna = $"{reader["TABLE_NAME"]}.{reader["COLUMN_NAME"]} ({reader["DATA_TYPE"]})";
+                            resultado.Rows.Add("Estructura", columna);
+                        }
+                    }
+
+                    // 4. Verificar algunas ventas de ejemplo
+                    SqlCommand cmdEjemplo = new SqlCommand(@"
+                        SELECT TOP 5 v.IdVenta, v.Fecha, c.Nombre, u.NombreUsuario, v.Total 
+                        FROM Venta v 
+                        LEFT JOIN Cliente c ON v.IdCliente = c.IdCliente 
+                        LEFT JOIN Usuario u ON v.IdUsuario = u.IdUsuario 
+                        ORDER BY v.Fecha DESC", oconexion);
+
+                    using (SqlDataReader reader = cmdEjemplo.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            string ventaEjemplo = $"ID: {reader["IdVenta"]}, Fecha: {reader["Fecha"]}, Cliente: {reader["Nombre"]}, Vendedor: {reader["NombreUsuario"]}, Total: {reader["Total"]}";
+                            resultado.Rows.Add("Venta ejemplo", ventaEjemplo);
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    resultado.Rows.Add("Error diagnóstico", ex.Message);
+                }
+            }
+            return resultado;
         }
 
         // Método simplificado para el dashboard (sin filtros de fecha)
@@ -165,5 +239,6 @@ namespace CapaNegocio
             // Implementar lógica para obtener top clientes
             return new List<dynamic>();
         }
+
     }
 }

@@ -42,6 +42,52 @@ namespace CapaDatos
                 }
             }
         }
+        public List<ReporteVenta> ObtenerTodasLasVentas()
+        {
+            List<ReporteVenta> ventas = new List<ReporteVenta>();
+
+            using (SqlConnection conexion = new SqlConnection(Conexion.cadena))
+            {
+                try
+                {
+                    conexion.Open();
+                    string query = @"
+                SELECT v.IdVenta, v.Fecha, v.Total, v.IdUsuario, 
+                       c.Nombre as Cliente, c.DNI, 
+                       u.Nombre as Usuario
+                FROM Ventas v 
+                LEFT JOIN Clientes c ON v.IdCliente = c.IdCliente
+                LEFT JOIN Usuarios u ON v.IdUsuario = u.IdUsuario
+                ORDER BY v.Fecha DESC";
+
+                    using (SqlCommand cmd = new SqlCommand(query, conexion))
+                    {
+                        using (SqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                ventas.Add(new ReporteVenta
+                                {
+                                    IdVenta = Convert.ToInt32(reader["IdVenta"]),
+                                    Fecha = Convert.ToDateTime(reader["Fecha"]),
+                                    Total = Convert.ToDecimal(reader["Total"]),
+                                    IdUsuario = Convert.ToInt32(reader["IdUsuario"]),
+                                    Cliente = reader["Cliente"]?.ToString() ?? "N/A",
+                                    DNI = reader["DNI"]?.ToString() ?? "N/A",
+                                    Usuario = reader["Usuario"]?.ToString() ?? "N/A"
+                                });
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Error al obtener ventas: " + ex.Message);
+                }
+            }
+
+            return ventas;
+        }
 
         public bool Registrar(Venta venta, out string mensaje)
         {
@@ -53,11 +99,16 @@ namespace CapaDatos
                     using (var command = new SqlCommand())
                     {
                         command.Connection = oconexion;
+
+                        // ✅ USAR LOS NOMBRES CORRECTOS DE COLUMNAS
                         command.CommandText = @"
-                            INSERT INTO Ventas (FechaVenta, Total)
-                            VALUES (@FechaVenta, @Total);
-                            SELECT SCOPE_IDENTITY();";
-                        command.Parameters.AddWithValue("@FechaVenta", venta.FechaVenta);
+                    INSERT INTO Venta (Fecha, IdCliente, IdUsuario, Total)
+                    VALUES (@Fecha, @IdCliente, @IdUsuario, @Total);
+                    SELECT SCOPE_IDENTITY();";
+
+                        command.Parameters.AddWithValue("@Fecha", venta.FechaVenta);
+                        command.Parameters.AddWithValue("@IdCliente", venta.IdCliente);
+                        command.Parameters.AddWithValue("@IdUsuario", venta.IdVendedor);
                         command.Parameters.AddWithValue("@Total", venta.Total);
 
                         venta.IdVenta = Convert.ToInt32(command.ExecuteScalar());
@@ -69,15 +120,25 @@ namespace CapaDatos
                             {
                                 commandDetalle.Connection = oconexion;
                                 commandDetalle.CommandText = @"
-                                    INSERT INTO DetalleVenta (IdVenta, IdProducto, Cantidad, PrecioUnitario, Subtotal)
-                                    VALUES (@IdVenta, @IdProducto, @Cantidad, @PrecioUnitario, @Subtotal)";
+                            INSERT INTO DetalleVenta (IdVenta, IdProducto, Cantidad, PrecioUnitario)
+                            VALUES (@IdVenta, @IdProducto, @Cantidad, @PrecioUnitario)";
+
                                 commandDetalle.Parameters.AddWithValue("@IdVenta", venta.IdVenta);
                                 commandDetalle.Parameters.AddWithValue("@IdProducto", item.IdProducto);
                                 commandDetalle.Parameters.AddWithValue("@Cantidad", item.Cantidad);
                                 commandDetalle.Parameters.AddWithValue("@PrecioUnitario", item.PrecioUnitario);
-                                commandDetalle.Parameters.AddWithValue("@Subtotal", item.Subtotal);
 
                                 commandDetalle.ExecuteNonQuery();
+
+                                // Actualizar stock del producto
+                                using (var commandStock = new SqlCommand())
+                                {
+                                    commandStock.Connection = oconexion;
+                                    commandStock.CommandText = "UPDATE Producto SET StockActual = StockActual - @Cantidad WHERE IdProducto = @IdProducto";
+                                    commandStock.Parameters.AddWithValue("@Cantidad", item.Cantidad);
+                                    commandStock.Parameters.AddWithValue("@IdProducto", item.IdProducto);
+                                    commandStock.ExecuteNonQuery();
+                                }
                             }
                         }
 

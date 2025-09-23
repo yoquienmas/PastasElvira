@@ -23,15 +23,25 @@
             private List<Cliente> listaClientes;
             private ObservableCollection<ItemVenta> listaItemsVenta = new ObservableCollection<ItemVenta>();
             private int idVendedor;
-            private string nombreVendedor;
+            private string NombreCompleto;
 
-        public FormVenta(int idUsuario, string nombreUsuario)
+        public FormVenta(int idUsuario, string NombreVendedor)
         {
             InitializeComponent();
             idVendedor = idUsuario;
-            nombreVendedor = nombreUsuario;
-            listaItemsVenta = new ObservableCollection<ItemVenta>(); // ← Faltaba esta línea
+            NombreCompleto = NombreVendedor;
+
+            // DEBUG: Ver qué está llegando
+            MessageBox.Show($"ID: {idUsuario}, Nombre recibido: '{NombreVendedor}'",
+                           "Debug - FormVenta Constructor");
+
+            // Asignar inmediatamente
+            txtVendedor.Text = NombreCompleto;
+
+            listaItemsVenta = new ObservableCollection<ItemVenta>();
             dgvItemsVenta.ItemsSource = listaItemsVenta;
+            listaProductos = new List<Producto>();
+            listaClientes = new List<Cliente>();
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -41,6 +51,7 @@
                 CargarProductos();
                 CargarClientes();
                 CargarInformacionVenta();
+
             }
             catch (Exception ex)
             {
@@ -50,41 +61,54 @@
         }
 
         private void CargarClientes()
+        {
+            try
             {
-                try
-                {
-                    listaClientes = cnCliente.ListarClientes();
-                    cboClientes.ItemsSource = listaClientes;
-                    cboClientes.DisplayMemberPath = "NombreCompleto";
-                    cboClientes.SelectedValuePath = "IdCliente";
+                // Limpiar el ComboBox antes de asignar nuevos items
+                cboClientes.ItemsSource = null;
+                cboClientes.Items.Clear();
 
-                    // Seleccionar "Consumidor Final" por defecto o crear uno
-                    var consumidorFinal = listaClientes.FirstOrDefault(c => c.Nombre == "CONSUMIDOR FINAL");
-                    if (consumidorFinal != null)
-                    {
-                        cboClientes.SelectedItem = consumidorFinal;
-                    }
-                    else if (listaClientes.Count > 0)
-                    {
-                        cboClientes.SelectedIndex = 0;
-                    }
-                }
-                catch (Exception ex)
+                // Primero establecer las propiedades del ComboBox
+                cboClientes.DisplayMemberPath = "NombreCompleto";
+                cboClientes.SelectedValuePath = "IdCliente";
+
+                // Luego cargar los datos
+                listaClientes = cnCliente.ListarClientes();
+                cboClientes.ItemsSource = listaClientes;
+
+                // DEBUG: Verificar que se cargaron clientes
+                MessageBox.Show($"Clientes cargados: {listaClientes?.Count ?? 0}");
+
+                // Seleccionar "Consumidor Final" por defecto o crear uno
+                var consumidorFinal = listaClientes?.FirstOrDefault(c => c.Nombre == "CONSUMIDOR FINAL");
+                if (consumidorFinal != null)
                 {
-                    MessageBox.Show("Error al cargar clientes: " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    cboClientes.SelectedItem = consumidorFinal;
+                }
+                else if (listaClientes?.Count > 0)
+                {
+                    cboClientes.SelectedIndex = 0;
                 }
             }
-
-            private void CargarInformacionVenta()
+            catch (Exception ex)
             {
-                // Información del vendedor
-                txtVendedor.Text = nombreVendedor;
-
-                // Fecha actual
-                txtFecha.Text = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
+                MessageBox.Show("Error al cargar clientes: " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+        }
 
-            private void cboClientes_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void CargarInformacionVenta()
+        {
+            // Información del vendedor - asignar directamente
+            txtVendedor.Text = NombreCompleto;
+
+            // DEBUG
+            Console.WriteLine($"Asignando vendedor: {NombreCompleto}");
+
+            // Fecha actual
+            txtFecha.Text = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
+        }
+
+        private void cboClientes_SelectionChanged(object sender, SelectionChangedEventArgs e)
             {
                 if (cboClientes.SelectedItem is Cliente clienteSeleccionado)
                 {
@@ -138,7 +162,7 @@
                     ItemVenta nuevoItem = new ItemVenta
                     {
                         IdProducto = productoSeleccionado.IdProducto,
-                        NombreProducto = productoSeleccionado.Nombre,
+                        NombreProducto = productoSeleccionado.NombreProducto,
                         Cantidad = cantidad,
                         PrecioUnitario = productoSeleccionado.PrecioVenta
                     };
@@ -152,13 +176,30 @@
         {
             try
             {
+                // Limpiar el ComboBox antes de asignar nuevos items
+                cboProductos.ItemsSource = null;
+                cboProductos.Items.Clear();
+
+                // Establecer las propiedades del ComboBox
+                cboProductos.DisplayMemberPath = "NombreProducto";
+                cboProductos.SelectedValuePath = "IdProducto";
+
+                // Luego cargar los datos
                 listaProductos = cnProducto.Listar();
                 cboProductos.ItemsSource = listaProductos;
-                cboProductos.DisplayMemberPath = "Nombre";
-                cboProductos.SelectedValuePath = "IdProducto";
 
                 // DEBUG: Verificar que se cargaron productos
                 MessageBox.Show($"Productos cargados: {listaProductos?.Count ?? 0}");
+
+                // Verificar los datos específicos
+                if (listaProductos?.Count > 0)
+                {
+                    foreach (var producto in listaProductos)
+                    {
+                        Console.WriteLine($"Producto: {producto.Nombre}, Tipo: {producto.Tipo}, NombreProducto: {producto.NombreProducto}");
+                    }
+                    cboProductos.SelectedIndex = 0;
+                }
             }
             catch (Exception ex)
             {
@@ -179,50 +220,53 @@
                 }
             }
 
-            private void btnRegistrarVenta_Click(object sender, RoutedEventArgs e)
+        private void btnRegistrarVenta_Click(object sender, RoutedEventArgs e)
+        {
+            if (listaItemsVenta.Count == 0)
             {
-                if (listaItemsVenta.Count == 0)
-                {
-                    MessageBox.Show("No se puede registrar una venta sin productos.", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
-                    return;
-                }
-
-                // Obtener el cliente seleccionado
-                if (cboClientes.SelectedItem == null)
-                {
-                    MessageBox.Show("Debe seleccionar un cliente.", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
-                    return;
-                }
-
-                Cliente clienteSeleccionado = (Cliente)cboClientes.SelectedItem;
-
-                Venta nuevaVenta = new Venta
-                {
-                    FechaVenta = DateTime.Now,
-                    IdVendedor = idVendedor,
-                    NombreVendedor = nombreVendedor,
-                    Cliente = clienteSeleccionado.Nombre,
-                    DocumentoCliente = clienteSeleccionado.Documento,
-                    Items = listaItemsVenta.ToList(),
-                    Total = listaItemsVenta.Sum(item => item.Subtotal)
-                };
-
-                string mensaje;
-                bool ok = cnVenta.Registrar(nuevaVenta, out mensaje);
-
-                if (ok)
-                {
-                    MessageBox.Show("Venta registrada exitosamente.\n" + mensaje, "Éxito", MessageBoxButton.OK, MessageBoxImage.Information);
-                    GenerarFactura(nuevaVenta);
-                    LimpiarFormularioCompleto();
-                }
-                else
-                {
-                    MessageBox.Show("Error al registrar venta: " + mensaje, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                }
+                MessageBox.Show("No se puede registrar una venta sin productos.", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
             }
 
-            private void btnImprimir_Click(object sender, RoutedEventArgs e)
+            // Obtener el cliente seleccionado
+            if (cboClientes.SelectedItem == null)
+            {
+                MessageBox.Show("Debe seleccionar un cliente.", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            Cliente clienteSeleccionado = (Cliente)cboClientes.SelectedItem;
+
+            Venta nuevaVenta = new Venta
+            {
+                FechaVenta = DateTime.Now,
+                IdVendedor = idVendedor,
+                IdCliente = clienteSeleccionado.IdCliente,
+                Total = listaItemsVenta.Sum(item => item.Subtotal),
+                Items = listaItemsVenta.ToList(),
+
+                // ✅ AGREGAR ESTAS PROPIEDADES
+                Cliente = clienteSeleccionado.NombreCompleto,
+                DocumentoCliente = clienteSeleccionado.Documento,
+                NombreVendedor = NombreCompleto
+            };
+
+            string mensaje;
+            bool ok = cnVenta.Registrar(nuevaVenta, out mensaje);
+
+            if (ok)
+            {
+                MessageBox.Show("Venta registrada exitosamente.\n" + mensaje, "Éxito", MessageBoxButton.OK, MessageBoxImage.Information);
+                GenerarFactura(nuevaVenta);
+                LimpiarFormularioCompleto();
+            }
+            else
+            {
+                MessageBox.Show("Error al registrar venta: " + mensaje, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void btnImprimir_Click(object sender, RoutedEventArgs e)
             {
                 if (listaItemsVenta.Count == 0)
                 {
@@ -236,7 +280,7 @@
 
                 if (cboClientes.SelectedItem is Cliente clienteSeleccionado)
                 {
-                    nombreCliente = clienteSeleccionado.Nombre;
+                    nombreCliente = clienteSeleccionado.NombreCompleto;
                     documentoCliente = clienteSeleccionado.Documento;
                 }
 
@@ -244,7 +288,7 @@
                 {
                     FechaVenta = DateTime.Now,
                     IdVendedor = idVendedor,
-                    NombreVendedor = nombreVendedor,
+                    NombreVendedor = NombreCompleto,
                     Cliente = nombreCliente,
                     DocumentoCliente = documentoCliente,
                     Items = listaItemsVenta.ToList(),
@@ -363,5 +407,5 @@
                 ActualizarTotalVenta();
                 CargarInformacionVenta();
             }
-        }
-    }
+    } 
+}

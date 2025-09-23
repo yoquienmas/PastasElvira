@@ -18,19 +18,16 @@ namespace CapaPresentacion
         private string _nombreUsuario;
         private CN_Reporte cnReporte = new CN_Reporte();
         private CN_Venta cnVenta = new CN_Venta();
-        private List<ReporteVenta> ventasOriginales; // Para almacenar todas las ventas
+        private List<ReporteVenta> ventasOriginales;
 
-        // Constructor que acepta parámetros
         public FormHistorialVentas(int idUsuario, string nombreUsuario)
         {
             InitializeComponent();
+
             _idUsuario = idUsuario;
             _nombreUsuario = nombreUsuario;
-
-            // Mostrar nombre del vendedor
             txtNombreVendedor.Text = _nombreUsuario;
 
-            // Establecer fechas por defecto (mes actual)
             dtpFechaInicio.SelectedDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
             dtpFechaFin.SelectedDate = DateTime.Now;
 
@@ -56,21 +53,75 @@ namespace CapaPresentacion
 
             try
             {
-                // Obtener todas las ventas sin filtros adicionales
-                ventasOriginales = cnReporte.ObtenerVentasPorVendedor(
-                    _idUsuario, fechaInicio, fechaFin, "", "");
+                MessageBox.Show($"🔍 INICIANDO CONSULTA:\nUsuario: {_idUsuario}\nFecha Inicio: {fechaInicio}\nFecha Fin: {fechaFin}",
+                              "Debug Info", MessageBoxButton.OK, MessageBoxImage.Information);
 
-                // Aplicar filtros actuales
+                // 1. PRIMERO: Probar obtener TODAS las ventas sin filtrar
+                MessageBox.Show("📊 Obteniendo todas las ventas...", "Paso 1", MessageBoxButton.OK, MessageBoxImage.Information);
+                var todasLasVentas = cnReporte.ObtenerVentasPorFecha(fechaInicio, fechaFin);
+
+                MessageBox.Show($"✅ Se obtuvieron {todasLasVentas?.Count ?? 0} ventas totales",
+                              "Éxito", MessageBoxButton.OK, MessageBoxImage.Information);
+
+                // 2. LUEGO: Filtrar por vendedor
+                if (todasLasVentas != null)
+                {
+                    MessageBox.Show($"🔍 Filtrando por usuario ID: {_idUsuario}...", "Paso 2", MessageBoxButton.OK, MessageBoxImage.Information);
+                    ventasOriginales = todasLasVentas.Where(v => v.IdUsuario == _idUsuario).ToList();
+
+                    MessageBox.Show($"✅ Ventas filtradas: {ventasOriginales.Count} ventas del vendedor",
+                                  "Filtrado Completado", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+                else
+                {
+                    ventasOriginales = new List<ReporteVenta>();
+                    MessageBox.Show("⚠️ No se obtuvieron ventas para el rango de fechas",
+                                  "Advertencia", MessageBoxButton.OK, MessageBoxImage.Warning);
+                }
+
+                // 3. FINALMENTE: Aplicar filtros adicionales
                 AplicarFiltros();
 
-                if (ventasOriginales.Count == 0)
-                {
-                    MessageBox.Show("No se encontraron ventas en el rango seleccionado.", "Información", MessageBoxButton.OK, MessageBoxImage.Information);
-                }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error al cargar ventas: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"❌ ERROR DETALLADO:\n{ex.Message}\n\nTipo: {ex.GetType().Name}\n\nStack Trace:\n{ex.StackTrace}",
+                              "Error Detallado", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+        private void VerificarDatosVentas()
+        {
+            try
+            {
+                DateTime fechaInicio = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
+                DateTime fechaFin = DateTime.Now;
+
+                var ventas = cnReporte.ObtenerVentasPorFecha(fechaInicio, fechaFin);
+
+                if (ventas == null)
+                {
+                    MessageBox.Show("❌ El método retornó NULL", "Resultado", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+
+                if (ventas.Count == 0)
+                {
+                    MessageBox.Show("⚠️ El método retornó 0 ventas (lista vacía)", "Resultado", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+
+                // Mostrar información de las primeras ventas
+                string infoVentas = $"Total ventas: {ventas.Count}\n\nPrimeras 3 ventas:\n";
+                foreach (var venta in ventas.Take(3))
+                {
+                    infoVentas += $"ID: {venta.IdVenta}, Fecha: {venta.Fecha}, Usuario: {venta.IdUsuario}, Total: {venta.Total:C}\n";
+                }
+
+                MessageBox.Show(infoVentas, "Datos Obtenidos", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"❌ Error al verificar datos: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -80,7 +131,6 @@ namespace CapaPresentacion
 
             var ventasFiltradas = ventasOriginales.ToList();
 
-            // Filtrar por DNI
             if (!string.IsNullOrWhiteSpace(txtFiltroDNI.Text))
             {
                 ventasFiltradas = ventasFiltradas
@@ -89,7 +139,6 @@ namespace CapaPresentacion
                     .ToList();
             }
 
-            // Filtrar por producto
             if (!string.IsNullOrWhiteSpace(txtFiltroProducto.Text))
             {
                 ventasFiltradas = ventasFiltradas
@@ -98,16 +147,93 @@ namespace CapaPresentacion
                     .ToList();
             }
 
-            // Mostrar en el DataGrid
             dgvHistorialVentas.ItemsSource = ventasFiltradas;
-
-            // Calcular y mostrar total
             decimal totalVentas = ventasFiltradas.Sum(v => v.Total);
             txtTotalVentas.Text = totalVentas.ToString("C");
+        }
 
-            // Mostrar cantidad de resultados
-            MessageBox.Show($"Se encontraron {ventasFiltradas.Count} ventas con los filtros aplicados.",
-                           "Resultados", MessageBoxButton.OK, MessageBoxImage.Information);
+        private void CargarVentasAlternativo()
+        {
+            try
+            {
+                DateTime fechaInicio = dtpFechaInicio.SelectedDate.Value;
+                DateTime fechaFin = dtpFechaFin.SelectedDate.Value;
+
+                // Intentar obtener ventas directamente por vendedor si existe el método
+                if (cnReporte.GetType().GetMethod("ObtenerVentasPorVendedor") != null)
+                {
+                    ventasOriginales = cnReporte.ObtenerVentasPorVendedor(_idUsuario, fechaInicio, fechaFin);
+                }
+                else
+                {
+                    // Fallback: obtener todas y filtrar
+                    var todasVentas = cnReporte.ObtenerVentasPorFecha(fechaInicio, fechaFin);
+                    ventasOriginales = todasVentas?.Where(v => v.IdUsuario == _idUsuario).ToList() ?? new List<ReporteVenta>();
+                }
+
+                if (ventasOriginales == null || ventasOriginales.Count == 0)
+                {
+                    MessageBox.Show($"No se encontraron ventas para el vendedor {_nombreUsuario} en el rango de fechas seleccionado.",
+                                  "Sin resultados", MessageBoxButton.OK, MessageBoxImage.Information);
+                    return;
+                }
+
+                AplicarFiltros();
+                MessageBox.Show($"✅ Se cargaron {ventasOriginales.Count} ventas correctamente.",
+                              "Éxito", MessageBoxButton.OK, MessageBoxImage.Information);
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void DiagnosticarProblema()
+        {
+            try
+            {
+                // Probar con diferentes combinaciones de nombres de tablas
+                DateTime fechaInicio = new DateTime(2024, 1, 1);
+                DateTime fechaFin = DateTime.Now;
+
+                var ventas = cnReporte.ObtenerVentasPorFecha(fechaInicio, fechaFin);
+
+                if (ventas != null && ventas.Count > 0)
+                {
+                    MessageBox.Show($"✅ ÉXITO: {ventas.Count} ventas encontradas!",
+                                  "Conexión Exitosa", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+                else
+                {
+                    MessageBox.Show("❌ No se encontraron ventas. Probable error en nombres de tablas.",
+                                  "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"❌ ERROR: {ex.Message}\n\nVerifica los nombres de las tablas en la consulta SQL.",
+                              "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void ProbarConFiltroFecha()
+        {
+            try
+            {
+                DateTime fechaInicio = new DateTime(2024, 1, 1);
+                DateTime fechaFin = DateTime.Now;
+
+                var ventasFiltradas = cnReporte.ObtenerVentasPorFecha(fechaInicio, fechaFin);
+
+                MessageBox.Show($"🔍 MÉTODO CON FECHA:\nEntrada: {fechaInicio} a {fechaFin}\nResultado: {ventasFiltradas?.Count ?? 0} ventas",
+                              "Prueba Fecha", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"❌ ERROR EN MÉTODO FECHA: {ex.Message}",
+                              "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private void btnConsultar_Click(object sender, RoutedEventArgs e)
@@ -117,11 +243,9 @@ namespace CapaPresentacion
 
         private void btnLimpiarFiltros_Click(object sender, RoutedEventArgs e)
         {
-            // Limpiar campos de filtro
             txtFiltroDNI.Text = "";
             txtFiltroProducto.Text = "";
 
-            // Recargar ventas sin filtros
             if (ventasOriginales != null)
             {
                 AplicarFiltros();
@@ -153,7 +277,6 @@ namespace CapaPresentacion
         {
             try
             {
-                // Obtener los detalles de la venta usando ItemVenta
                 var detalles = cnVenta.ObtenerDetallesVenta(idVenta);
 
                 if (detalles == null || detalles.Count == 0)
@@ -163,7 +286,6 @@ namespace CapaPresentacion
                     return;
                 }
 
-                // Crear ventana de detalles
                 var ventanaDetalles = new Window
                 {
                     Title = $"Detalles de Venta # {idVenta}",
@@ -175,7 +297,6 @@ namespace CapaPresentacion
                     Padding = new Thickness(20)
                 };
 
-                // Crear DataGrid para mostrar detalles
                 var dgvDetalles = new DataGrid
                 {
                     AutoGenerateColumns = false,
@@ -209,8 +330,6 @@ namespace CapaPresentacion
                 });
 
                 dgvDetalles.ItemsSource = detalles;
-
-                // Calcular total
                 decimal total = detalles.Sum(d => d.Subtotal);
 
                 var stackPanel = new StackPanel();
@@ -259,7 +378,7 @@ namespace CapaPresentacion
 
         private void dgvHistorialVentas_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            // Tu código existente aquí para manejar la selección
+            // Tu código existente aquí
         }
     }
 }

@@ -15,6 +15,22 @@ namespace CapaEntidad
         public int StockMinimo { get; set; }
         public bool EsProductoBase { get; set; }
 
+        public string NombreProducto
+        {
+            get
+            {
+                // Validar que Nombre no sea null o vacío
+                if (string.IsNullOrEmpty(Nombre))
+                    return "Producto sin nombre";
+
+                // Si Tipo es null o vacío, mostrar solo el Nombre
+                if (string.IsNullOrEmpty(Tipo) || Tipo == "NULL")
+                    return Nombre;
+                else
+                    return $"{Tipo} - {Nombre}";
+            }
+        }
+
         // Propiedades adicionales para compatibilidad
         public decimal Precio => PrecioVenta;
         public int Stock => StockActual;
@@ -23,6 +39,8 @@ namespace CapaEntidad
         public Producto()
         {
             // Valores por defecto
+            Nombre = string.Empty;
+            Tipo = string.Empty;
             Visible = true;
             CostoProduccion = 0;
             MargenGanancia = 0;

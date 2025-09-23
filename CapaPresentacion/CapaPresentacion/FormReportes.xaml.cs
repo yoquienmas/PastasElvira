@@ -17,8 +17,7 @@ namespace CapaPresentacion
         private CN_Reporte cnReporte = new CN_Reporte();
         private CN_Cliente cnCliente = new CN_Cliente();
         private CN_Producto cnProducto = new CN_Producto();
-        private CN_Venta cnVenta = new CN_Venta(); // Agregar esta línea
-
+        private CN_Venta cnVenta = new CN_Venta();
 
         private List<ReporteVenta> ventasClienteActual;
         private string clienteActualNombre;
@@ -45,9 +44,9 @@ namespace CapaPresentacion
                 decimal totalHoy = ventasHoy.Sum(v => v.Total);
                 txtVentasHoy.Text = $"Ventas Hoy: {ventasHoy.Count} ventas - {totalHoy:C}";
 
-                // Stock crítico - verificar propiedades reales de Producto
+                // Stock crítico
                 var productos = cnProducto.Listar();
-                var stockCritico = productos.Count(p => p.StockActual <= p.StockMinimo); // Ajusta según tus propiedades reales
+                var stockCritico = productos.Count(p => p.StockActual <= p.StockMinimo);
                 txtStockCritico.Text = $"Productos con Stock Crítico: {stockCritico}";
             }
             catch (Exception ex)
@@ -146,10 +145,8 @@ namespace CapaPresentacion
             }
 
             var cliente = (Cliente)cboClientes.SelectedItem;
-
-            // Obtener ventas del cliente (sin fechas si el método no las acepta)
             ventasClienteActual = cnReporte.ObtenerVentasPorCliente(cliente.IdCliente);
-            clienteActualNombre = cliente.Nombre; // Ajusta según tu propiedad real
+            clienteActualNombre = cliente.Nombre;
 
             // Aplicar filtros
             AplicarFiltrosVentasCliente();
@@ -187,7 +184,7 @@ namespace CapaPresentacion
         private void GenerarReporteStockCritico()
         {
             var productos = cnProducto.Listar();
-            var productosCriticos = productos.Where(p => p.StockActual <= p.StockMinimo).ToList(); // Ajusta propiedades
+            var productosCriticos = productos.Where(p => p.StockActual <= p.StockMinimo).ToList();
             dgvReporte.ItemsSource = productosCriticos;
             ConfigurarColumnasProductos();
             GenerarResumenStockCritico(productosCriticos);
@@ -207,7 +204,7 @@ namespace CapaPresentacion
 
             var ventasFiltradas = ventasClienteActual.ToList();
 
-            // Filtrar por DNI
+            // ✅ CORRECCIÓN: Usar DNI en lugar de DniCliente
             if (!string.IsNullOrWhiteSpace(txtFiltroDNI.Text))
             {
                 ventasFiltradas = ventasFiltradas
@@ -245,11 +242,20 @@ namespace CapaPresentacion
                 Width = 120
             });
 
+            // ✅ CORRECCIÓN: Usar DNI en lugar de DniCliente
             dgvReporte.Columns.Add(new DataGridTextColumn
             {
                 Header = "DNI",
-                Binding = new System.Windows.Data.Binding("DniCliente"),
+                Binding = new System.Windows.Data.Binding("DNI"),
                 Width = 100
+            });
+
+            // ✅ AGREGAR COLUMNA DE CLIENTE (que sí existe en tu clase)
+            dgvReporte.Columns.Add(new DataGridTextColumn
+            {
+                Header = "Cliente",
+                Binding = new System.Windows.Data.Binding("Cliente"),
+                Width = 150
             });
 
             dgvReporte.Columns.Add(new DataGridTextColumn
@@ -266,28 +272,37 @@ namespace CapaPresentacion
                 Width = 200
             });
 
-            // Agregar columna de botón de detalles
-            dgvReporte.Columns.Add(new DataGridTemplateColumn
+            // ✅ AGREGAR COLUMNA DE USUARIO (nueva propiedad)
+            dgvReporte.Columns.Add(new DataGridTextColumn
+            {
+                Header = "Usuario",
+                Binding = new System.Windows.Data.Binding("Usuario"),
+                Width = 120
+            });
+
+            var templateColumn = new DataGridTemplateColumn
             {
                 Header = "Detalles",
-                Width = 80,
-                CellTemplate = new DataTemplate(() =>
-                {
-                    var button = new Button
-                    {
-                        Content = "📋 Detalles",
-                        Background = (Brush)new BrushConverter().ConvertFromString("#2196F3"),
-                        Foreground = Brushes.White,
-                        FontSize = 10,
-                        Padding = new Thickness(5, 2, 5, 2),
-                        Cursor = Cursors.Hand,
-                        ToolTip = "Ver detalles de la venta"
-                    };
+                Width = 80
+            };
 
-                    button.Click += BtnVerDetallesVenta_Click;
-                    return button;
-                })
-            });
+            var factory = new FrameworkElementFactory(typeof(Button));
+            factory.SetValue(Button.ContentProperty, "📋 Detalles");
+            factory.SetValue(Button.BackgroundProperty, (Brush)new BrushConverter().ConvertFromString("#2196F3"));
+            factory.SetValue(Button.ForegroundProperty, Brushes.White);
+            factory.SetValue(Button.FontSizeProperty, 10.0);
+            factory.SetValue(Button.PaddingProperty, new Thickness(5, 2, 5, 2));
+            factory.SetValue(Button.CursorProperty, Cursors.Hand);
+            factory.SetValue(Button.ToolTipProperty, "Ver detalles de la venta");
+
+            factory.AddHandler(Button.ClickEvent, new RoutedEventHandler(BtnVerDetallesVenta_Click));
+
+            templateColumn.CellTemplate = new DataTemplate()
+            {
+                VisualTree = factory
+            };
+
+            dgvReporte.Columns.Add(templateColumn);
         }
 
         private void ConfigurarColumnasProductos()
@@ -328,8 +343,6 @@ namespace CapaPresentacion
                 Binding = new System.Windows.Data.Binding("PrecioVenta") { StringFormat = "C" },
                 Width = 100
             });
-
-            // Para productos no agregamos botón de detalles ya que no es necesario
         }
 
         // Evento para el botón de detalles de venta
@@ -354,7 +367,6 @@ namespace CapaPresentacion
         {
             try
             {
-                // Obtener los detalles de la venta usando ItemVenta
                 var detalles = cnVenta.ObtenerDetallesVenta(idVenta);
 
                 if (detalles == null || detalles.Count == 0)
@@ -364,7 +376,6 @@ namespace CapaPresentacion
                     return;
                 }
 
-                // Crear ventana de detalles
                 var ventanaDetalles = new Window
                 {
                     Title = $"Detalles de Venta # {idVenta}",
@@ -376,7 +387,6 @@ namespace CapaPresentacion
                     Padding = new Thickness(20)
                 };
 
-                // Crear DataGrid para mostrar detalles
                 var dgvDetalles = new DataGrid
                 {
                     AutoGenerateColumns = false,
@@ -411,7 +421,6 @@ namespace CapaPresentacion
 
                 dgvDetalles.ItemsSource = detalles;
 
-                // Calcular total
                 decimal total = detalles.Sum(d => d.Subtotal);
 
                 var stackPanel = new StackPanel();
@@ -506,7 +515,7 @@ namespace CapaPresentacion
             var textBlock = new TextBlock
             {
                 Text = texto,
-                Foreground = (System.Windows.Media.Brush)new System.Windows.Media.BrushConverter().ConvertFromString(color),
+                Foreground = (Brush)new BrushConverter().ConvertFromString(color),
                 FontSize = fontSize,
                 FontWeight = isBold ? FontWeights.Bold : FontWeights.Normal,
                 Margin = new Thickness(0, 5, 0, 5)
@@ -554,10 +563,10 @@ namespace CapaPresentacion
         {
             MessageBox.Show("Imprimir - Funcionalidad en desarrollo", "Información", MessageBoxButton.OK, MessageBoxImage.Information);
         }
+
         private void dgvReporte_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             // Puedes dejar este método vacío o agregar funcionalidad si es necesario
-            // Por ahora lo dejamos vacío solo para que no genere error
         }
     }
 }

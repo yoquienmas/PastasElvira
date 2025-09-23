@@ -21,6 +21,10 @@ namespace CapaEntidad
         public bool Activo { get; set; }
         public DateTime FechaCreacion { get; set; }
         public string UsuarioCreacion { get; set; }
+        public string NombreCompleto
+        {
+            get { return $"{Nombre} {Apellido}"; }
+        }
 
     }
 

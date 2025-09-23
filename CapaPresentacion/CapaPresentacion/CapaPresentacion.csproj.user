@@ -17,6 +17,9 @@
     <Compile Update="FormMateria.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="FormProductosDisponibles.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="FormVenta.xaml.cs">
       <SubType>Code</SubType>
     </Compile>

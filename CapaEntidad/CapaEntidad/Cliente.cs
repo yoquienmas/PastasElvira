@@ -12,5 +12,9 @@
         public string Cuil { get; set; } // ← Esto debe coincidir con la BD
         public bool Activo { get; set; }
         public DateTime FechaCreacion { get; set; }
+        public string NombreCompleto
+        {
+            get { return $"{Nombre} {Apellido}"; }
+        }
     }
 }

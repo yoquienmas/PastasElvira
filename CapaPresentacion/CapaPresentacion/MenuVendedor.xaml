@@ -5,35 +5,45 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:CapaPresentacion"
         mc:Ignorable="d"
-        Title="Menu Vendedor" Height="450" Width="800"
+        Title="Menu Vendedor" Height="500" Width="900"
         Background="#fff8e1"
         FontFamily="Georgia"
         WindowStartupLocation="CenterScreen">
     <Grid>
-        
         <Border Background="White" CornerRadius="12" Padding="20"
                 BorderBrush="#e2a42d" BorderThickness="2" Margin="20">
-            
             <StackPanel>
-                <Button Content="🚪 Cerrar Sesión" 
-            Background="#6c757d" Foreground="White" FontWeight="Bold"
-            Padding="10,5" Click="BtnCerrarSesion_Click"
-            Cursor="Hand"/>
+                <!-- Header con información del vendedor -->
+                <Border Background="#e2a42d" Padding="10" Margin="0,0,0,10" CornerRadius="5">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock x:Name="txtInfoVendedor" Text="Vendedor: " Foreground="White" FontWeight="Bold" FontSize="14"/>
+                        <Button Content="🚪 Cerrar Sesión" 
+                                Background="#6c757d" Foreground="White" FontWeight="Bold"
+                                Padding="10,5" Click="BtnCerrarSesion_Click"
+                                Cursor="Hand" Margin="20,0,0,0"/>
+                    </StackPanel>
+                </Border>
+
                 <TextBlock Text="MENÚ VENDEDOR" FontSize="24" FontWeight="Bold" Foreground="#a36b00"
                            HorizontalAlignment="Center" Margin="0,0,0,20"/>
 
-                <WrapPanel Margin="0,0,0,20">
+                <!-- Botones principales -->
+                <WrapPanel Margin="0,0,0,20" HorizontalAlignment="Center">
                     <Button Content="➕ NUEVA VENTA" Width="180" Height="60" Margin="5"
                             Background="#4CAF50" Foreground="White" FontWeight="Bold" FontSize="14"
-                            Click="btnNuevaVenta_Click"/>
-                    <Button Content="Mis Ventas" Width="180" Height="60" Margin="5"
+                            Click="btnNuevaVenta_Click" Cursor="Hand"/>
+                    <Button Content="📊 MIS VENTAS" Width="180" Height="60" Margin="5"
                             Background="#FF9800" Foreground="White" FontWeight="Bold" FontSize="14"
-                            Click="btnMisVentas_Click"/>
+                            Click="btnMisVentas_Click" Cursor="Hand"/>
                     <Button Content="👥 GESTIÓN CLIENTES" Width="180" Height="60" Margin="5"
                             Background="#2196F3" Foreground="White" FontWeight="Bold" FontSize="14"
-                            Click="btnGestionClientes_Click"/>
+                            Click="btnGestionClientes_Click" Cursor="Hand"/>
+                    <Button Content="📦 PRODUCTOS DISPONIBLES" Width="180" Height="60" Margin="5"
+                            Background="#9C27B0" Foreground="White" FontWeight="Bold" FontSize="14"
+                            Click="btnProductosDisponibles_Click" Cursor="Hand"/>
                 </WrapPanel>
 
+                <!-- Mis Ventas del Mes -->
                 <GroupBox Header="💰 MIS VENTAS DEL MES" Margin="0,0,0,20" FontWeight="Bold" Foreground="#a36b00">
                     <StackPanel Margin="10">
                         <WrapPanel Margin="0,0,0,10">
@@ -59,7 +69,7 @@
                         <Border Background="White" CornerRadius="10" Padding="5"
                                 BorderBrush="#e2a42d" BorderThickness="2">
                             <DataGrid x:Name="dgvMisVentas" AutoGenerateColumns="False" IsReadOnly="True"
-                                      Height="200" Background="White" BorderThickness="0">
+                                      Height="150" Background="White" BorderThickness="0">
                                 <DataGrid.Columns>
                                     <DataGridTextColumn Header="Fecha" Binding="{Binding Fecha, StringFormat=dd/MM/yyyy}" Width="100"/>
                                     <DataGridTextColumn Header="Cliente" Binding="{Binding Cliente}" Width="150"/>
@@ -69,7 +79,7 @@
                                         <DataGridTemplateColumn.CellTemplate>
                                             <DataTemplate>
                                                 <Button Content="Ver Detalle" Click="btnVerDetalleVenta_Click"
-                                                        Background="#2196F3" Foreground="White" Padding="5" FontSize="10"/>
+                                                        Background="#2196F3" Foreground="White" Padding="5" FontSize="10" Cursor="Hand"/>
                                             </DataTemplate>
                                         </DataGridTemplateColumn.CellTemplate>
                                     </DataGridTemplateColumn>
@@ -79,17 +89,25 @@
                     </StackPanel>
                 </GroupBox>
 
-                <GroupBox Header="📦 PRODUCTOS DISPONIBLES" Margin="0,0,0,20" FontWeight="Bold" Foreground="#a36b00">
+                <!-- Productos Disponibles -->
+                <GroupBox Header="📦 PRODUCTOS DISPONIBLES" Margin="0,0,0,10" FontWeight="Bold" Foreground="#a36b00">
                     <StackPanel Margin="10">
+                        <WrapPanel Margin="0,0,0,10" HorizontalAlignment="Center">
+                            <Button Content="🔄 Actualizar Lista" Click="btnActualizarProductos_Click"
+                                    Background="#607D8B" Foreground="White" Padding="10,5" FontWeight="Bold" Cursor="Hand"/>
+                            <TextBlock x:Name="txtContadorProductos" Text="Total: 0 productos" 
+                                      Margin="10,0,0,0" VerticalAlignment="Center" FontWeight="Bold" Foreground="#757575"/>
+                        </WrapPanel>
                         <Border Background="White" CornerRadius="10" Padding="5"
                                 BorderBrush="#e2a42d" BorderThickness="2">
                             <DataGrid x:Name="dgvProductosDisponibles" AutoGenerateColumns="False" IsReadOnly="True"
-                                      Height="150" Background="White" BorderThickness="0">
+                                      Height="120" Background="White" BorderThickness="0"
+                                      ScrollViewer.VerticalScrollBarVisibility="Auto">
                                 <DataGrid.Columns>
                                     <DataGridTextColumn Header="Producto" Binding="{Binding Nombre}" Width="*"/>
                                     <DataGridTextColumn Header="Precio" Binding="{Binding Precio, StringFormat=C}" Width="100"/>
                                     <DataGridTextColumn Header="Stock" Binding="{Binding Stock}" Width="80"/>
-                                    <DataGridTextColumn Header="Estado" Binding="{Binding Estado}" Width="100"/>
+                                    <DataGridTextColumn Header="Estado" Binding="{Binding EstadoTexto}" Width="100"/>
                                 </DataGrid.Columns>
                             </DataGrid>
                         </Border>

@@ -61,13 +61,12 @@ using System.Data;
                 }
             }
 
-            private void BtnCerrar_Click(object sender, RoutedEventArgs e)
-            {
-                this.DialogResult = true;
-                this.Close();
-            }
+        private void BtnCerrar_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();
+        }
 
-            private void BtnActualizar_Click(object sender, RoutedEventArgs e)
+        private void BtnActualizar_Click(object sender, RoutedEventArgs e)
             {
                 MostrarUsuarios();
                 txtEstado.Text = "Lista actualizada";

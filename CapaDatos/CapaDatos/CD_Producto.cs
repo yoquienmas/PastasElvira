@@ -11,36 +11,45 @@ namespace CapaDatos
     {
         public List<Producto> Listar()
         {
-            List<Producto> productos = new List<Producto>();
+            List<Producto> lista = new List<Producto>();
 
             using (SqlConnection oconexion = new SqlConnection(Conexion.cadena))
             {
                 try
                 {
-                    oconexion.Open();
-                    SqlCommand comando = new SqlCommand("SELECT IdProducto, Nombre, PrecioVenta, StockActual FROM Producto", oconexion);
+                    string query = @"SELECT IdProducto, Nombre, Tipo, PrecioVenta, Visible, 
+                            CostoProduccion, MargenGanancia, StockActual, StockMinimo, EsProductoBase
+                            FROM Producto WHERE Visible = 1";
 
-                    using (SqlDataReader reader = comando.ExecuteReader())
+                    SqlCommand cmd = new SqlCommand(query, oconexion);
+                    cmd.CommandType = CommandType.Text;
+
+                    oconexion.Open();
+                    SqlDataReader reader = cmd.ExecuteReader();
+
+                    while (reader.Read())
                     {
-                        while (reader.Read())
+                        lista.Add(new Producto()
                         {
-                            productos.Add(new Producto
-                            {
-                                IdProducto = (int)reader["IdProducto"],
-                                Nombre = reader["Nombre"].ToString(),
-                                PrecioVenta = SafeConvertToDecimal(reader["PrecioVenta"]),
-                                StockActual = (int)reader["StockActual"]
-                            });
-                        }
+                            IdProducto = Convert.ToInt32(reader["IdProducto"]),
+                            Nombre = reader["Nombre"].ToString(),
+                            Tipo = reader["Tipo"].ToString(), // ← Asegúrate de que esta línea esté presente
+                            PrecioVenta = Convert.ToDecimal(reader["PrecioVenta"]),
+                            Visible = Convert.ToBoolean(reader["Visible"]),
+                            CostoProduccion = Convert.ToDecimal(reader["CostoProduccion"]),
+                            MargenGanancia = Convert.ToDecimal(reader["MargenGanancia"]),
+                            StockActual = Convert.ToInt32(reader["StockActual"]),
+                            StockMinimo = Convert.ToInt32(reader["StockMinimo"]),
+                            EsProductoBase = reader["EsProductoBase"] != DBNull.Value ? Convert.ToBoolean(reader["EsProductoBase"]) : true
+                        });
                     }
                 }
                 catch (Exception ex)
                 {
-                    throw new Exception("Error al listar productos: " + ex.Message);
+                    lista = new List<Producto>();
                 }
             }
-
-            return productos;
+            return lista;
         }
 
         // Agrega este método helper en la clase CD_Producto
