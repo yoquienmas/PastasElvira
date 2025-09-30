@@ -71,5 +71,11 @@ namespace CapaPresentacion
                 if (ok) CargarDetalles();
             }
         }
+
+        private void btnImprimir_Click(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show("Funcionalidad de impresión en desarrollo", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
     }
 }
+

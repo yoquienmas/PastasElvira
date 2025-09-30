@@ -56,7 +56,7 @@
         <!-- DataGrid -->
         <DataGrid x:Name="dgvDetalleProduccion" Grid.Row="2" AutoGenerateColumns="False" 
                   IsReadOnly="True" SelectionMode="Single"
-                  Margin="0,142,0,0" Background="White" BorderBrush="#e2a42d" BorderThickness="1">
+                  Margin="-10,91,10,50" Background="White" BorderBrush="#e2a42d" BorderThickness="1">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="ID Detalle" Binding="{Binding IdDetalleProduccion}" Width="80"/>
                 <DataGridTextColumn Header="Producción" Binding="{Binding IdProduccion}" Width="120"/>
@@ -64,5 +64,9 @@
                 <DataGridTextColumn Header="Cantidad" Binding="{Binding CantidadUtilizada}" Width="100"/>
             </DataGrid.Columns>
         </DataGrid>
+
+        <Button Content="🖨️ Imprimir" Width="80" Height="30"
+        Background="#2196F3" Foreground="White" FontWeight="Bold"
+        Click="btnImprimir_Click" Margin="850,254,30,10" Grid.Row="2"></Button>
     </Grid>
 </Window>
