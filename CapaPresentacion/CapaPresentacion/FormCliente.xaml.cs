@@ -103,33 +103,33 @@ namespace CapaPresentacion
             }
         }
 
-        private void btnEliminar_Click(object sender, RoutedEventArgs e)
-        {
-            if (clienteSeleccionado == null)
-            {
-                MessageBox.Show("Seleccione un cliente para eliminar", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
-                return;
-            }
+        //private void btnEliminar_Click(object sender, RoutedEventArgs e)
+        //{
+        //    if (clienteSeleccionado == null)
+        //    {
+        //        MessageBox.Show("Seleccione un cliente para eliminar", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+        //        return;
+        //    }
 
-            var confirmacion = MessageBox.Show($"¿Está seguro de eliminar al cliente: {clienteSeleccionado.Nombre}?",
-                "Confirmar Eliminación", MessageBoxButton.YesNo, MessageBoxImage.Question);
+        //    var confirmacion = MessageBox.Show($"¿Está seguro de eliminar al cliente: {clienteSeleccionado.Nombre}?",
+        //        "Confirmar Eliminación", MessageBoxButton.YesNo, MessageBoxImage.Question);
 
-            if (confirmacion == MessageBoxResult.Yes)
-            {
-                string mensaje;
-                bool resultado = cnCliente.Eliminar(clienteSeleccionado.IdCliente, out mensaje);
+        //    if (confirmacion == MessageBoxResult.Yes)
+        //    {
+        //        string mensaje;
+        //        bool resultado = cnCliente.Eliminar(clienteSeleccionado.IdCliente, out mensaje);
 
-                MessageBox.Show(mensaje, resultado ? "Éxito" : "Error",
-                    MessageBoxButton.OK,
-                    resultado ? MessageBoxImage.Information : MessageBoxImage.Error);
+        //        MessageBox.Show(mensaje, resultado ? "Éxito" : "Error",
+        //            MessageBoxButton.OK,
+        //            resultado ? MessageBoxImage.Information : MessageBoxImage.Error);
 
-                if (resultado)
-                {
-                    CargarClientes();
-                    LimpiarFormulario();
-                }
-            }
-        }
+        //        if (resultado)
+        //        {
+        //            CargarClientes();
+        //            LimpiarFormulario();
+        //        }
+        //    }
+        //}
 
         private void dgvClientes_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {

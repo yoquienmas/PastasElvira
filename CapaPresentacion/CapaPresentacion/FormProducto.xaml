@@ -62,9 +62,9 @@
                         <Button x:Name="btnEditar" Content="Editar" Width="100" Height="35" Margin="5"
                                 Background="#e2a42d" Foreground="White" FontWeight="Bold"
                                 Click="btnEditar_Click"/>
-                        <Button x:Name="btnEliminar" Content="Eliminar" Width="99" Height="35" Margin="5"
+                       <!-- <Button x:Name="btnEliminar" Content="Eliminar" Width="99" Height="35" Margin="5"
                                 Background="#ff6b6b" Foreground="White" FontWeight="Bold"
-                                Click="btnEliminar_Click"/>
+                                Click="btnEliminar_Click"/> -->
                     </StackPanel>
                 </StackPanel>
             </Grid>

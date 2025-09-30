@@ -1,30 +1,10 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\Brenda A. Garcia\\Documents\\PROYECTO_PastasElvira_Solucion\\",
+  "WorkspaceRootPath": "C:\\Users\\Brenda A. Garcia\\Documents\\PASTAS\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{C9F6F791-1C4B-957C-360E-B4FB731214B1}|CapaPresentacion\\CapaPresentacion\\CapaPresentacion.csproj|c:\\users\\brenda a. garcia\\documents\\proyecto_pastaselvira_solucion\\capapresentacion\\capapresentacion\\app.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
-      "RelativeMoniker": "D:0:0:{C9F6F791-1C4B-957C-360E-B4FB731214B1}|CapaPresentacion\\CapaPresentacion\\CapaPresentacion.csproj|solutionrelative:capapresentacion\\capapresentacion\\app.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Brenda A. Garcia\\Documents\\PROYECTO_PastasElvira_Solucion\\CapaPresentacion\\CapaPresentacion\\Login.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:CapaPresentacion\\CapaPresentacion\\Login.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Brenda A. Garcia\\Documents\\PROYECTO_PastasElvira_Solucion\\CapaPresentacion\\CapaPresentacion\\Login.xaml||{FA3CD31E-987B-443A-9B81-186104E8DAC1}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:CapaPresentacion\\CapaPresentacion\\Login.xaml||{FA3CD31E-987B-443A-9B81-186104E8DAC1}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Brenda A. Garcia\\Documents\\PROYECTO_PastasElvira_Solucion\\CapaNegocio\\CapaNegocio\\CN_Usuario.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:CapaNegocio\\CapaNegocio\\CN_Usuario.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Brenda A. Garcia\\Documents\\PROYECTO_PastasElvira_Solucion\\CapaDatos\\CapaDatos\\CD_Usuario.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:CapaDatos\\CapaDatos\\CD_Usuario.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Brenda A. Garcia\\Documents\\PROYECTO_PastasElvira_Solucion\\CapaEntidad\\CapaEntidad\\Usuario.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:CapaEntidad\\CapaEntidad\\Usuario.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{52374688-EF5F-7B50-97F6-497F919C7BAC}|CapaDatos\\CapaDatos\\CapaDatos.csproj|c:\\users\\brenda a. garcia\\documents\\pastas\\capadatos\\capadatos\\conexion.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{52374688-EF5F-7B50-97F6-497F919C7BAC}|CapaDatos\\CapaDatos\\CapaDatos.csproj|solutionrelative:capadatos\\capadatos\\conexion.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -34,90 +14,8 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 5,
+          "SelectedChildIndex": 6,
           "Children": [
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "Usuario.cs",
-              "DocumentMoniker": "C:\\Users\\Brenda A. Garcia\\Documents\\PROYECTO_PastasElvira_Solucion\\CapaEntidad\\CapaEntidad\\Usuario.cs",
-              "RelativeDocumentMoniker": "CapaEntidad\\CapaEntidad\\Usuario.cs",
-              "ToolTip": "C:\\Users\\Brenda A. Garcia\\Documents\\PROYECTO_PastasElvira_Solucion\\CapaEntidad\\CapaEntidad\\Usuario.cs",
-              "RelativeToolTip": "CapaEntidad\\CapaEntidad\\Usuario.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-12T20:49:59.266Z",
-              "IsPinned": true,
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "CD_Usuario.cs",
-              "DocumentMoniker": "C:\\Users\\Brenda A. Garcia\\Documents\\PROYECTO_PastasElvira_Solucion\\CapaDatos\\CapaDatos\\CD_Usuario.cs",
-              "RelativeDocumentMoniker": "CapaDatos\\CapaDatos\\CD_Usuario.cs",
-              "ToolTip": "C:\\Users\\Brenda A. Garcia\\Documents\\PROYECTO_PastasElvira_Solucion\\CapaDatos\\CapaDatos\\CD_Usuario.cs",
-              "RelativeToolTip": "CapaDatos\\CapaDatos\\CD_Usuario.cs",
-              "ViewState": "AgIAAAYAAAAAAAAAAAAAAAoAAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-12T20:49:23.062Z",
-              "IsPinned": true,
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "CN_Usuario.cs",
-              "DocumentMoniker": "C:\\Users\\Brenda A. Garcia\\Documents\\PROYECTO_PastasElvira_Solucion\\CapaNegocio\\CapaNegocio\\CN_Usuario.cs",
-              "RelativeDocumentMoniker": "CapaNegocio\\CapaNegocio\\CN_Usuario.cs",
-              "ToolTip": "C:\\Users\\Brenda A. Garcia\\Documents\\PROYECTO_PastasElvira_Solucion\\CapaNegocio\\CapaNegocio\\CN_Usuario.cs",
-              "RelativeToolTip": "CapaNegocio\\CapaNegocio\\CN_Usuario.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-12T20:54:34.407Z",
-              "IsPinned": true,
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "Login.xaml",
-              "DocumentMoniker": "C:\\Users\\Brenda A. Garcia\\Documents\\PROYECTO_PastasElvira_Solucion\\CapaPresentacion\\CapaPresentacion\\Login.xaml",
-              "RelativeDocumentMoniker": "CapaPresentacion\\CapaPresentacion\\Login.xaml",
-              "ToolTip": "C:\\Users\\Brenda A. Garcia\\Documents\\PROYECTO_PastasElvira_Solucion\\CapaPresentacion\\CapaPresentacion\\Login.xaml",
-              "RelativeToolTip": "CapaPresentacion\\CapaPresentacion\\Login.xaml",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
-              "WhenOpened": "2025-09-12T21:13:49.635Z",
-              "IsPinned": true,
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "Login.xaml.cs",
-              "DocumentMoniker": "C:\\Users\\Brenda A. Garcia\\Documents\\PROYECTO_PastasElvira_Solucion\\CapaPresentacion\\CapaPresentacion\\Login.xaml.cs",
-              "RelativeDocumentMoniker": "CapaPresentacion\\CapaPresentacion\\Login.xaml.cs",
-              "ToolTip": "C:\\Users\\Brenda A. Garcia\\Documents\\PROYECTO_PastasElvira_Solucion\\CapaPresentacion\\CapaPresentacion\\Login.xaml.cs",
-              "RelativeToolTip": "CapaPresentacion\\CapaPresentacion\\Login.xaml.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-12T21:15:09.863Z",
-              "IsPinned": true,
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "App.xaml",
-              "DocumentMoniker": "C:\\Users\\Brenda A. Garcia\\Documents\\PROYECTO_PastasElvira_Solucion\\CapaPresentacion\\CapaPresentacion\\App.xaml",
-              "RelativeDocumentMoniker": "CapaPresentacion\\CapaPresentacion\\App.xaml",
-              "ToolTip": "C:\\Users\\Brenda A. Garcia\\Documents\\PROYECTO_PastasElvira_Solucion\\CapaPresentacion\\CapaPresentacion\\App.xaml",
-              "RelativeToolTip": "CapaPresentacion\\CapaPresentacion\\App.xaml",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
-              "WhenOpened": "2025-09-12T21:24:08.62Z",
-              "EditorCaption": ""
-            },
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{eefa5220-e298-11d0-8f78-00a0c9110057}"
@@ -141,6 +39,19 @@
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Conexion.cs",
+              "DocumentMoniker": "C:\\Users\\Brenda A. Garcia\\Documents\\PASTAS\\CapaDatos\\CapaDatos\\Conexion.cs",
+              "RelativeDocumentMoniker": "CapaDatos\\CapaDatos\\Conexion.cs",
+              "ToolTip": "C:\\Users\\Brenda A. Garcia\\Documents\\PASTAS\\CapaDatos\\CapaDatos\\Conexion.cs",
+              "RelativeToolTip": "CapaDatos\\CapaDatos\\Conexion.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-30T18:56:56.11Z",
+              "EditorCaption": ""
             }
           ]
         }

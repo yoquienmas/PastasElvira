@@ -61,8 +61,8 @@
                             Background="#4CAF50" Foreground="White" FontWeight="Bold" Click="btnNuevo_Click"/>
                     <Button x:Name="btnGuardar" Content="Guardar" Width="80" Height="35" Margin="0,0,10,0"
                             Background="#2196F3" Foreground="White" FontWeight="Bold" Click="btnGuardar_Click"/>
-                    <Button x:Name="btnEliminar" Content="Eliminar" Width="80" Height="35"
-                            Background="#ff6b6b" Foreground="White" FontWeight="Bold" Click="btnEliminar_Click"/>
+                   <!-- <Button x:Name="btnEliminar" Content="Eliminar" Width="80" Height="35"
+                            Background="#ff6b6b" Foreground="White" FontWeight="Bold" Click="btnEliminar_Click"/> -->
                 </StackPanel>
             </Grid>
         </Border>

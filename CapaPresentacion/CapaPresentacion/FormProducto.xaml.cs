@@ -85,16 +85,16 @@ namespace CapaPresentacion
             }
         }
 
-        private void btnEliminar_Click(object sender, RoutedEventArgs e)
-        {
-            if (dgvProductos.SelectedItem is Producto seleccionado)
-            {
-                string mensaje;
-                bool ok = cnProducto.Eliminar(seleccionado.IdProducto, out mensaje);
-                MessageBox.Show(mensaje);
-                if (ok) ListarProductos();
-            }
-        }
+        //private void btnEliminar_Click(object sender, RoutedEventArgs e)
+        //{
+        //    if (dgvProductos.SelectedItem is Producto seleccionado)
+        //    {
+        //        string mensaje;
+        //        bool ok = cnProducto.Eliminar(seleccionado.IdProducto, out mensaje);
+        //        MessageBox.Show(mensaje);
+        //        if (ok) ListarProductos();
+        //    }
+        //}
 
         private void dgvProductos_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
