@@ -189,33 +189,7 @@ namespace CapaPresentacion
             }
         }
 
-        private void DiagnosticarProblema()
-        {
-            try
-            {
-                // Probar con diferentes combinaciones de nombres de tablas
-                DateTime fechaInicio = new DateTime(2024, 1, 1);
-                DateTime fechaFin = DateTime.Now;
-
-                var ventas = cnReporte.ObtenerVentasPorFecha(fechaInicio, fechaFin);
-
-                if (ventas != null && ventas.Count > 0)
-                {
-                    MessageBox.Show($"✅ ÉXITO: {ventas.Count} ventas encontradas!",
-                                  "Conexión Exitosa", MessageBoxButton.OK, MessageBoxImage.Information);
-                }
-                else
-                {
-                    MessageBox.Show("❌ No se encontraron ventas. Probable error en nombres de tablas.",
-                                  "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"❌ ERROR: {ex.Message}\n\nVerifica los nombres de las tablas en la consulta SQL.",
-                              "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-        }
+       
 
         private void ProbarConFiltroFecha()
         {

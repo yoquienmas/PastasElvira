@@ -10,7 +10,7 @@ namespace CapaNegocio
     public class CN_Reporte
     {
         private CD_Reporte cdReporte = new CD_Reporte();
-        private string conexion = "Server=localhost;Database=PastasElvira;Integrated Security=true;"; // Ajusta tu cadena
+        private string conexion = "Server=localhost;Database=PastasElvira;Integrated Security=true;";
 
         public List<ReporteVenta> ObtenerVentasPorFecha(DateTime fechaInicio, DateTime fechaFin)
         {
@@ -56,7 +56,6 @@ namespace CapaNegocio
             {
                 try
                 {
-                    // ✅ CONSULTA CORREGIDA
                     string query = @"
                         SELECT 
                             v.IdVenta, 
@@ -79,7 +78,6 @@ namespace CapaNegocio
                         WHERE CONVERT(DATE, v.Fecha) BETWEEN @FechaInicio AND @FechaFin
                         AND v.IdUsuario = @IdVendedor";
 
-                    // Agregar filtros opcionales
                     if (!string.IsNullOrEmpty(dniCliente))
                     {
                         query += " AND c.Documento LIKE @DniCliente";
@@ -133,14 +131,12 @@ namespace CapaNegocio
                 }
                 catch (Exception ex)
                 {
-                    // ✅ CORREGIDO: Usar throw en lugar de MessageBox
                     throw new Exception($"Error al obtener ventas por vendedor: {ex.Message}");
                 }
             }
             return lista;
         }
 
-        // ✅ MÉTODO DE DIAGNÓSTICO CORREGIDO (sin MessageBox)
         public DataTable DiagnosticarVentasEnBD(int idUsuario, DateTime fechaInicio, DateTime fechaFin)
         {
             DataTable resultado = new DataTable();
@@ -153,12 +149,10 @@ namespace CapaNegocio
                 {
                     oconexion.Open();
 
-                    // 1. Verificar si hay ventas en general
                     SqlCommand cmdCount = new SqlCommand("SELECT COUNT(*) FROM Venta", oconexion);
                     int totalVentas = (int)cmdCount.ExecuteScalar();
                     resultado.Rows.Add("Total ventas en BD", totalVentas.ToString());
 
-                    // 2. Verificar ventas específicas del vendedor
                     SqlCommand cmdVendedor = new SqlCommand(@"
                         SELECT COUNT(*) FROM Venta 
                         WHERE IdUsuario = @IdUsuario 
@@ -171,7 +165,6 @@ namespace CapaNegocio
                     int ventasVendedor = (int)cmdVendedor.ExecuteScalar();
                     resultado.Rows.Add($"Ventas del vendedor {idUsuario}", ventasVendedor.ToString());
 
-                    // 3. Verificar estructura de tablas
                     SqlCommand cmdEstructura = new SqlCommand(@"
                         SELECT TABLE_NAME, COLUMN_NAME, DATA_TYPE 
                         FROM INFORMATION_SCHEMA.COLUMNS 
@@ -187,7 +180,6 @@ namespace CapaNegocio
                         }
                     }
 
-                    // 4. Verificar algunas ventas de ejemplo
                     SqlCommand cmdEjemplo = new SqlCommand(@"
                         SELECT TOP 5 v.IdVenta, v.Fecha, c.Nombre, u.NombreUsuario, v.Total 
                         FROM Venta v 
@@ -212,7 +204,7 @@ namespace CapaNegocio
             return resultado;
         }
 
-        // Método simplificado para el dashboard (sin filtros de fecha)
+        // Método simplificado para el dashboard
         public List<ReporteVenta> ObtenerVentasPorVendedor(int idUsuario)
         {
             return ObtenerVentasPorVendedor(idUsuario, DateTime.Now.AddMonths(-1), DateTime.Now);
@@ -227,18 +219,22 @@ namespace CapaNegocio
         {
             return cdReporte.ObtenerConsumoMateriaPrimaPorVenta(idVenta);
         }
-        // En tu clase CN_Reporte, agrega estos métodos:
-        public List<dynamic> ObtenerVentasPorTipo(DateTime inicio, DateTime fin)
+
+        // ✅ MÉTODOS CORREGIDOS - SOLO UNA VERSIÓN DE CADA UNO
+
+        public List<ReporteVentaPorTipo> ObtenerVentasPorTipo(DateTime inicio, DateTime fin)
         {
-            // Implementar lógica para obtener ventas por tipo
-            return new List<dynamic>();
+            return cdReporte.ObtenerVentasPorTipo(inicio, fin);
         }
 
-        public List<dynamic> ObtenerTopClientes(DateTime inicio, DateTime fin, int cantidad)
+        public List<ReporteTopCliente> ObtenerTopClientes(DateTime inicio, DateTime fin, int cantidad)
         {
-            // Implementar lógica para obtener top clientes
-            return new List<dynamic>();
+            return cdReporte.ObtenerTopClientes(inicio, fin, cantidad);
         }
 
+        public List<ReporteProductoVendido> ObtenerProductosMasVendidos(DateTime inicio, DateTime fin, int cantidad)
+        {
+            return cdReporte.ObtenerProductosMasVendidos(inicio, fin, cantidad);
+        }
     }
 }

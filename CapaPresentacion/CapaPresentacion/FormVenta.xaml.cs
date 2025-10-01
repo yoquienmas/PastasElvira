@@ -31,10 +31,6 @@
             idVendedor = idUsuario;
             NombreCompleto = NombreVendedor;
 
-            // DEBUG: Ver qué está llegando
-            MessageBox.Show($"ID: {idUsuario}, Nombre recibido: '{NombreVendedor}'",
-                           "Debug - FormVenta Constructor");
-
             // Asignar inmediatamente
             txtVendedor.Text = NombreCompleto;
 

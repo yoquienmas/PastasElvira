@@ -63,7 +63,7 @@
                         <DataGridTextColumn Header="ID Venta" Binding="{Binding IdVenta}" Width="80"/>
                         <DataGridTextColumn Header="Fecha" Binding="{Binding Fecha, StringFormat=\{0:dd/MM/yyyy HH:mm\}}" Width="160"/>
                         <DataGridTextColumn Header="Cliente" Binding="{Binding Cliente}" Width="*"/>
-                        <DataGridTextColumn Header="DNI Cliente" Binding="{Binding DniCliente}" Width="120"/>
+                        <DataGridTextColumn Header="DNI Cliente" Binding="{Binding DNI}" Width="120"/>
                         <DataGridTextColumn Header="Productos" Binding="{Binding Productos}" Width="250"/>
                         <DataGridTextColumn Header="Total" Binding="{Binding Total, StringFormat=C}" Width="120"/>
 

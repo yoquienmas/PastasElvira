@@ -196,7 +196,7 @@ namespace CapaDatos
                             v.IdVenta, 
                             v.Fecha, 
                             c.NombreCompleto as Cliente,
-                            c.DNI as DniCliente,
+                            c.DNI as DNI,
                             u.NombreCompleto as Usuario,
                             v.Total,
                             STUFF((
@@ -523,6 +523,147 @@ namespace CapaDatos
             }
 
             return ventas;
+        }
+        public List<ReporteVentaPorTipo> ObtenerVentasPorTipo(DateTime fechaInicio, DateTime fechaFin)
+        {
+            List<ReporteVentaPorTipo> lista = new List<ReporteVentaPorTipo>();
+
+            using (SqlConnection oconexion = new SqlConnection(Conexion.cadena))
+            {
+                try
+                {
+                    string query = @"
+                SELECT 
+                    p.Tipo,
+                    SUM(dv.Cantidad) as Cantidad,
+                    SUM(dv.Cantidad * dv.PrecioVenta) as Total
+                FROM DetalleVenta dv
+                INNER JOIN Venta v ON dv.IdVenta = v.IdVenta
+                INNER JOIN Producto p ON dv.IdProducto = p.IdProducto
+                WHERE v.Fecha BETWEEN @FechaInicio AND @FechaFin
+                GROUP BY p.Tipo
+                ORDER BY Total DESC";
+
+                    SqlCommand cmd = new SqlCommand(query, oconexion);
+                    cmd.Parameters.AddWithValue("@FechaInicio", fechaInicio);
+                    cmd.Parameters.AddWithValue("@FechaFin", fechaFin);
+
+                    oconexion.Open();
+
+                    using (SqlDataReader dr = cmd.ExecuteReader())
+                    {
+                        while (dr.Read())
+                        {
+                            lista.Add(new ReporteVentaPorTipo()
+                            {
+                                Tipo = dr["Tipo"].ToString(),
+                                Cantidad = Convert.ToInt32(dr["Cantidad"]),
+                                Total = Convert.ToDecimal(dr["Total"])
+                            });
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    lista = new List<ReporteVentaPorTipo>();
+                }
+            }
+            return lista;
+        }
+
+        public List<ReporteTopCliente> ObtenerTopClientes(DateTime fechaInicio, DateTime fechaFin, int top = 5)
+        {
+            List<ReporteTopCliente> lista = new List<ReporteTopCliente>();
+
+            using (SqlConnection oconexion = new SqlConnection(Conexion.cadena))
+            {
+                try
+                {
+                    string query = @"
+                SELECT TOP (@Top) 
+                    c.Nombre + ' ' + ISNULL(c.Apellido, '') as Nombre,
+                    COUNT(v.IdVenta) as CantidadCompras,
+                    SUM(v.Total) as TotalGastado
+                FROM Venta v
+                INNER JOIN Cliente c ON v.IdCliente = c.IdCliente
+                WHERE v.Fecha BETWEEN @FechaInicio AND @FechaFin
+                GROUP BY c.Nombre, c.Apellido
+                ORDER BY TotalGastado DESC";
+
+                    SqlCommand cmd = new SqlCommand(query, oconexion);
+                    cmd.Parameters.AddWithValue("@FechaInicio", fechaInicio);
+                    cmd.Parameters.AddWithValue("@FechaFin", fechaFin);
+                    cmd.Parameters.AddWithValue("@Top", top);
+
+                    oconexion.Open();
+
+                    using (SqlDataReader dr = cmd.ExecuteReader())
+                    {
+                        while (dr.Read())
+                        {
+                            lista.Add(new ReporteTopCliente()
+                            {
+                                Nombre = dr["Nombre"].ToString(),
+                                CantidadCompras = Convert.ToInt32(dr["CantidadCompras"]),
+                                TotalGastado = Convert.ToDecimal(dr["TotalGastado"])
+                            });
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    lista = new List<ReporteTopCliente>();
+                }
+            }
+            return lista;
+        }
+
+        public List<ReporteProductoVendido> ObtenerProductosMasVendidos(DateTime fechaInicio, DateTime fechaFin, int top = 5)
+        {
+            List<ReporteProductoVendido> lista = new List<ReporteProductoVendido>();
+
+            using (SqlConnection oconexion = new SqlConnection(Conexion.cadena))
+            {
+                try
+                {
+                    string query = @"
+                SELECT TOP (@Top) 
+                    p.Nombre as NombreProducto,
+                    SUM(dv.Cantidad) as CantidadVendida,
+                    SUM(dv.Cantidad * dv.PrecioVenta) as TotalVendido
+                FROM DetalleVenta dv
+                INNER JOIN Venta v ON dv.IdVenta = v.IdVenta
+                INNER JOIN Producto p ON dv.IdProducto = p.IdProducto
+                WHERE v.Fecha BETWEEN @FechaInicio AND @FechaFin
+                GROUP BY p.Nombre
+                ORDER BY CantidadVendida DESC";
+
+                    SqlCommand cmd = new SqlCommand(query, oconexion);
+                    cmd.Parameters.AddWithValue("@FechaInicio", fechaInicio);
+                    cmd.Parameters.AddWithValue("@FechaFin", fechaFin);
+                    cmd.Parameters.AddWithValue("@Top", top);
+
+                    oconexion.Open();
+
+                    using (SqlDataReader dr = cmd.ExecuteReader())
+                    {
+                        while (dr.Read())
+                        {
+                            lista.Add(new ReporteProductoVendido()
+                            {
+                                NombreProducto = dr["NombreProducto"].ToString(),
+                                CantidadVendida = Convert.ToInt32(dr["CantidadVendida"]),
+                                TotalVendido = Convert.ToDecimal(dr["TotalVendido"])
+                            });
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    lista = new List<ReporteProductoVendido>();
+                }
+            }
+            return lista;
         }
     }
 }

@@ -1,15 +1,14 @@
 ﻿<Window x:Class="CapaPresentacion.MenuAdmin"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Menu Administrador" Height="548" Width="828"
+        Title="Menu Administrador - Pastas Elvira" Height="600" Width="900"
         Background="#fff8e1" FontFamily="Georgia"
-        WindowStartupLocation="CenterScreen"
-        Loaded="Window_Loaded">
+        WindowStartupLocation="CenterScreen">
     <Grid>
         <Border Background="White" CornerRadius="12" Padding="20"
                 BorderBrush="#e2a42d" BorderThickness="2" Margin="20,22,20,18">
             <StackPanel>
-                <!-- AGREGAR ESTE BLOQUE PARA EL HEADER CON CERRAR SESIÓN -->
+                <!-- Header con Cerrar Sesión -->
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,0,20">
                     <Button Content="🚪 Cerrar Sesión" 
                             Background="#6c757d" Foreground="White" FontWeight="Bold"
@@ -19,70 +18,76 @@
 
                 <TextBlock Text="MENÚ ADMINISTRADOR" FontSize="24" FontWeight="Bold" Foreground="#a36b00"
                            HorizontalAlignment="Center" Margin="0,0,0,20"/>
-                <GroupBox Header="📦 GESTIÓN DE INVENTARIO" FontWeight="Bold" Foreground="#a36b00">
+
+                <!-- 📦 GESTIÓN DE INVENTARIO -->
+                <GroupBox Header="📦 GESTIÓN DE INVENTARIO" FontWeight="Bold" Foreground="#a36b00" Margin="0,0,0,15">
                     <WrapPanel Margin="10">
                         <Button Content="Materias Primas" Width="180" Height="40" Margin="5"
                                 Background="#4CAF50" Foreground="White" FontWeight="Bold"
-                                Click="btnMateriasPrimas_Click"/>
-                        <Button Content="Agregar Productos" Width="180" Height="40" Margin="5"
+                                Click="btnMateriasPrimas_Click"
+                                ToolTip="Gestionar harina, huevos, ingredientes"/>
+                        <Button Content="Productos Terminados" Width="180" Height="40" Margin="5"
                                 Background="#2196F3" Foreground="White" FontWeight="Bold"
-                                Click="btnProductosTerminados_Click"/>
+                                Click="btnProductosTerminados_Click"
+                                ToolTip="Gestionar pastas terminadas para venta"/>
                         <Button Content="Alertas de Stock" Width="180" Height="40" Margin="5"
                                 Background="#f44336" Foreground="White" FontWeight="Bold"
-                                Click="btnAlertasStock_Click"/>
+                                Click="btnAlertasStock_Click"
+                                ToolTip="Ver alertas de stock bajo"/>
                         <Button Content="Costos Fijos" Width="180" Height="40" Margin="5"
                                 Background="#00BCD4" Foreground="White" FontWeight="Bold" 
-                                Click="btnCostosFijos_Click"/>
+                                Click="btnCostosFijos_Click"
+                                ToolTip="Gestionar costos operativos"/>
+                        <Button Content="💾 Backup DB" Width="180" Height="40" Margin="5"
+                                Background="#9C27B0" Foreground="White" FontWeight="Bold"
+                                Click="btnBackupDB_Click"
+                                ToolTip="Realizar backup de la base de datos"/>
                     </WrapPanel>
                 </GroupBox>
 
-                <GroupBox Header="👤 GESTIÓN DE USUARIOS" Margin="0,0,0,20" FontWeight="Bold" Foreground="#a36b00">
+                <!-- 👤 GESTIÓN DE USUARIOS -->
+                <GroupBox Header="👤 GESTIÓN DE USUARIOS" FontWeight="Bold" Foreground="#a36b00" Margin="0,0,0,15">
                     <WrapPanel Margin="10">
                         <Button Content="Gestión de Usuarios" Width="180" Height="40" Margin="5"
                                 Background="#FF5722" Foreground="White" FontWeight="Bold"
-                                Click="btnGestionUsuarios_Click"/>
-                    </WrapPanel>
-                </GroupBox>
-                <GroupBox Header="🏭 GESTIÓN DE PRODUCCIÓN" FontWeight="Bold" Foreground="#a36b00">
-                    <WrapPanel Margin="10">
-                        <Button Content="Programar Producción" Width="180" Height="40" Margin="5"
-                                Background="#FF9800" Foreground="White" FontWeight="Bold"
-                                Click="btnProgramarProduccion_Click"/>
-                        <Button Content="Historial Producción" Width="180" Height="40" Margin="5"
-                                Background="#9C27B0" Foreground="White" FontWeight="Bold"
-                                Click="btnHistorialProduccion_Click"/>
-                        <Button Content="Detalle Producción" Width="180" Height="40" Margin="5"
-                                Background="#673AB7" Foreground="White" FontWeight="Bold"
-                                Click="btnDetalleProduccion_Click"/>
-                        <Button Content="Producción según receta" Width="180" Height="40" Margin="5"
-                                Background="#FFD843BE" Foreground="White" FontWeight="Bold"
-        Click="btnProduccionReceta_Click"/>
+                                Click="btnGestionUsuarios_Click"
+                                ToolTip="Gestionar empleados y permisos"/>
+                        <Button Content="Reportes Generales" Width="180" Height="40" Margin="5" 
+                                Background="#FF4081" Foreground="White" FontWeight="Bold" 
+                                Click="btnReportesGenerales_Click"
+                                ToolTip="Reportes de ventas, producción e inventario"/>
                     </WrapPanel>
                 </GroupBox>
 
-                <GroupBox Header="📈 VENTAS RECIENTES" Margin="0,0,0,20" FontWeight="Bold" Foreground="#a36b00">
+                <!-- 🏭 GESTIÓN DE PRODUCCIÓN -->
+                <GroupBox Header="🏭 GESTIÓN DE PRODUCCIÓN" FontWeight="Bold" Foreground="#a36b00" Margin="0,0,0,15">
+                    <WrapPanel Margin="10">
+                        <Button Content="Programar Producción" Width="200" Height="40" Margin="5"
+                                Background="#FF9800" Foreground="White" FontWeight="Bold"
+                                Click="btnProgramarProduccion_Click"
+                                ToolTip="Planificar producción incluyendo recetas"/>
+                        <Button Content="Historial Producción" Width="200" Height="40" Margin="5"
+                                Background="#9C27B0" Foreground="White" FontWeight="Bold"
+                                Click="btnHistorialProduccion_Click"
+                                ToolTip="Ver historial y detalles de producción"/>
+                    </WrapPanel>
+                </GroupBox>
+
+                <!-- 📈 VENTAS RECIENTES -->
+                <GroupBox Header="📈 VENTAS RECIENTES" FontWeight="Bold" Foreground="#a36b00">
                     <StackPanel Margin="10">
-                        <Button Content="Ver Consumo por Venta" Width="200" Height="30" Margin="0,0,0,10"
-                                HorizontalAlignment="Left" Background="#00BCD4" Foreground="White"
-                                Click="btnConsumoPorVenta_Click" FontWeight="Bold"/>
+                        <TextBlock Text="Últimas 20 ventas (30 días)" FontWeight="Bold" Margin="0,0,0,10" Foreground="#a36b00"/>
                         <Border Background="White" CornerRadius="10" Padding="5"
                                 BorderBrush="#e2a42d" BorderThickness="2">
                             <DataGrid x:Name="dgvVentasAdmin" AutoGenerateColumns="False" IsReadOnly="True"
-                                      Height="250" Background="White" BorderThickness="0">
+                                      Height="200" Background="White" BorderThickness="0"
+                                      SelectionMode="Single">
                                 <DataGrid.Columns>
                                     <DataGridTextColumn Header="ID" Binding="{Binding IdVenta}" Width="60"/>
                                     <DataGridTextColumn Header="Fecha" Binding="{Binding Fecha, StringFormat=dd/MM/yyyy}" Width="100"/>
                                     <DataGridTextColumn Header="Cliente" Binding="{Binding Cliente}" Width="150"/>
-                                    <DataGridTextColumn Header="Vendedor" Binding="{Binding Usuario}" Width="100"/>
+                                    <DataGridTextColumn Header="Vendedor" Binding="{Binding Usuario}" Width="120"/>
                                     <DataGridTextColumn Header="Total" Binding="{Binding Total, StringFormat=C}" Width="100"/>
-                                    <DataGridTemplateColumn Header="Acciones" Width="100">
-                                        <DataGridTemplateColumn.CellTemplate>
-                                            <DataTemplate>
-                                                <Button Content="Ver Detalle" Click="btnVerDetalleVenta_Click"
-                                                        Background="#2196F3" Foreground="White" Padding="5" FontSize="10"/>
-                                            </DataTemplate>
-                                        </DataGridTemplateColumn.CellTemplate>
-                                    </DataGridTemplateColumn>
                                 </DataGrid.Columns>
                             </DataGrid>
                         </Border>
