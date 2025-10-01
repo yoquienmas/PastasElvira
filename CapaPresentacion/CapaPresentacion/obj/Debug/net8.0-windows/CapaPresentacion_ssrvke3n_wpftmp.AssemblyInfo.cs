@@ -11,12 +11,12 @@
 using System;
 using System.Reflection;
 
-[assembly: System.Reflection.AssemblyCompanyAttribute("CapaNegocio")]
+[assembly: System.Reflection.AssemblyCompanyAttribute("CapaPresentacion")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+75b10c4e08b8960592b503f12e3ab358a980e6de")]
-[assembly: System.Reflection.AssemblyProductAttribute("CapaNegocio")]
-[assembly: System.Reflection.AssemblyTitleAttribute("CapaNegocio")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+2778596763eb3fb9f4b123f4a25aff885d06cfa4")]
+[assembly: System.Reflection.AssemblyProductAttribute("CapaPresentacion")]
+[assembly: System.Reflection.AssemblyTitleAttribute("CapaPresentacion")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
 [assembly: System.Runtime.Versioning.TargetPlatformAttribute("Windows7.0")]
 [assembly: System.Runtime.Versioning.SupportedOSPlatformAttribute("Windows7.0")]
