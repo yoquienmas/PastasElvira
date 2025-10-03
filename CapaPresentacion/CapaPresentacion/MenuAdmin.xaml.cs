@@ -103,16 +103,6 @@ namespace CapaPresentacion
             formProduccion.Show();
         }
 
-        private void btnHistorialProduccion_Click(object sender, RoutedEventArgs e)
-        {
-            // Unificado: ahora muestra historial Y detalles
-            FormHistorialProduccion formHistorialProduccion = new FormHistorialProduccion();
-            formHistorialProduccion.Show();
-        }
-
-        // ELIMINADO: btnDetalleProduccion_Click - Funcionalidad integrada en Historial
-        // ELIMINADO: btnProduccionReceta_Click - Funcionalidad integrada en Programar Producción
-
         private void btnCostosFijos_Click(object sender, RoutedEventArgs e)
         {
             FormCostoFijo formCostoFijo = new FormCostoFijo();

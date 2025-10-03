@@ -228,5 +228,111 @@ namespace CapaDatos
                         conexion.Close();
                 }
             }
+        // Agregar estos métodos en la clase CD_Usuario
+
+        // Verificar si documento ya existe
+        public bool ExisteDocumento(string documento, int? idUsuarioExcluir = null)
+        {
+            try
+            {
+                conexion.Open();
+                string query = "SELECT COUNT(*) FROM Usuario WHERE Documento = @Documento";
+
+                if (idUsuarioExcluir.HasValue)
+                {
+                    query += " AND IdUsuario != @IdUsuario";
+                }
+
+                SqlCommand comando = new SqlCommand(query, conexion);
+                comando.Parameters.AddWithValue("@Documento", documento);
+
+                if (idUsuarioExcluir.HasValue)
+                {
+                    comando.Parameters.AddWithValue("@IdUsuario", idUsuarioExcluir.Value);
+                }
+
+                int result = (int)comando.ExecuteScalar();
+                return result > 0;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al verificar documento: " + ex.Message);
+            }
+            finally
+            {
+                if (conexion.State == ConnectionState.Open)
+                    conexion.Close();
+            }
         }
+
+        // Verificar si CUIL ya existe
+        public bool ExisteCuil(string cuil, int? idUsuarioExcluir = null)
+        {
+            try
+            {
+                conexion.Open();
+                string query = "SELECT COUNT(*) FROM Usuario WHERE Cuil = @Cuil";
+
+                if (idUsuarioExcluir.HasValue)
+                {
+                    query += " AND IdUsuario != @IdUsuario";
+                }
+
+                SqlCommand comando = new SqlCommand(query, conexion);
+                comando.Parameters.AddWithValue("@Cuil", cuil);
+
+                if (idUsuarioExcluir.HasValue)
+                {
+                    comando.Parameters.AddWithValue("@IdUsuario", idUsuarioExcluir.Value);
+                }
+
+                int result = (int)comando.ExecuteScalar();
+                return result > 0;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al verificar CUIL: " + ex.Message);
+            }
+            finally
+            {
+                if (conexion.State == ConnectionState.Open)
+                    conexion.Close();
+            }
+        }
+
+        public bool ExisteNombreUsuario(string nombreUsuario, int? idUsuarioExcluir = null)
+        {
+            try
+            {
+                conexion.Open();
+                string query = "SELECT COUNT(*) FROM Usuario WHERE NombreUsuario = @NombreUsuario";
+
+                if (idUsuarioExcluir.HasValue)
+                {
+                    query += " AND IdUsuario != @IdUsuario";
+                }
+
+                SqlCommand comando = new SqlCommand(query, conexion);
+                comando.Parameters.AddWithValue("@NombreUsuario", nombreUsuario);
+
+                if (idUsuarioExcluir.HasValue)
+                {
+                    comando.Parameters.AddWithValue("@IdUsuario", idUsuarioExcluir.Value);
+                }
+
+                int result = (int)comando.ExecuteScalar();
+                return result > 0;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al verificar nombre de usuario: " + ex.Message);
+            }
+            finally
+            {
+                if (conexion.State == ConnectionState.Open)
+                    conexion.Close();
+            }
+        }
+
+    }
     }

@@ -158,33 +158,144 @@ namespace CapaDatos
 
         private void RecalcularTodosLosProductos(SqlConnection conexion)
         {
-            // Lista para almacenar los IDs de productos antes de procesarlos
             List<int> productoIds = new List<int>();
 
-            // Primero, obtener todos los IdProducto y cerrar el DataReader
-            using (SqlCommand cmdSelectIds = new SqlCommand("SELECT IdProducto FROM Producto WHERE Visible = 1", conexion))
+            try
             {
-                using (SqlDataReader dr = cmdSelectIds.ExecuteReader())
+                // Obtener todos los IDs de productos visibles
+                using (SqlCommand cmdSelectIds = new SqlCommand("SELECT IdProducto FROM Producto WHERE Visible = 1", conexion))
                 {
-                    while (dr.Read())
+                    using (SqlDataReader dr = cmdSelectIds.ExecuteReader())
                     {
-                        productoIds.Add(Convert.ToInt32(dr["IdProducto"]));
+                        while (dr.Read())
+                        {
+                            productoIds.Add(Convert.ToInt32(dr["IdProducto"]));
+                        }
                     }
-                } // El dr se cierra y libera aquí. Ahora la conexión está libre.
-            } // cmdSelectIds se libera aquí
+                }
 
-            // Ahora, iterar sobre los IDs y recalcular cada producto
-            foreach (int idProducto in productoIds)
-            {
-                // Para cada producto, usar un nuevo SqlCommand (la conexión sigue abierta)
-                using (SqlCommand cmdRecalcular = new SqlCommand("CalcularCostoProducto", conexion))
+                // Recalcular cada producto individualmente
+                foreach (int idProducto in productoIds)
                 {
-                    cmdRecalcular.CommandType = CommandType.StoredProcedure;
-                    cmdRecalcular.Parameters.AddWithValue("@IdProducto", idProducto);
-                    cmdRecalcular.Parameters.Add("@CostoTotal", SqlDbType.Decimal).Direction = ParameterDirection.Output;
-                    cmdRecalcular.Parameters.Add("@PrecioSugerido", SqlDbType.Decimal).Direction = ParameterDirection.Output;
-                    cmdRecalcular.ExecuteNonQuery();
-                } // cmdRecalcular se libera aquí
+                    RecalcularProductoIndividual(conexion, idProducto);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error en RecalcularTodosLosProductos: {ex.Message}");
+            }
+        }
+
+        // En CD_CostoFijo.cs, modifica los métodos de cálculo
+        private decimal CalcularCostosFijosUnitarios(SqlConnection conexion)
+        {
+            try
+            {
+                using (SqlCommand cmd = new SqlCommand(@"
+            -- Calcular total de costos fijos activos
+            DECLARE @TotalCostosFijos DECIMAL(10,2) = (
+                SELECT ISNULL(SUM(Monto), 0) 
+                FROM CostoFijoProduccion 
+                WHERE Activo = 1
+            )
+            
+            -- Calcular total de inversión en materias primas
+            DECLARE @TotalMateriasPrimas DECIMAL(10,2) = (
+                SELECT ISNULL(SUM(PrecioUnitario * CantidadDisponible), 0)
+                FROM MateriaPrima
+            )
+            
+            -- Sumar totales y dividir entre 2500
+            DECLARE @TotalInversion DECIMAL(10,2) = @TotalCostosFijos + @TotalMateriasPrimas
+            DECLARE @CostoVentaUnitario DECIMAL(10,2) = @TotalInversion / 2500
+            
+            SELECT ISNULL(@CostoVentaUnitario, 0)", conexion))
+                {
+                    var result = cmd.ExecuteScalar();
+                    return result != DBNull.Value ? Convert.ToDecimal(result) : 0;
+                }
+            }
+            catch
+            {
+                return 0;
+            }
+        }
+
+        private void RecalcularProductoIndividual(SqlConnection conexion, int idProducto)
+        {
+            try
+            {
+                // 1. Obtener el costo de venta unitario (que ya incluye la división entre 2500)
+                decimal costosFijosUnitarios = CalcularCostosFijosUnitarios(conexion);
+
+                // El costo final es directamente el costo unitario calculado
+                decimal nuevoCosto = costosFijosUnitarios;
+
+                // 2. Obtener margen de ganancia (usar 30% si no existe)
+                decimal margenGanancia = ObtenerMargenGanancia(conexion, idProducto);
+                decimal nuevoPrecio = nuevoCosto * (1 + (margenGanancia / 100));
+
+                // 3. Actualizar producto
+                ActualizarCostoYPrecioProducto(conexion, idProducto, nuevoCosto, nuevoPrecio);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error al recalcular producto {idProducto}: {ex.Message}");
+            }
+        }
+
+        private decimal CalcularCostoMateriasPrimas(SqlConnection conexion, int idProducto)
+        {
+            try
+            {
+                using (SqlCommand cmd = new SqlCommand(@"
+            SELECT ISNULL(SUM(mp.PrecioUnitario * dr.CantidadNecesaria), 0) as CostoMaterias
+            FROM DetalleReceta dr
+            INNER JOIN MateriaPrima mp ON dr.IdMateria = mp.IdMateria
+            WHERE dr.IdProducto = @IdProducto", conexion))
+                {
+                    cmd.Parameters.AddWithValue("@IdProducto", idProducto);
+                    var result = cmd.ExecuteScalar();
+                    return result != DBNull.Value ? Convert.ToDecimal(result) : 0;
+                }
+            }
+            catch
+            {
+                return 0; // Si hay error, retornar 0
+            }
+        }
+
+       
+
+        private decimal ObtenerMargenGanancia(SqlConnection conexion, int idProducto)
+        {
+            try
+            {
+                using (SqlCommand cmd = new SqlCommand(
+                    "SELECT MargenGanancia FROM Producto WHERE IdProducto = @IdProducto", conexion))
+                {
+                    cmd.Parameters.AddWithValue("@IdProducto", idProducto);
+                    var result = cmd.ExecuteScalar();
+                    return result != DBNull.Value ? Convert.ToDecimal(result) : 30; // 30% por defecto
+                }
+            }
+            catch
+            {
+                return 30; // 30% por defecto si hay error
+            }
+        }
+
+        private void ActualizarCostoYPrecioProducto(SqlConnection conexion, int idProducto, decimal costo, decimal precio)
+        {
+            using (SqlCommand cmd = new SqlCommand(@"
+        UPDATE Producto 
+        SET CostoProduccion = @Costo, PrecioVenta = @Precio 
+        WHERE IdProducto = @IdProducto", conexion))
+            {
+                cmd.Parameters.AddWithValue("@Costo", costo);
+                cmd.Parameters.AddWithValue("@Precio", precio);
+                cmd.Parameters.AddWithValue("@IdProducto", idProducto);
+                cmd.ExecuteNonQuery();
             }
         }
     }

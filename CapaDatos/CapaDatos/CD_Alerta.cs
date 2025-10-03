@@ -127,26 +127,26 @@ using System.Data;
                 }
             }
 
-            public bool GenerarAlertaMateriaPrima(int idMateria, string nombre, float cantidadActual, int stockMinimo)
+        public bool GenerarAlertaMateriaPrima(int idMateria, string nombre, float cantidadActual, int stockMinimo)
+        {
+            using (SqlConnection oconexion = new SqlConnection(Conexion.cadena))
             {
-                using (SqlConnection oconexion = new SqlConnection(Conexion.cadena))
+                oconexion.Open();
+                using (var command = new SqlCommand())
                 {
-                    oconexion.Open();
-                    using (var command = new SqlCommand())
-                    {
-                        command.Connection = oconexion;
-                        command.CommandText = @"
-                        INSERT INTO AlertaStock (IdProducto, FechaAlerta, Mensaje)
-                        VALUES (0, GETDATE(), 
-                                'Stock bajo de materia prima: ' + @Nombre + '. Actual: ' + CAST(@CantidadActual AS VARCHAR) + ', Mínimo: ' + CAST(@StockMinimo AS VARCHAR))";
-                        command.Parameters.AddWithValue("@Nombre", nombre);
-                        command.Parameters.AddWithValue("@CantidadActual", cantidadActual);
-                        command.Parameters.AddWithValue("@StockMinimo", stockMinimo);
-                        command.CommandType = CommandType.Text;
+                    command.Connection = oconexion;
+                    command.CommandText = @"
+            INSERT INTO AlertaStock (IdProducto, FechaAlerta, Mensaje)
+            VALUES (NULL, GETDATE(),  -- ✅ Usar NULL en lugar de 0
+                    'Stock bajo de materia prima: ' + @Nombre + '. Actual: ' + CAST(@CantidadActual AS VARCHAR) + ', Mínimo: ' + CAST(@StockMinimo AS VARCHAR))";
+                    command.Parameters.AddWithValue("@Nombre", nombre);
+                    command.Parameters.AddWithValue("@CantidadActual", cantidadActual);
+                    command.Parameters.AddWithValue("@StockMinimo", stockMinimo);
+                    command.CommandType = CommandType.Text;
 
-                        return command.ExecuteNonQuery() > 0;
-                    }
+                    return command.ExecuteNonQuery() > 0;
                 }
             }
         }
     }
+ }

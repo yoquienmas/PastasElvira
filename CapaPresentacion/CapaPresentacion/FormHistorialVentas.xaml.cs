@@ -9,6 +9,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Documents;
 
 namespace CapaPresentacion
 {
@@ -53,33 +54,17 @@ namespace CapaPresentacion
 
             try
             {
-                MessageBox.Show($"🔍 INICIANDO CONSULTA:\nUsuario: {_idUsuario}\nFecha Inicio: {fechaInicio}\nFecha Fin: {fechaFin}",
-                              "Debug Info", MessageBoxButton.OK, MessageBoxImage.Information);
-
-                // 1. PRIMERO: Probar obtener TODAS las ventas sin filtrar
-                MessageBox.Show("📊 Obteniendo todas las ventas...", "Paso 1", MessageBoxButton.OK, MessageBoxImage.Information);
                 var todasLasVentas = cnReporte.ObtenerVentasPorFecha(fechaInicio, fechaFin);
 
-                MessageBox.Show($"✅ Se obtuvieron {todasLasVentas?.Count ?? 0} ventas totales",
-                              "Éxito", MessageBoxButton.OK, MessageBoxImage.Information);
-
-                // 2. LUEGO: Filtrar por vendedor
                 if (todasLasVentas != null)
                 {
-                    MessageBox.Show($"🔍 Filtrando por usuario ID: {_idUsuario}...", "Paso 2", MessageBoxButton.OK, MessageBoxImage.Information);
                     ventasOriginales = todasLasVentas.Where(v => v.IdUsuario == _idUsuario).ToList();
-
-                    MessageBox.Show($"✅ Ventas filtradas: {ventasOriginales.Count} ventas del vendedor",
-                                  "Filtrado Completado", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
                 else
                 {
                     ventasOriginales = new List<ReporteVenta>();
-                    MessageBox.Show("⚠️ No se obtuvieron ventas para el rango de fechas",
-                                  "Advertencia", MessageBoxButton.OK, MessageBoxImage.Warning);
                 }
 
-                // 3. FINALMENTE: Aplicar filtros adicionales
                 AplicarFiltros();
 
             }
@@ -89,6 +74,7 @@ namespace CapaPresentacion
                               "Error Detallado", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
+
         private void VerificarDatosVentas()
         {
             try
@@ -189,8 +175,6 @@ namespace CapaPresentacion
             }
         }
 
-       
-
         private void ProbarConFiltroFecha()
         {
             try
@@ -263,8 +247,8 @@ namespace CapaPresentacion
                 var ventanaDetalles = new Window
                 {
                     Title = $"Detalles de Venta # {idVenta}",
-                    Width = 600,
-                    Height = 400,
+                    Width = 650,
+                    Height = 450,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner,
                     Owner = this,
                     Background = Brushes.White,
@@ -306,6 +290,20 @@ namespace CapaPresentacion
                 dgvDetalles.ItemsSource = detalles;
                 decimal total = detalles.Sum(d => d.Subtotal);
 
+                // Botón Imprimir
+                var btnImprimirDetalles = new Button
+                {
+                    Content = "🖨️ Imprimir",
+                    Width = 120,
+                    Height = 35,
+                    Background = Brushes.SteelBlue,
+                    Foreground = Brushes.White,
+                    FontWeight = FontWeights.Bold,
+                    Margin = new Thickness(0, 10, 0, 0),
+                    HorizontalAlignment = HorizontalAlignment.Right
+                };
+                btnImprimirDetalles.Click += (s, e) => ImprimirDetallesVenta(idVenta, detalles, total);
+
                 var stackPanel = new StackPanel();
                 stackPanel.Children.Add(new TextBlock
                 {
@@ -315,14 +313,27 @@ namespace CapaPresentacion
                     Margin = new Thickness(0, 0, 0, 10)
                 });
                 stackPanel.Children.Add(dgvDetalles);
-                stackPanel.Children.Add(new TextBlock
+
+                // Panel para el total y botón imprimir
+                var panelInferior = new StackPanel
+                {
+                    Orientation = Orientation.Horizontal,
+                    HorizontalAlignment = HorizontalAlignment.Right,
+                    Margin = new Thickness(0, 10, 0, 0)
+                };
+
+                panelInferior.Children.Add(new TextBlock
                 {
                     Text = $"Total: {total:C}",
                     FontSize = 14,
                     FontWeight = FontWeights.Bold,
-                    Margin = new Thickness(0, 10, 0, 0),
-                    HorizontalAlignment = HorizontalAlignment.Right
+                    VerticalAlignment = VerticalAlignment.Center,
+                    Margin = new Thickness(0, 0, 20, 0)
                 });
+
+                panelInferior.Children.Add(btnImprimirDetalles);
+
+                stackPanel.Children.Add(panelInferior);
 
                 ventanaDetalles.Content = stackPanel;
                 ventanaDetalles.ShowDialog();
@@ -331,6 +342,186 @@ namespace CapaPresentacion
             {
                 MessageBox.Show($"Error al cargar detalles: {ex.Message}", "Error",
                               MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void ImprimirDetallesVenta(int idVenta, object detalles, decimal total)
+        {
+            try
+            {
+                // Crear lista de items para impresión
+                var itemsParaImprimir = new List<dynamic>();
+
+                if (detalles is System.Collections.IEnumerable enumerable)
+                {
+                    foreach (var item in enumerable)
+                    {
+                        // Usar reflexión para acceder a las propiedades dinámicamente
+                        var tipo = item.GetType();
+                        itemsParaImprimir.Add(new
+                        {
+                            NombreProducto = tipo.GetProperty("NombreProducto")?.GetValue(item)?.ToString() ?? "Producto",
+                            Cantidad = Convert.ToInt32(tipo.GetProperty("Cantidad")?.GetValue(item) ?? 0),
+                            PrecioUnitario = Convert.ToDecimal(tipo.GetProperty("PrecioUnitario")?.GetValue(item) ?? 0m),
+                            Subtotal = Convert.ToDecimal(tipo.GetProperty("Subtotal")?.GetValue(item) ?? 0m)
+                        });
+                    }
+                }
+
+                // Crear venta temporal para impresión
+                var ventaTemporal = new
+                {
+                    IdVenta = idVenta,
+                    FechaVenta = DateTime.Now,
+                    IdVendedor = _idUsuario,
+                    NombreVendedor = _nombreUsuario,
+                    Cliente = "CONSUMIDOR FINAL",
+                    DocumentoCliente = "",
+                    Total = total,
+                    Items = itemsParaImprimir
+                };
+
+                GenerarFactura(ventaTemporal);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al preparar impresión: {ex.Message}", "Error",
+                              MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void btnImprimir_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                // Obtener la venta seleccionada
+                if (dgvHistorialVentas.SelectedItem is ReporteVenta ventaSeleccionada)
+                {
+                    var detalles = cnVenta.ObtenerDetallesVenta(ventaSeleccionada.IdVenta);
+
+                    if (detalles == null || detalles.Count == 0)
+                    {
+                        MessageBox.Show("No hay detalles para imprimir.", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        return;
+                    }
+
+                    // Crear lista de items para impresión
+                    var itemsParaImprimir = new List<dynamic>();
+
+                    foreach (var detalle in detalles)
+                    {
+                        var tipo = detalle.GetType();
+                        itemsParaImprimir.Add(new
+                        {
+                            NombreProducto = tipo.GetProperty("NombreProducto")?.GetValue(detalle)?.ToString() ?? "Producto",
+                            Cantidad = Convert.ToInt32(tipo.GetProperty("Cantidad")?.GetValue(detalle) ?? 0),
+                            PrecioUnitario = Convert.ToDecimal(tipo.GetProperty("PrecioUnitario")?.GetValue(detalle) ?? 0m),
+                            Subtotal = Convert.ToDecimal(tipo.GetProperty("Subtotal")?.GetValue(detalle) ?? 0m)
+                        });
+                    }
+
+                    // Crear venta temporal para impresión
+                    var ventaTemporal = new
+                    {
+                        IdVenta = ventaSeleccionada.IdVenta,
+                        FechaVenta = ventaSeleccionada.Fecha,
+                        IdVendedor = _idUsuario,
+                        NombreVendedor = _nombreUsuario,
+                        Cliente = ventaSeleccionada.Cliente ?? "CONSUMIDOR FINAL",
+                        DocumentoCliente = ventaSeleccionada.DNI ?? "",
+                        Total = ventaSeleccionada.Total,
+                        Items = itemsParaImprimir
+                    };
+
+                    GenerarFactura(ventaTemporal);
+                }
+                else
+                {
+                    MessageBox.Show("Por favor, seleccione una venta para imprimir.", "Información",
+                                  MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al imprimir: {ex.Message}", "Error",
+                              MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void GenerarFactura(dynamic venta)
+        {
+            try
+            {
+                PrintDialog printDialog = new PrintDialog();
+                if (printDialog.ShowDialog() == true)
+                {
+                    // Crear documento para impresión
+                    FlowDocument document = new FlowDocument();
+                    document.PagePadding = new Thickness(50);
+                    document.FontFamily = new System.Windows.Media.FontFamily("Courier New");
+                    document.FontSize = 12;
+
+                    // Encabezado
+                    Paragraph header = new Paragraph();
+                    header.Inlines.Add(new Run("PASTAS ELVIRA\n") { FontSize = 16, FontWeight = FontWeights.Bold });
+                    header.Inlines.Add(new Run("Factura de Venta\n\n"));
+                    header.Inlines.Add(new Run($"Fecha: {venta.FechaVenta:dd/MM/yyyy HH:mm:ss}\n"));
+                    header.Inlines.Add(new Run($"N° Venta: {venta.IdVenta}\n"));
+                    header.Inlines.Add(new Run($"Cliente: {venta.Cliente}\n"));
+                    if (!string.IsNullOrEmpty(venta.DocumentoCliente))
+                        header.Inlines.Add(new Run($"Documento: {venta.DocumentoCliente}\n"));
+                    header.Inlines.Add(new Run($"Vendedor: {venta.NombreVendedor}\n"));
+                    header.Inlines.Add(new Run("".PadRight(50, '=') + "\n\n"));
+                    document.Blocks.Add(header);
+
+                    // Detalle de productos
+                    if (venta.Items != null && venta.Items.Count > 0)
+                    {
+                        Table table = new Table();
+                        table.Columns.Add(new TableColumn { Width = new GridLength(300) }); // Producto
+                        table.Columns.Add(new TableColumn { Width = new GridLength(80) });  // Cantidad
+                        table.Columns.Add(new TableColumn { Width = new GridLength(100) }); // Precio
+                        table.Columns.Add(new TableColumn { Width = new GridLength(100) }); // Subtotal
+
+                        TableRowGroup rowGroup = new TableRowGroup();
+
+                        // Encabezado de tabla
+                        TableRow headerRow = new TableRow { Background = System.Windows.Media.Brushes.LightGray };
+                        headerRow.Cells.Add(new TableCell(new Paragraph(new Run("Producto")) { FontWeight = FontWeights.Bold }));
+                        headerRow.Cells.Add(new TableCell(new Paragraph(new Run("Cant")) { FontWeight = FontWeights.Bold }));
+                        headerRow.Cells.Add(new TableCell(new Paragraph(new Run("Precio")) { FontWeight = FontWeights.Bold }));
+                        headerRow.Cells.Add(new TableCell(new Paragraph(new Run("Subtotal")) { FontWeight = FontWeights.Bold }));
+                        rowGroup.Rows.Add(headerRow);
+
+                        // Productos
+                        foreach (var item in venta.Items)
+                        {
+                            TableRow row = new TableRow();
+                            row.Cells.Add(new TableCell(new Paragraph(new Run(item.NombreProducto))));
+                            row.Cells.Add(new TableCell(new Paragraph(new Run(item.Cantidad.ToString()))));
+                            row.Cells.Add(new TableCell(new Paragraph(new Run(item.PrecioUnitario.ToString("C")))));
+                            row.Cells.Add(new TableCell(new Paragraph(new Run(item.Subtotal.ToString("C")))));
+                            rowGroup.Rows.Add(row);
+                        }
+
+                        table.RowGroups.Add(rowGroup);
+                        document.Blocks.Add(table);
+                    }
+
+                    // Total
+                    Paragraph footer = new Paragraph();
+                    footer.Inlines.Add(new Run("\n" + "".PadRight(50, '=') + "\n"));
+                    footer.Inlines.Add(new Run($"TOTAL: {venta.Total.ToString("C")}") { FontSize = 14, FontWeight = FontWeights.Bold });
+                    footer.Inlines.Add(new Run("\n\n¡Gracias por su compra!"));
+                    document.Blocks.Add(footer);
+
+                    // Imprimir
+                    printDialog.PrintDocument(((IDocumentPaginatorSource)document).DocumentPaginator, $"Factura #{venta.IdVenta} - Pastas Elvira");
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al imprimir: " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 

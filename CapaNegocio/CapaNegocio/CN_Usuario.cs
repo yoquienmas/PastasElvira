@@ -55,5 +55,24 @@ namespace CapaNegocio
             {
                 return objetoCD.EliminarUsuario(idUsuario);
             }
+
+        // Verificar si documento ya existe
+        public bool ExisteDocumento(string documento, int? idUsuarioExcluir = null)
+        {
+            return objetoCD.ExisteDocumento(documento, idUsuarioExcluir);
         }
+
+        // Verificar si CUIL ya existe
+        public bool ExisteCuil(string cuil, int? idUsuarioExcluir = null)
+        {
+            return objetoCD.ExisteCuil(cuil, idUsuarioExcluir);
+        }
+
+        // Verificar si nombre de usuario ya existe
+        public bool ExisteNombreUsuario(string nombreUsuario, int? idUsuarioExcluir = null)
+        {
+            return objetoCD.ExisteNombreUsuario(nombreUsuario, idUsuarioExcluir);
+        }
+
+    }
     }

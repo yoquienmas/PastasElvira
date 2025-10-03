@@ -2,6 +2,7 @@
 using CapaNegocio;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -43,29 +44,48 @@ namespace CapaPresentacion
                 dgvCostosFijos.ItemsSource = listaCostos;
             }
 
-            private void ActualizarEstadisticas()
+        private void ActualizarEstadisticas()
+        {
+            decimal totalCostos = 0;
+            decimal costosActivos = 0;
+            int cantidadActivos = 0;
+
+            foreach (var costo in listaCostos)
             {
-                decimal totalCostos = 0;
-                decimal costosActivos = 0;
-                int cantidadActivos = 0;
-
-                foreach (var costo in listaCostos)
+                totalCostos += costo.Monto;
+                if (costo.Activo)
                 {
-                    totalCostos += costo.Monto;
-                    if (costo.Activo)
-                    {
-                        costosActivos += costo.Monto;
-                        cantidadActivos++;
-                    }
+                    costosActivos += costo.Monto;
+                    cantidadActivos++;
                 }
-
-                txtTotalCostos.Text = $"Total Costos: {totalCostos:C} ({listaCostos.Count} conceptos)";
-                txtCostosActivos.Text = $"Costos Activos: {costosActivos:C} ({cantidadActivos} activos)";
-
-                txtImpactoInfo.Text = $"💡 Los costos activos se distribuyen entre todos los productos afectando el precio final.";
             }
 
-            private void LimpiarFormulario()
+            // Calcular total de materias primas
+            decimal totalMateriasPrimas = CalcularTotalMateriasPrimas();
+            decimal totalInversion = costosActivos + totalMateriasPrimas;
+            decimal costoVentaUnitario = totalInversion / 2500;
+
+            txtTotalCostos.Text = $"Total Costos: {totalCostos:C} ({listaCostos.Count} conceptos)";
+            txtCostosActivos.Text = $"Costos Activos: {costosActivos:C} ({cantidadActivos} activos)";
+
+            txtImpactoInfo.Text = $"💡 Inversión Total: {totalInversion:C} / 2500 = {costoVentaUnitario:C} por producto";
+        }
+
+        private decimal CalcularTotalMateriasPrimas()
+        {
+            try
+            {
+                CN_MateriaPrima cnMateriaPrima = new CN_MateriaPrima();
+                var materias = cnMateriaPrima.Listar();
+                return materias.Sum(m => m.PrecioUnitario * (decimal)m.CantidadDisponible);
+            }
+            catch
+            {
+                return 0;
+            }
+        }
+
+        private void LimpiarFormulario()
             {
                 costoSelccionado = null;
                 txtConcepto.Text = "";

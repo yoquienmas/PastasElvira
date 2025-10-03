@@ -87,6 +87,8 @@
             </Border>
 
             <StackPanel Grid.Row="5" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,15,0,0">
+                <!--boton imprimir -->
+               
                 <TextBlock Text="Total de Ventas:" VerticalAlignment="Center" Margin="0,0,10,0" FontWeight="Bold"
                            Foreground="#5c3a00"/>
                 <TextBlock x:Name="txtTotalVentas" VerticalAlignment="Center" FontWeight="Bold"

@@ -22,41 +22,52 @@
                     <!-- Nombre de Usuario -->
                     <TextBlock Text="Nombre de Usuario:" FontWeight="Bold" Foreground="#a36b00" Margin="0,10,0,5"/>
                     <TextBox x:Name="txtNombreUsuario" Height="30" 
-                            BorderBrush="#a36b00" BorderThickness="1"/>
+                            BorderBrush="#a36b00" BorderThickness="1"
+                            TextChanged="TextBox_TextChanged"
+                            ToolTip="El nombre de usuario debe ser único en el sistema"/>
 
                     <!-- Nombre -->
                     <TextBlock Text="Nombre:" FontWeight="Bold" Foreground="#a36b00" Margin="0,10,0,5"/>
                     <TextBox x:Name="txtNombre" Height="30" 
-                            BorderBrush="#a36b00" BorderThickness="1"/>
+                            BorderBrush="#a36b00" BorderThickness="1"
+                            TextChanged="TextBox_TextChanged"/>
 
                     <!-- Apellido -->
                     <TextBlock Text="Apellido:" FontWeight="Bold" Foreground="#a36b00" Margin="0,10,0,5"/>
                     <TextBox x:Name="txtApellido" Height="30" 
-                            BorderBrush="#a36b00" BorderThickness="1"/>
+                            BorderBrush="#a36b00" BorderThickness="1"
+                            TextChanged="TextBox_TextChanged"/>
 
                     <!-- Documento -->
                     <TextBlock Text="Documento:" FontWeight="Bold" Foreground="#a36b00" Margin="0,10,0,5"/>
                     <TextBox x:Name="txtDocumento" Height="30" 
-                            BorderBrush="#a36b00" BorderThickness="1"/>
+                            BorderBrush="#a36b00" BorderThickness="1"
+                            TextChanged="TextBox_TextChanged"
+                            ToolTip="El documento debe ser único en el sistema"/>
 
                     <!-- Teléfono -->
                     <TextBlock Text="Teléfono:" FontWeight="Bold" Foreground="#a36b00" Margin="0,10,0,5"/>
                     <TextBox x:Name="txtTelefono" Height="30" 
-                            BorderBrush="#a36b00" BorderThickness="1"/>
+                            BorderBrush="#a36b00" BorderThickness="1"
+                            TextChanged="TextBox_TextChanged"/>
 
                     <!-- Email -->
                     <TextBlock Text="Email:" FontWeight="Bold" Foreground="#a36b00" Margin="0,10,0,5"/>
                     <TextBox x:Name="txtEmail" Height="30" 
-                            BorderBrush="#a36b00" BorderThickness="1"/>
+                            BorderBrush="#a36b00" BorderThickness="1"
+                            TextChanged="TextBox_TextChanged"/>
 
                     <!-- CUIL -->
                     <TextBlock Text="CUIL:" FontWeight="Bold" Foreground="#a36b00" Margin="0,10,0,5"/>
                     <TextBox x:Name="txtCuil" Height="30" 
-                            BorderBrush="#a36b00" BorderThickness="1"/>
+                            BorderBrush="#a36b00" BorderThickness="1"
+                            TextChanged="TextBox_TextChanged"
+                            ToolTip="El CUIL debe ser único en el sistema"/>
 
                     <!-- Dirección -->
                     <TextBlock Text="Dirección:" FontWeight="Bold" Foreground="#a36b00" Margin="0,10,0,5"/>
-                    <TextBox x:Name="txtDireccion" BorderBrush="#a36b00" BorderThickness="1" AcceptsReturn="True" TextWrapping="Wrap" Height="30"/>
+                    <TextBox x:Name="txtDireccion" BorderBrush="#a36b00" BorderThickness="1" AcceptsReturn="True" TextWrapping="Wrap" Height="30"
+                            TextChanged="TextBox_TextChanged"/>
 
                     <!-- Contraseña -->
                     <TextBlock Text="Contraseña:" FontWeight="Bold" Foreground="#a36b00" Margin="0,10,0,5"/>

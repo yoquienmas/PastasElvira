@@ -253,8 +253,20 @@
             if (ok)
             {
                 MessageBox.Show("Venta registrada exitosamente.\n" + mensaje, "Éxito", MessageBoxButton.OK, MessageBoxImage.Information);
+
+                // ✅ VERIFICAR ALERTAS DESPUÉS DE LA VENTA
+                foreach (var item in listaItemsVenta)
+                {
+                    CN_Alerta cnAlerta = new CN_Alerta();
+                    cnAlerta.VerificarAlertasProducto(item.IdProducto);
+                }
+
                 GenerarFactura(nuevaVenta);
                 LimpiarFormularioCompleto();
+
+                // ✅ PUBLICAR EVENTOS DE ACTUALIZACIÓN
+                EventAggregator.Publish(new ProductoActualizadoEvent());
+                EventAggregator.Publish(new AlertasActualizadasEvent());
             }
             else
             {

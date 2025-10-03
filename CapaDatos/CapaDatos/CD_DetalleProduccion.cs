@@ -40,7 +40,7 @@ namespace CapaDatos
                                 IdProduccion = Convert.ToInt32(dr["IdProduccion"]),
                                 IdMateria = Convert.ToInt32(dr["IdMateria"]),
                                 CantidadUtilizada = Convert.ToDecimal(dr["CantidadUtilizada"]),
-                                Nombre = dr["Nombre"].ToString()
+                                NombreProducto = dr["NombreProducto"].ToString()
                             });
                         }
                     }

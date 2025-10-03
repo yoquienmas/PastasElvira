@@ -6,6 +6,7 @@ using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
 
 namespace CapaPresentacion
 {
@@ -43,7 +44,8 @@ namespace CapaPresentacion
             txtCuil.Text = "";
             txtDireccion.Text = "";
             btnGuardar.Content = "Guardar";
-            btnEliminar.IsEnabled = false;
+
+            // NUEVO: Deshabilitar botones Editar y Eliminar
             btnEditar.IsEnabled = false;
 
             // Limpiar estilos de validación
@@ -144,7 +146,7 @@ namespace CapaPresentacion
                 LimpiarFormulario();
             }
         }
-        
+
         private bool ValidarFormulario()
         {
             bool esValido = true;
@@ -252,34 +254,6 @@ namespace CapaPresentacion
             return cuilLimpio.Length == 11 && long.TryParse(cuilLimpio, out _);
         }
 
-        private void btnEliminar_Click(object sender, RoutedEventArgs e)
-        {
-            if (clienteSeleccionado == null)
-            {
-                MessageBox.Show("Seleccione un cliente para eliminar", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
-                return;
-            }
-
-            var confirmacion = MessageBox.Show($"¿Está seguro de eliminar al cliente: {clienteSeleccionado.Nombre}?",
-                "Confirmar Eliminación", MessageBoxButton.YesNo, MessageBoxImage.Question);
-
-            if (confirmacion == MessageBoxResult.Yes)
-            {
-                string mensaje;
-                bool resultado = cnCliente.Eliminar(clienteSeleccionado.IdCliente, out mensaje);
-
-                MessageBox.Show(mensaje, resultado ? "Éxito" : "Error",
-                    MessageBoxButton.OK,
-                    resultado ? MessageBoxImage.Information : MessageBoxImage.Error);
-
-                if (resultado)
-                {
-                    CargarClientes();
-                    LimpiarFormulario();
-                }
-            }
-        }
-
         private void dgvClientes_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (dgvClientes.SelectedItem is Cliente cliente)
@@ -295,7 +269,8 @@ namespace CapaPresentacion
 
                 // Cambiar el texto del botón Guardar a "Actualizar"
                 btnGuardar.Content = "Actualizar";
-                btnEliminar.IsEnabled = true;
+
+                // NUEVO: Habilitar botón Editar
                 btnEditar.IsEnabled = true;
 
                 LimpiarEstilosValidacion();
@@ -309,10 +284,22 @@ namespace CapaPresentacion
                 txtNombre.BorderBrush = System.Windows.Media.Brushes.Gray;
         }
 
+        // NUEVO: validación no admite un dni ya existente 
         private void txtDocumento_TextChanged(object sender, TextChangedEventArgs e)
         {
             if (!string.IsNullOrEmpty(txtDocumento.Text) && EsDocumentoValido(txtDocumento.Text))
-                txtDocumento.BorderBrush = System.Windows.Media.Brushes.Gray;
+            {
+                if (cnCliente.ExisteDocumento(txtDocumento.Text))
+                {
+                    txtDocumento.BorderBrush = Brushes.Red;
+                    ToolTipService.SetToolTip(txtDocumento, "Ya existe un cliente con este DNI.");
+                }
+                else
+                {
+                    txtDocumento.BorderBrush = Brushes.Gray;
+                    ToolTipService.SetToolTip(txtDocumento, null);
+                }
+            }
         }
 
         private void txtTelefono_TextChanged(object sender, TextChangedEventArgs e)
@@ -327,10 +314,22 @@ namespace CapaPresentacion
                 txtEmail.BorderBrush = System.Windows.Media.Brushes.Gray;
         }
 
+        // NUEVO: validación no admite un cuil ya existente 
         private void txtCuil_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if (string.IsNullOrEmpty(txtCuil.Text) || EsCuilValido(txtCuil.Text))
-                txtCuil.BorderBrush = System.Windows.Media.Brushes.Gray;
+            if (!string.IsNullOrEmpty(txtCuil.Text) && EsCuilValido(txtCuil.Text))
+            {
+                if (cnCliente.ExisteCuil(txtCuil.Text))
+                {
+                    txtCuil.BorderBrush = Brushes.Red;
+                    ToolTipService.SetToolTip(txtCuil, "Ya existe un cliente con este CUIL.");
+                }
+                else
+                {
+                    txtCuil.BorderBrush = Brushes.Gray;
+                    ToolTipService.SetToolTip(txtCuil, null);
+                }
+            }
         }
 
         // Validación de entrada para solo números

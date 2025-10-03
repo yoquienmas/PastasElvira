@@ -39,11 +39,14 @@
                 <!-- Fila 0 -->
                 <!-- Nombre -->
                 <TextBlock Text="Nombre:" Grid.Row="0" Grid.Column="0" Margin="0,0,10,10" Foreground="#5c3a00"/>
-                <TextBox x:Name="txtNombre" Grid.Row="0" Grid.Column="1" Margin="0,0,10,10" Height="30"/>
+                <TextBox x:Name="txtNombre" Grid.Row="0" Grid.Column="1" Margin="0,0,10,10" Height="30"
+                         TextChanged="txtNombre_TextChanged"/>
 
                 <!-- Documento -->
                 <TextBlock Text="Documento:" Grid.Row="0" Grid.Column="2" Margin="10,0,10,10" Foreground="#5c3a00"/>
-                <TextBox x:Name="txtDocumento" Grid.Row="0" Grid.Column="3" Margin="0,0,0,10" Height="30"/>
+                <TextBox x:Name="txtDocumento" Grid.Row="0" Grid.Column="3" Margin="0,0,0,10" Height="30"
+                         TextChanged="txtDocumento_TextChanged"
+                         PreviewTextInput="SoloNumeros_PreviewTextInput"/>
 
                 <!-- Fila 1 -->
                 <!-- Apellido -->
@@ -52,16 +55,21 @@
 
                 <!-- Email -->
                 <TextBlock Text="Email:" Grid.Row="1" Grid.Column="2" Margin="10,0,10,10" Foreground="#5c3a00"/>
-                <TextBox x:Name="txtEmail" Grid.Row="1" Grid.Column="3" Margin="0,0,0,10" Height="30"/>
+                <TextBox x:Name="txtEmail" Grid.Row="1" Grid.Column="3" Margin="0,0,0,10" Height="30"
+                         TextChanged="txtEmail_TextChanged"/>
 
                 <!-- Fila 2 -->
                 <!-- Teléfono -->
                 <TextBlock Text="Teléfono:" Grid.Row="2" Grid.Column="0" Margin="0,0,10,10" Foreground="#5c3a00"/>
-                <TextBox x:Name="txtTelefono" Grid.Row="2" Grid.Column="1" Margin="0,0,10,10" Height="30"/>
+                <TextBox x:Name="txtTelefono" Grid.Row="2" Grid.Column="1" Margin="0,0,10,10" Height="30"
+                         TextChanged="txtTelefono_TextChanged"
+                         PreviewTextInput="SoloNumeros_PreviewTextInput"/>
 
                 <!-- CUIL -->
                 <TextBlock Text="CUIL:" Grid.Row="2" Grid.Column="2" Margin="10,0,10,10" Foreground="#5c3a00"/>
-                <TextBox x:Name="txtCuil" Grid.Row="2" Grid.Column="3" Margin="0,0,0,10" Height="30" TextChanged="txtCuil_TextChanged"/>
+                <TextBox x:Name="txtCuil" Grid.Row="2" Grid.Column="3" Margin="0,0,0,10" Height="30" 
+                         TextChanged="txtCuil_TextChanged"
+                         LostFocus="txtCuil_LostFocus"/>
 
                 <!-- Fila 3 -->
                 <!-- Dirección -->
@@ -77,8 +85,7 @@
                             Background="#2196F3" Foreground="White" FontWeight="Bold" Click="btnGuardar_Click"/>
                     <Button x:Name="btnEditar" Content="Editar" Width="80" Height="35" Margin="0,0,10,0"
                             Background="#FF9800" Foreground="White" FontWeight="Bold" Click="btnEditar_Click"/>
-                    <Button x:Name="btnEliminar" Content="Eliminar" Width="80" Height="35"
-                            Background="#ff6b6b" Foreground="White" FontWeight="Bold" Click="btnEliminar_Click"/>
+                    <!-- BOTÓN ELIMINAR ELIMINADO (no estaba en el diseño original) -->
                 </StackPanel>
             </Grid>
         </Border>

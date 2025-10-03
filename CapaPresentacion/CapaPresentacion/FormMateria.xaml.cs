@@ -20,7 +20,6 @@ namespace CapaPresentacion
         {
             ListarMateriasPrimas();
 
-            // Suscribirse a eventos
             if (_suscribirEventos)
             {
                 EventAggregator.Subscribe<MateriaPrimaActualizadaEvent>(e => ListarMateriasPrimas());
@@ -28,7 +27,6 @@ namespace CapaPresentacion
             }
         }
 
-        // MÉTODO QUE FALTA - AGREGAR ESTO
         private void btnLimpiar_Click(object sender, RoutedEventArgs e)
         {
             LimpiarCampos();
@@ -39,23 +37,64 @@ namespace CapaPresentacion
             dgvMateriaPrima.ItemsSource = cnMateriaPrima.Listar();
         }
 
+        // MÉTODO MEJORADO: Validaciones más robustas
+        private bool ValidarCampos()
+        {
+            // Validar nombre
+            if (string.IsNullOrWhiteSpace(txtNombre.Text))
+            {
+                MessageBox.Show("El nombre es obligatorio.", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                txtNombre.Focus();
+                return false;
+            }
+
+            // Validar unidad
+            if (string.IsNullOrWhiteSpace(txtUnidad.Text))
+            {
+                MessageBox.Show("La unidad es obligatoria.", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                txtUnidad.Focus();
+                return false;
+            }
+
+            // Validar cantidad disponible
+            if (!float.TryParse(txtCantidad.Text, out float cantidad) || cantidad < 0)
+            {
+                MessageBox.Show("La cantidad disponible debe ser un número válido mayor o igual a 0.", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                txtCantidad.Focus();
+                return false;
+            }
+
+            // Validar stock mínimo
+            if (!int.TryParse(txtStockMinimo.Text, out int stockMin) || stockMin < 0)
+            {
+                MessageBox.Show("El stock mínimo debe ser un número entero válido mayor o igual a 0.", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                txtStockMinimo.Focus();
+                return false;
+            }
+
+            // Validar precio unitario
+            if (!decimal.TryParse(txtPrecioUnitario.Text, out decimal precioUnitario) || precioUnitario < 0)
+            {
+                MessageBox.Show("El precio unitario debe ser un número válido mayor o igual a 0.", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                txtPrecioUnitario.Focus();
+                return false;
+            }
+
+            return true;
+        }
+
         private void btnAgregar_Click(object sender, RoutedEventArgs e)
         {
-            if (!float.TryParse(txtCantidad.Text, out float cantidad) ||
-                !int.TryParse(txtStockMinimo.Text, out int stockMin) ||
-                !decimal.TryParse(txtPrecioUnitario.Text, out decimal precioUnitario))
-            {
-                MessageBox.Show("Verifique los valores numéricos.", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+            if (!ValidarCampos())
                 return;
-            }
 
             MateriaPrima mp = new MateriaPrima
             {
-                Nombre = txtNombre.Text,
-                Unidad = txtUnidad.Text,
-                CantidadDisponible = cantidad,
-                StockMinimo = stockMin,
-                PrecioUnitario = precioUnitario
+                Nombre = txtNombre.Text.Trim(),
+                Unidad = txtUnidad.Text.Trim(),
+                CantidadDisponible = float.Parse(txtCantidad.Text),
+                StockMinimo = int.Parse(txtStockMinimo.Text),
+                PrecioUnitario = decimal.Parse(txtPrecioUnitario.Text)
             };
 
             string mensaje;
@@ -66,9 +105,8 @@ namespace CapaPresentacion
             {
                 LimpiarCampos();
                 ListarMateriasPrimas();
-                EventAggregator.Publish(new MateriaPrimaActualizadaEvent()); // Nueva línea
-                EventAggregator.Publish(new AlertasActualizadasEvent()); // Nueva línea
-
+                EventAggregator.Publish(new MateriaPrimaActualizadaEvent());
+                EventAggregator.Publish(new AlertasActualizadasEvent());
             }
         }
 
@@ -76,19 +114,14 @@ namespace CapaPresentacion
         {
             if (dgvMateriaPrima.SelectedItem is MateriaPrima seleccionado)
             {
-                if (!float.TryParse(txtCantidad.Text, out float cantidad) ||
-                    !int.TryParse(txtStockMinimo.Text, out int stockMin) ||
-                    !decimal.TryParse(txtPrecioUnitario.Text, out decimal precioUnitario))
-                {
-                    MessageBox.Show("Verifique los valores numéricos.", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                if (!ValidarCampos())
                     return;
-                }
 
-                seleccionado.Nombre = txtNombre.Text;
-                seleccionado.Unidad = txtUnidad.Text;
-                seleccionado.CantidadDisponible = cantidad;
-                seleccionado.StockMinimo = stockMin;
-                seleccionado.PrecioUnitario = precioUnitario;
+                seleccionado.Nombre = txtNombre.Text.Trim();
+                seleccionado.Unidad = txtUnidad.Text.Trim();
+                seleccionado.CantidadDisponible = float.Parse(txtCantidad.Text);
+                seleccionado.StockMinimo = int.Parse(txtStockMinimo.Text);
+                seleccionado.PrecioUnitario = decimal.Parse(txtPrecioUnitario.Text);
 
                 string mensaje;
                 bool ok = cnMateriaPrima.Editar(seleccionado, out mensaje);
@@ -98,10 +131,13 @@ namespace CapaPresentacion
                 {
                     LimpiarCampos();
                     ListarMateriasPrimas();
-                    EventAggregator.Publish(new MateriaPrimaActualizadaEvent()); // Nueva línea
-                    EventAggregator.Publish(new AlertasActualizadasEvent()); // Nueva línea
-
+                    EventAggregator.Publish(new MateriaPrimaActualizadaEvent());
+                    EventAggregator.Publish(new AlertasActualizadasEvent());
                 }
+            }
+            else
+            {
+                MessageBox.Show("Por favor, seleccione una materia prima para editar.", "Advertencia", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
 
@@ -109,18 +145,30 @@ namespace CapaPresentacion
         {
             if (dgvMateriaPrima.SelectedItem is MateriaPrima seleccionado)
             {
-                string mensaje;
-                bool ok = cnMateriaPrima.Eliminar(seleccionado.IdMateria, out mensaje);
-                MessageBox.Show(mensaje);
+                MessageBoxResult result = MessageBox.Show(
+                    $"¿Está seguro de que desea eliminar la materia prima '{seleccionado.Nombre}'?",
+                    "Confirmar eliminación",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Question);
 
-                if (ok)
+                if (result == MessageBoxResult.Yes)
                 {
-                    LimpiarCampos();
-                    ListarMateriasPrimas();
-                    EventAggregator.Publish(new MateriaPrimaActualizadaEvent()); // Nueva línea
-                    EventAggregator.Publish(new AlertasActualizadasEvent()); // Nueva línea
+                    string mensaje;
+                    bool ok = cnMateriaPrima.Eliminar(seleccionado.IdMateria, out mensaje);
+                    MessageBox.Show(mensaje);
 
+                    if (ok)
+                    {
+                        LimpiarCampos();
+                        ListarMateriasPrimas();
+                        EventAggregator.Publish(new MateriaPrimaActualizadaEvent());
+                        EventAggregator.Publish(new AlertasActualizadasEvent());
+                    }
                 }
+            }
+            else
+            {
+                MessageBox.Show("Por favor, seleccione una materia prima para eliminar.", "Advertencia", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
 

@@ -8,7 +8,79 @@ namespace CapaDatos
 {
         public class CD_Produccion
         {
-            public string ValidarDisponibilidadMateriasPrimas(int idProducto, int cantidadProducida)
+           public string ValidarDisponibilidadMateriasPrimas(int idProducto, int cantidadProducida)
+{
+    using (SqlConnection oconexion = new SqlConnection(Conexion.cadena))
+    {
+        oconexion.Open();
+        using (var command = new SqlCommand())
+        {
+            command.Connection = oconexion;
+            command.CommandText = @"
+                SELECT mp.Nombre, dr.CantidadNecesaria * @Cantidad as CantidadRequerida, mp.CantidadDisponible
+                FROM DetalleReceta dr
+                INNER JOIN MateriaPrima mp ON dr.IdMateria = mp.IdMateria
+                WHERE dr.IdProducto = @IdProducto
+                AND mp.CantidadDisponible < (dr.CantidadNecesaria * @Cantidad)";
+            command.Parameters.AddWithValue("@IdProducto", idProducto);
+            command.Parameters.AddWithValue("@Cantidad", cantidadProducida);
+
+            using (var reader = command.ExecuteReader())
+            {
+                if (reader.HasRows)
+                {
+                    string errorMessage = "Materias primas insuficientes: ";
+                    while (reader.Read())
+                    {
+                        // ✅ CORREGIDO: Cambiar "NombreProducto" por "Nombre"
+                        errorMessage += $"{reader["Nombre"]} (Necesita: {reader["CantidadRequerida"]}, Disponible: {reader["CantidadDisponible"]}), ";
+                    }
+                    return errorMessage.TrimEnd(',', ' ');
+                }
+            }
+        }
+    }
+    return string.Empty;
+}
+
+        public int Registrar(Produccion produccion, out string mensaje)
+        {
+            mensaje = string.Empty;
+            try
+            {
+                using (SqlConnection oconexion = new SqlConnection(Conexion.cadena))
+                {
+                    oconexion.Open();
+                    using (var command = new SqlCommand())
+                    {
+                        command.Connection = oconexion;
+
+                        // ✅ USAR SCOPE_IDENTITY()
+                        command.CommandText = @"
+                    INSERT INTO Produccion (IdProducto, CantidadProducida, FechaProduccion, Estado)
+                    VALUES (@IdProducto, @CantidadProducida, GETDATE(), 1);
+                    SELECT SCOPE_IDENTITY();";
+
+                        command.Parameters.AddWithValue("@IdProducto", produccion.IdProducto);
+                        command.Parameters.AddWithValue("@CantidadProducida", produccion.CantidadProducida);
+
+                        int idProduccion = Convert.ToInt32(command.ExecuteScalar());
+                        mensaje = "Producción registrada exitosamente";
+                        return idProduccion;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                mensaje = ex.Message;
+                return 0;
+            }
+        }
+
+        public bool Actualizar(Produccion produccion, out string mensaje)
+        {
+            mensaje = string.Empty;
+            try
             {
                 using (SqlConnection oconexion = new SqlConnection(Conexion.cadena))
                 {
@@ -17,95 +89,196 @@ namespace CapaDatos
                     {
                         command.Connection = oconexion;
                         command.CommandText = @"
-                        SELECT mp.Nombre, dr.CantidadNecesaria * @Cantidad as CantidadRequerida, mp.CantidadDisponible
-                        FROM DetalleReceta dr
-                        INNER JOIN MateriaPrima mp ON dr.IdMateria = mp.IdMateria
-                        WHERE dr.IdProducto = @IdProducto
-                        AND mp.CantidadDisponible < (dr.CantidadNecesaria * @Cantidad)";
-                        command.Parameters.AddWithValue("@IdProducto", idProducto);
-                        command.Parameters.AddWithValue("@Cantidad", cantidadProducida);
+                    UPDATE Produccion 
+                    SET IdProducto = @IdProducto, 
+                        CantidadProducida = @CantidadProducida,
+                        FechaProduccion = GETDATE()
+                    WHERE IdProduccion = @IdProduccion AND Estado = 1";
 
-                        using (var reader = command.ExecuteReader())
+                        command.Parameters.AddWithValue("@IdProduccion", produccion.IdProduccion);
+                        command.Parameters.AddWithValue("@IdProducto", produccion.IdProducto);
+                        command.Parameters.AddWithValue("@CantidadProducida", produccion.CantidadProducida);
+
+                        int result = command.ExecuteNonQuery();
+                        if (result > 0)
                         {
-                            if (reader.HasRows)
-                            {
-                                string errorMessage = "Materias primas insuficientes: ";
-                                while (reader.Read())
-                                {
-                                    errorMessage += $"{reader["Nombre"]} (Necesita: {reader["CantidadRequerida"]}, Disponible: {reader["CantidadDisponible"]}), ";
-                                }
-                                return errorMessage.TrimEnd(',', ' ');
-                            }
+                            mensaje = "Producción actualizada exitosamente";
+                            return true;
+                        }
+                        else
+                        {
+                            mensaje = "No se pudo actualizar la producción";
+                            return false;
                         }
                     }
                 }
-                return string.Empty;
             }
-
-            // MÉTODO REGISTRAR FALTANTE
-            public int Registrar(Produccion produccion, out string mensaje)
+            catch (Exception ex)
             {
-                mensaje = string.Empty;
-                try
-                {
-                    using (SqlConnection oconexion = new SqlConnection(Conexion.cadena))
-                    {
-                        oconexion.Open();
-                        using (var command = new SqlCommand())
-                        {
-                            command.Connection = oconexion;
-                            command.CommandText = @"
-                            INSERT INTO Produccion (IdProducto, CantidadProducida, FechaProduccion, Estado)
-                            OUTPUT INSERTED.IdProduccion
-                            VALUES (@IdProducto, @CantidadProducida, GETDATE(), 1)";
-                            command.Parameters.AddWithValue("@IdProducto", produccion.IdProducto);
-                            command.Parameters.AddWithValue("@CantidadProducida", produccion.CantidadProducida);
-
-                            int idProduccion = Convert.ToInt32(command.ExecuteScalar());
-                            mensaje = "Producción registrada exitosamente";
-                            return idProduccion;
-                        }
-                    }
-                }
-                catch (Exception ex)
-                {
-                    mensaje = ex.Message;
-                    return 0;
-                }
+                mensaje = ex.Message;
+                return false;
             }
+        }
 
-            // MÉTODO LISTAR FALTANTE
-            public List<Produccion> Listar()
+        public bool Eliminar(int idProduccion, out string mensaje)
+        {
+            mensaje = string.Empty;
+            try
             {
-                List<Produccion> producciones = new List<Produccion>();
-
                 using (SqlConnection oconexion = new SqlConnection(Conexion.cadena))
                 {
                     oconexion.Open();
                     using (var command = new SqlCommand())
                     {
                         command.Connection = oconexion;
-                        command.CommandText = "SELECT * FROM Produccion ORDER BY FechaProduccion DESC";
+                        command.CommandText = "UPDATE Produccion SET Estado = 0 WHERE IdProduccion = @IdProduccion";
+                        command.Parameters.AddWithValue("@IdProduccion", idProduccion);
 
-                        using (var reader = command.ExecuteReader())
+                        int result = command.ExecuteNonQuery();
+                        if (result > 0)
                         {
-                            while (reader.Read())
-                            {
-                                producciones.Add(new Produccion
-                                {
-                                    IdProduccion = (int)reader["IdProduccion"],
-                                    IdProducto = (int)reader["IdProducto"],
-                                    CantidadProducida = (int)reader["CantidadProducida"],
-                                    FechaProduccion = (DateTime)reader["FechaProduccion"],
-                                });
-                            }
+                            mensaje = "Producción eliminada exitosamente";
+                            return true;
+                        }
+                        else
+                        {
+                            mensaje = "No se pudo eliminar la producción";
+                            return false;
                         }
                     }
                 }
-                return producciones;
             }
+            catch (Exception ex)
+            {
+                mensaje = ex.Message;
+                return false;
+            }
+        }
 
-            public bool RegistrarDetalleProduccion(int idProduccion, int idMateria, decimal cantidadUtilizada)
+        public Produccion ObtenerPorId(int idProduccion)
+        {
+            using (SqlConnection oconexion = new SqlConnection(Conexion.cadena))
+            {
+                oconexion.Open();
+                using (var command = new SqlCommand())
+                {
+                    command.Connection = oconexion;
+                    command.CommandText = @"
+                SELECT 
+                    p.IdProduccion,
+                    p.IdProducto,
+                    p.CantidadProducida,
+                    p.FechaProduccion,
+                    p.Estado,
+                    pr.Nombre,
+                    pr.Tipo
+                FROM Produccion p
+                INNER JOIN Producto pr ON p.IdProducto = pr.IdProducto
+                WHERE p.IdProduccion = @IdProduccion AND p.Estado = 1";
+
+                    command.Parameters.AddWithValue("@IdProduccion", idProduccion);
+
+                    using (var reader = command.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            var produccion = new Produccion
+                            {
+                                IdProduccion = (int)reader["IdProduccion"],
+                                IdProducto = (int)reader["IdProducto"],
+                                CantidadProducida = (int)reader["CantidadProducida"],
+                                FechaProduccion = (DateTime)reader["FechaProduccion"],
+                                Estado = true
+                            };
+
+                            // Construir nombre del producto
+                            string nombre = reader["Nombre"].ToString();
+                            string tipo = reader["Tipo"].ToString();
+
+                            if (string.IsNullOrEmpty(nombre))
+                                produccion.NombreProducto = "Producto sin nombre";
+                            else if (string.IsNullOrEmpty(tipo) || tipo == "NULL")
+                                produccion.NombreProducto = nombre;
+                            else
+                                produccion.NombreProducto = $"{tipo} - {nombre}";
+
+                            return produccion;
+                        }
+                    }
+                }
+            }
+            return null;
+        }
+
+        // MÉTODO LISTAR FALTANTE
+        public List<Produccion> Listar()
+        {
+            List<Produccion> producciones = new List<Produccion>();
+
+            using (SqlConnection oconexion = new SqlConnection(Conexion.cadena))
+            {
+                oconexion.Open();
+                using (var command = new SqlCommand())
+                {
+                    command.Connection = oconexion;
+                    // ✅ INCLUIR ESTADO PERO CON MANEJO SEGURO
+                    command.CommandText = @"
+                SELECT 
+                    p.IdProduccion,
+                    p.IdProducto,
+                    p.CantidadProducida,
+                    p.FechaProduccion,
+                    p.Estado,
+                    pr.Nombre,
+                    pr.Tipo
+                FROM Produccion p
+                INNER JOIN Producto pr ON p.IdProducto = pr.IdProducto
+                ORDER BY p.FechaProduccion DESC";
+
+                    using (var reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            var produccion = new Produccion
+                            {
+                                IdProduccion = (int)reader["IdProduccion"],
+                                IdProducto = (int)reader["IdProducto"],
+                                CantidadProducida = (int)reader["CantidadProducida"],
+                                FechaProduccion = (DateTime)reader["FechaProduccion"]
+                            };
+
+                            // ✅ MANEJO SEGURO DEL CAMPO ESTADO
+                            var estadoValue = reader["Estado"];
+                            if (estadoValue != DBNull.Value)
+                            {
+                                if (estadoValue is bool)
+                                    produccion.Estado = (bool)estadoValue;
+                                else if (estadoValue is string estadoStr)
+                                    produccion.Estado = estadoStr == "1" || estadoStr.ToLower() == "true";
+                                else if (estadoValue is int estadoInt)
+                                    produccion.Estado = estadoInt == 1;
+                            }
+
+                            // ✅ CONSTRUIR EL NombreProducto
+                            string nombre = reader["Nombre"].ToString();
+                            string tipo = reader["Tipo"].ToString();
+
+                            if (string.IsNullOrEmpty(nombre))
+                                produccion.NombreProducto = "Producto sin nombre";
+                            else if (string.IsNullOrEmpty(tipo) || tipo == "NULL")
+                                produccion.NombreProducto = nombre;
+                            else
+                                produccion.NombreProducto = $"{tipo} - {nombre}";
+
+                            producciones.Add(produccion);
+                        }
+                    }
+                }
+            }
+            return producciones;
+        }
+
+        public bool RegistrarDetalleProduccion(int idProduccion, int idMateria, decimal cantidadUtilizada)
             {
                 using (SqlConnection oconexion = new SqlConnection(Conexion.cadena))
                 {

@@ -66,10 +66,6 @@
                                 Background="#FF9800" Foreground="White" FontWeight="Bold"
                                 Click="btnProgramarProduccion_Click"
                                 ToolTip="Planificar producción incluyendo recetas"/>
-                        <Button Content="Historial Producción" Width="200" Height="40" Margin="5"
-                                Background="#9C27B0" Foreground="White" FontWeight="Bold"
-                                Click="btnHistorialProduccion_Click"
-                                ToolTip="Ver historial y detalles de producción"/>
                     </WrapPanel>
                 </GroupBox>
 

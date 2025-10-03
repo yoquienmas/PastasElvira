@@ -34,40 +34,52 @@
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
 
+                    <!-- Fila 1: Nombre y Tipo -->
                     <TextBlock Text="Nombre:" Grid.Row="0" Grid.Column="0" Margin="0,5,5,5" VerticalAlignment="Center" Foreground="#5c3a00"/>
-                    <TextBox x:Name="txtNombre" Grid.Row="0" Grid.Column="1" Margin="0,20,10,13"/>
+                    <TextBox x:Name="txtNombre" Grid.Row="0" Grid.Column="1" Margin="0,5,10,5"/>
 
                     <TextBlock Text="Tipo:" Grid.Row="0" Grid.Column="2" Margin="0,5,5,5" VerticalAlignment="Center" Foreground="#5c3a00"/>
-                    <ComboBox x:Name="cboTipo" SelectionChanged="cboTipo_SelectionChanged" DisplayMemberPath="." SelectedValuePath="." Margin="123,20,10,10" Grid.Column="2" Grid.ColumnSpan="2"/>
-                    <TextBlock Text="Costo Producción:" Grid.Row="0" Grid.Column="4" Margin="0,5,5,5" VerticalAlignment="Center" Foreground="#5c3a00"/>
-                    <TextBox x:Name="txtCostoProduccion" Grid.Row="0" Grid.Column="4" Margin="118,18,0,11" Grid.ColumnSpan="2" RenderTransformOrigin="0.5,0.5">
-                        <TextBox.RenderTransform>
-                            <TransformGroup>
-                                <ScaleTransform ScaleY="-1"/>
-                                <SkewTransform/>
-                                <RotateTransform Angle="-0.091"/>
-                                <TranslateTransform/>
-                            </TransformGroup>
-                        </TextBox.RenderTransform>
-                    </TextBox>
+                    <ComboBox x:Name="cboTipo" Grid.Row="0" Grid.Column="3" Margin="0,5,10,5" 
+                              SelectionChanged="cboTipo_SelectionChanged" DisplayMemberPath="." SelectedValuePath="."/>
 
-                    <TextBlock Text="Margen Ganancia (%):" Grid.Row="1" Grid.Column="0" Margin="0,5,5,5" VerticalAlignment="Center" Foreground="#5c3a00"/>
-                    <TextBox x:Name="txtMargenGanancia" Grid.Row="1" Grid.Column="1" Margin="0,5,10,5"/>
+                    <!-- Fila 2: Stock Actual y Stock Mínimo -->
+                    <TextBlock Text="Stock Actual:" Grid.Row="1" Grid.Column="0" Margin="0,5,5,5" VerticalAlignment="Center" Foreground="#5c3a00"/>
+                    <TextBox x:Name="txtStock" Grid.Row="1" Grid.Column="1" Margin="0,5,10,5"/>
 
-                    <TextBlock Text="Precio Venta:" Grid.Row="1" Grid.Column="2" Margin="0,5,5,5" VerticalAlignment="Center" Foreground="#5c3a00"/>
-                    <TextBox x:Name="txtPrecio" Grid.Row="1" Grid.Column="3" Margin="0,5,10,5"/>
+                    <TextBlock Text="Stock Mínimo:" Grid.Row="1" Grid.Column="2" Margin="0,5,5,5" VerticalAlignment="Center" Foreground="#5c3a00"/>
+                    <TextBox x:Name="txtStockMinimo" Grid.Row="1" Grid.Column="3" Margin="0,5,10,5"/>
 
-                    <TextBlock Text="Stock Actual:" Grid.Row="1" Grid.Column="4" Margin="0,5,5,5" VerticalAlignment="Center" Foreground="#5c3a00"/>
-                    <TextBox x:Name="txtStock" Grid.Row="1" Grid.Column="5" Margin="0,5,0,5"/>
+                    <!-- Fila 3: Costo de Producción -->
+                    <TextBlock Text="Costo de Producción:" Grid.Row="2" Grid.Column="0" Margin="0,5,10,10" VerticalAlignment="Center" Foreground="#5c3a00"/>
+                    <TextBox x:Name="txtCostoProduccion" Grid.Row="2" Grid.Column="1" Margin="0,5,10,10" Height="30" 
+                             IsReadOnly="True" Background="#f5f5f5" Foreground="#666666"
+                             ToolTip="El costo de producción se calcula automáticamente"/>
 
-                    <TextBlock Text="Stock Mínimo:" Grid.Row="2" Grid.Column="0" Margin="0,5,5,5" VerticalAlignment="Center" Foreground="#5c3a00"/>
-                    <TextBox x:Name="txtStockMinimo" Grid.Row="2" Grid.Column="1" Margin="0,5,10,10"/>
+                    <!-- Fila 4: Margen de Ganancia -->
+                    <TextBlock Text="Margen de Ganancia (%):" Grid.Row="3" Grid.Column="0" Margin="0,5,10,10" VerticalAlignment="Center" Foreground="#5c3a00"/>
+                    <TextBox x:Name="txtMargenGanancia" Grid.Row="3" Grid.Column="1" Margin="0,5,10,10" Height="30"
+                             Background="White" Foreground="Black"
+                             ToolTip="Este porcentaje se aplica sobre el costo para calcular el precio de venta"
+                             TextChanged="txtMargenGanancia_TextChanged"/>
 
-                    <CheckBox x:Name="chkVisible" Content="Producto Visible" Grid.Row="2" Grid.Column="2" IsChecked="True" Foreground="#5c3a00" Margin="0,5,0,5" VerticalAlignment="Center"/>
+                    <!-- Fila 5: Precio de Venta -->
+                    <TextBlock Text="Precio de Venta:" Grid.Row="4" Grid.Column="0" Margin="0,5,10,10" VerticalAlignment="Center" Foreground="#5c3a00"/>
+                    <TextBox x:Name="txtPrecioVenta" Grid.Row="4" Grid.Column="1" Margin="0,5,10,10" Height="30"
+                             IsReadOnly="True" Background="#f5f5f5" Foreground="#666666"
+                             ToolTip="El precio de venta se calcula automáticamente basado en el costo y margen de ganancia"/>
 
-                    <StackPanel Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="6" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,15,0,0">
+                    <!-- Fila 6: Checkbox Visible -->
+                    <CheckBox x:Name="chkVisible" Content="Producto Visible" Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2" 
+                              IsChecked="True" Foreground="#5c3a00" Margin="0,10,0,10" VerticalAlignment="Center"/>
+
+                    <!-- Fila 7: Botones -->
+                    <StackPanel Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="6" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,15,0,0">
                         <Button x:Name="btnAgregar" Content="➕ Agregar" Width="120" Height="35" Margin="0,0,10,0"
                                 Background="#4CAF50" Foreground="White" FontWeight="Bold"
                                 Click="btnAgregar_Click"/>
@@ -80,19 +92,28 @@
                         <Button x:Name="btnLimpiar" Content="Limpiar" Width="120" Height="35"
                                 Background="#6c757d" Foreground="White" FontWeight="Bold"
                                 Click="btnLimpiar_Click"/>
+                        <Button x:Name="btnRecalcularCosto" Content="🔄 Recalcular" Width="120" Height="35" Margin="10,0,0,0"
+                                Background="#9C27B0" Foreground="White" FontWeight="Bold"
+                                Click="btnRecalcularCosto_Click"
+                                ToolTip="Recalcula el costo automáticamente"/>
                     </StackPanel>
                 </Grid>
             </GroupBox>
 
+            <!-- DataGrid de Productos -->
             <Border Grid.Row="2" Margin="0,20,0,0" Background="White" CornerRadius="10" Padding="5"
                     BorderBrush="#e2a42d" BorderThickness="2">
-                <DataGrid x:Name="dgvProductos" AutoGenerateColumns="False">
+                <DataGrid x:Name="dgvProductos" AutoGenerateColumns="False" SelectionChanged="dgvProductos_SelectionChanged">
                     <DataGrid.Columns>
-                        <DataGridTextColumn Header="Nombre" Binding="{Binding Nombre}"/>
-                        <DataGridTextColumn Header="Tipo" Binding="{Binding Tipo}"/>
-                        <DataGridTextColumn Header="Precio" Binding="{Binding PrecioVenta, StringFormat=C}"/>
-                        <DataGridTextColumn Header="Stock" Binding="{Binding StockActual}"/>
-                        <DataGridTextColumn Header="Estado" Binding="{Binding Visible}"/>
+                        <DataGridTextColumn Header="ID" Binding="{Binding IdProducto}" Width="60"/>
+                        <DataGridTextColumn Header="Nombre" Binding="{Binding Nombre}" Width="*"/>
+                        <DataGridTextColumn Header="Tipo" Binding="{Binding Tipo}" Width="*"/>
+                        <DataGridTextColumn Header="Costo" Binding="{Binding CostoProduccion, StringFormat=C}" Width="100"/>
+                        <DataGridTextColumn Header="Precio" Binding="{Binding PrecioVenta, StringFormat=C}" Width="100"/>
+                        <DataGridTextColumn Header="Margen %" Binding="{Binding MargenGanancia, StringFormat=F2}" Width="80"/>
+                        <DataGridTextColumn Header="Stock" Binding="{Binding StockActual}" Width="80"/>
+                        <DataGridTextColumn Header="Mínimo" Binding="{Binding StockMinimo}" Width="80"/>
+                        <DataGridTextColumn Header="Estado" Binding="{Binding Estado}" Width="80"/>
                     </DataGrid.Columns>
                 </DataGrid>
             </Border>

@@ -9,27 +9,44 @@ namespace CapaNegocio
     {
         private CD_MateriaPrima cdMateriaPrima = new CD_MateriaPrima();
 
+        // MÉTODO NUEVO: Verificar si existe materia prima con el mismo nombre
+        public bool ExisteMateriaPrima(string nombre, int idExcluir = 0)
+        {
+            return cdMateriaPrima.ExisteMateriaPrima(nombre, idExcluir);
+        }
+
         // MÉTODOS BÁSICOS CORREGIDOS
         public List<MateriaPrima> Listar()
         {
-            return cdMateriaPrima.Listar(); // CORREGIDO: llamar al método de capa de datos
+            return cdMateriaPrima.Listar();
         }
 
         public int Registrar(MateriaPrima materia, out string mensaje)
         {
-            return cdMateriaPrima.Registrar(materia, out mensaje); // CORREGIDO
+            // Validar si ya existe una materia prima con el mismo nombre
+            if (ExisteMateriaPrima(materia.Nombre))
+            {
+                mensaje = "Ya existe una materia prima con el mismo nombre";
+                return 0;
+            }
+
+            return cdMateriaPrima.Registrar(materia, out mensaje);
         }
 
         public bool Editar(MateriaPrima materia, out string mensaje)
         {
-            bool resultado = cdMateriaPrima.Editar(materia, out mensaje); // CORREGIDO
+            // Validar si ya existe otra materia prima con el mismo nombre (excluyendo la actual)
+            if (ExisteMateriaPrima(materia.Nombre, materia.IdMateria))
+            {
+                mensaje = "Ya existe otra materia prima con el mismo nombre";
+                return false;
+            }
+
+            bool resultado = cdMateriaPrima.Editar(materia, out mensaje);
 
             if (resultado)
             {
-                // Publicar evento de actualización
                 EventAggregator.Publish(new MateriaPrimaActualizadaEvent());
-
-                // Actualizar costos de productos que usan esta materia prima
                 ActualizarCostosProductosConMateria(materia.IdMateria);
             }
 
@@ -38,7 +55,7 @@ namespace CapaNegocio
 
         public bool Eliminar(int idMateria, out string mensaje)
         {
-            return cdMateriaPrima.Eliminar(idMateria, out mensaje); // CORREGIDO
+            return cdMateriaPrima.Eliminar(idMateria, out mensaje);
         }
 
         // MÉTODOS NUEVOS (sin cambios)
@@ -63,11 +80,8 @@ namespace CapaNegocio
 
             foreach (var idProducto in productos)
             {
-                // Actualizar costo de cada producto
                 CN_Producto cnProducto = new CN_Producto();
                 cnProducto.ActualizarCostoProducto(idProducto);
-
-                // Publicar evento
                 EventAggregator.Publish(new ProductoActualizadoEvent());
             }
         }

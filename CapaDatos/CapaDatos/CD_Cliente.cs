@@ -4,10 +4,10 @@ using System.Data;
 using Microsoft.Data.SqlClient;
 using CapaEntidad;
 
-    namespace CapaDatos
+namespace CapaDatos
+{
+    public class CD_Cliente
     {
-        public class CD_Cliente
-        {
         public List<Cliente> ListarClientes()
         {
             List<Cliente> clientes = new List<Cliente>();
@@ -118,26 +118,57 @@ using CapaEntidad;
         }
 
         public bool Eliminar(int idCliente, out string mensaje)
+        {
+            mensaje = string.Empty;
+            try
             {
-                mensaje = string.Empty;
-                try
+                using (SqlConnection oconexion = new SqlConnection(Conexion.cadena))
                 {
-                    using (SqlConnection oconexion = new SqlConnection(Conexion.cadena))
-                    {
-                        oconexion.Open();
-                        SqlCommand comando = new SqlCommand("UPDATE Cliente SET Activo = 0 WHERE IdCliente = @IdCliente", oconexion);
-                        comando.Parameters.AddWithValue("@IdCliente", idCliente);
+                    oconexion.Open();
+                    SqlCommand comando = new SqlCommand("UPDATE Cliente SET Activo = 0 WHERE IdCliente = @IdCliente", oconexion);
+                    comando.Parameters.AddWithValue("@IdCliente", idCliente);
 
-                        int result = comando.ExecuteNonQuery();
-                        mensaje = "Cliente eliminado correctamente";
-                        return result > 0;
-                    }
+                    int result = comando.ExecuteNonQuery();
+                    mensaje = "Cliente eliminado correctamente";
+                    return result > 0;
                 }
-                catch (Exception ex)
+            }
+            catch (Exception ex)
+            {
+                mensaje = ex.Message;
+                return false;
+            }
+        }
+
+        // NUEVOS MÉTODOS AGREGADOS
+        public bool ExisteDocumento(string documento)
+        {
+            using (SqlConnection cn = new SqlConnection(Conexion.cadena))
+            {
+                cn.Open();
+                string query = "SELECT COUNT(*) FROM Cliente WHERE Documento = @Documento";
+                using (SqlCommand cmd = new SqlCommand(query, cn))
                 {
-                    mensaje = ex.Message;
-                    return false;
+                    cmd.Parameters.AddWithValue("@Documento", documento);
+                    int count = (int)cmd.ExecuteScalar();
+                    return count > 0;
+                }
+            }
+        }
+
+        public bool ExisteCuil(string cuil)
+        {
+            using (SqlConnection cn = new SqlConnection(Conexion.cadena))
+            {
+                cn.Open();
+                string query = "SELECT COUNT(*) FROM Cliente WHERE Cuil = @Cuil";
+                using (SqlCommand cmd = new SqlCommand(query, cn))
+                {
+                    cmd.Parameters.AddWithValue("@Cuil", cuil);
+                    int count = (int)cmd.ExecuteScalar();
+                    return count > 0;
                 }
             }
         }
     }
+}
