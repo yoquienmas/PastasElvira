@@ -74,6 +74,9 @@
                         ToolTip="Actualizar lista de usuarios"/>
                 <Button Content="Cerrar" Width="80" Height="30" Click="BtnCerrar_Click"
                         Background="#a36b00" Foreground="White" FontWeight="Bold"/>
+
+                <Button Content="✏️ Editar Usuario"  Width="150" Height="30"
+                 Click="BtnEditarUsuario_Click" Background="#e2a42d"  Foreground="White" FontWeight="Bold" FontSize="12"  />
             </StackPanel>
 
             <!-- Barra de Estado -->
@@ -85,9 +88,7 @@
                     <TextBlock x:Name="txtContador" Text="0 usuarios" Foreground="#666" Margin="0,0,10,0"/>
                 </StatusBarItem>
             </StatusBar>
-            <Button Content="✏️ Editar Usuario"
-                Click="BtnEditarUsuario_Click" Background="#e2a42d" 
-                Foreground="White" FontWeight="Bold" FontSize="12" Margin="620,35,0,403" Grid.RowSpan="2"/>
+            
         </Grid>
     </Border>
 </Window>
