@@ -40,9 +40,19 @@
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
 
-                    <!-- Fila 1: Nombre y Tipo -->
+                    <!-- Fila 1: Nombre y Tipo 
                     <TextBlock Text="Nombre:" Grid.Row="0" Grid.Column="0" Margin="0,5,5,5" VerticalAlignment="Center" Foreground="#5c3a00"/>
-                    <TextBox x:Name="txtNombre" Grid.Row="0" Grid.Column="1" Margin="0,5,10,5"/>
+                    <TextBox x:Name="txtNombre" Grid.Row="0" Grid.Column="1" Margin="0,5,10,5"/>-->
+                    
+                    <!-- FILA NOMBRE DESPLEGABLE -->
+                    <TextBlock Text="Nombre:" Grid.Row="0" Grid.Column="0" Margin="0,5,5,5" VerticalAlignment="Center" 
+                     Foreground="#5c3a00"/>
+
+                    <ComboBox x:Name="cboNombre" Grid.Row="0" Grid.Column="1" Margin="0,5,10,5"
+                     DisplayMemberPath="Nombre" SelectedValuePath="IdProducto" 
+                     SelectedValue="{Binding IdProductoSeleccionado, Mode=TwoWay}" SelectionChanged="cboNombre_SelectionChanged"  />    
+
+
 
                     <TextBlock Text="Tipo:" Grid.Row="0" Grid.Column="2" Margin="0,5,5,5" VerticalAlignment="Center" Foreground="#5c3a00"/>
                     <ComboBox x:Name="cboTipo" Grid.Row="0" Grid.Column="3" Margin="0,5,10,5" 

@@ -30,6 +30,11 @@ namespace CapaPresentacion
         {
             listaProductos = cnProducto.Listar();
             dgvProductos.ItemsSource = listaProductos;
+
+
+            //Cargar nombres en el combo desplegable -Nombre
+            cboNombre.ItemsSource = listaProductos;
+            cboNombre.SelectedIndex = -1; // Ninguno seleccionado al inicio
         }
 
         private void CargarTiposProducto()
@@ -51,7 +56,9 @@ namespace CapaPresentacion
         private void LimpiarFormulario()
         {
             productoSeleccionado = null;
-            txtNombre.Text = "";
+            //txtNombre.Text = "";
+            if (cboNombre.Items.Count > 0)
+                cboNombre.SelectedIndex = 0;
             txtStock.Text = "";
             txtStockMinimo.Text = "";
             txtMargenGanancia.Text = "30"; // Margen por defecto
@@ -133,7 +140,7 @@ namespace CapaPresentacion
         private void GuardarProducto(bool esEdicion)
         {
             // Validaciones básicas
-            if (string.IsNullOrWhiteSpace(txtNombre.Text))
+            if (string.IsNullOrWhiteSpace(cboNombre.Text))
             {
                 MessageBox.Show("El nombre es obligatorio", "Error",
                               MessageBoxButton.OK, MessageBoxImage.Warning);
@@ -186,7 +193,7 @@ namespace CapaPresentacion
             // Crear el objeto producto
             Producto producto = new Producto
             {
-                Nombre = txtNombre.Text.Trim(),
+                Nombre = cboNombre.Text.Trim(),
                 Tipo = cboTipo.Text,
                 CostoProduccion = costo,
                 PrecioVenta = precio,
@@ -268,7 +275,7 @@ namespace CapaPresentacion
             if (dgvProductos.SelectedItem is Producto producto)
             {
                 productoSeleccionado = producto;
-                txtNombre.Text = producto.Nombre;
+                cboNombre.Text = producto.Nombre;
                 cboTipo.Text = producto.Tipo;
                 txtCostoProduccion.Text = producto.CostoProduccion.ToString("F2");
                 txtPrecioVenta.Text = producto.PrecioVenta.ToString("F2");
@@ -287,5 +294,29 @@ namespace CapaPresentacion
         {
             // Puedes agregar lógica adicional si es necesario
         }
+
+        private void cboNombre_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
+        }
+
+        //private void cboNombre_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        // {
+        //     if (cboNombre.SelectedItem is Producto producto)
+        //     {
+        //         productoSeleccionado = producto;
+        //         cboTipo.Text = producto.Tipo;
+        //         txtCostoProduccion.Text = producto.CostoProduccion.ToString("F2");
+        //         txtPrecioVenta.Text = producto.PrecioVenta.ToString("F2");
+        //         txtMargenGanancia.Text = producto.MargenGanancia.ToString("F2");
+        //         txtStock.Text = producto.StockActual.ToString();
+        //         txtStockMinimo.Text = producto.StockMinimo.ToString();
+        //         chkVisible.IsChecked = producto.Visible;
+
+        //         btnEditar.IsEnabled = true;
+        //         btnEliminar.IsEnabled = true;
+        //         btnAgregar.Content = "➕ Agregar";
+        //     }
+        // }
     }
 }

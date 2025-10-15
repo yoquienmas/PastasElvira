@@ -1,7 +1,20 @@
 {
   "Version": 1,
   "WorkspaceRootPath": "C:\\Users\\Brenda A. Garcia\\Desktop\\Proyecto-p2\\",
-  "Documents": [],
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{C9F6F791-1C4B-957C-360E-B4FB731214B1}|CapaPresentacion\\CapaPresentacion\\CapaPresentacion.csproj|c:\\users\\brenda a. garcia\\desktop\\proyecto-p2\\capapresentacion\\capapresentacion\\formproducto.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{C9F6F791-1C4B-957C-360E-B4FB731214B1}|CapaPresentacion\\CapaPresentacion\\CapaPresentacion.csproj|solutionrelative:capapresentacion\\capapresentacion\\formproducto.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E7D39169-3B78-C802-C971-088CDC5B167A}|CapaEntidad\\CapaEntidad\\CapaEntidad.csproj|c:\\users\\brenda a. garcia\\desktop\\proyecto-p2\\capaentidad\\capaentidad\\producto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E7D39169-3B78-C802-C971-088CDC5B167A}|CapaEntidad\\CapaEntidad\\CapaEntidad.csproj|solutionrelative:capaentidad\\capaentidad\\producto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C9F6F791-1C4B-957C-360E-B4FB731214B1}|CapaPresentacion\\CapaPresentacion\\CapaPresentacion.csproj|c:\\users\\brenda a. garcia\\desktop\\proyecto-p2\\capapresentacion\\capapresentacion\\formproducto.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C9F6F791-1C4B-957C-360E-B4FB731214B1}|CapaPresentacion\\CapaPresentacion\\CapaPresentacion.csproj|solutionrelative:capapresentacion\\capapresentacion\\formproducto.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
   "DocumentGroupContainers": [
     {
       "Orientation": 0,
@@ -9,8 +22,48 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": -1,
+          "SelectedChildIndex": 0,
           "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "FormProducto.xaml",
+              "DocumentMoniker": "C:\\Users\\Brenda A. Garcia\\Desktop\\Proyecto-p2\\CapaPresentacion\\CapaPresentacion\\FormProducto.xaml",
+              "RelativeDocumentMoniker": "CapaPresentacion\\CapaPresentacion\\FormProducto.xaml",
+              "ToolTip": "C:\\Users\\Brenda A. Garcia\\Desktop\\Proyecto-p2\\CapaPresentacion\\CapaPresentacion\\FormProducto.xaml",
+              "RelativeToolTip": "CapaPresentacion\\CapaPresentacion\\FormProducto.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2025-10-15T13:13:41.18Z",
+              "IsPinned": true,
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "FormProducto.xaml.cs",
+              "DocumentMoniker": "C:\\Users\\Brenda A. Garcia\\Desktop\\Proyecto-p2\\CapaPresentacion\\CapaPresentacion\\FormProducto.xaml.cs",
+              "RelativeDocumentMoniker": "CapaPresentacion\\CapaPresentacion\\FormProducto.xaml.cs",
+              "ToolTip": "C:\\Users\\Brenda A. Garcia\\Desktop\\Proyecto-p2\\CapaPresentacion\\CapaPresentacion\\FormProducto.xaml.cs*",
+              "RelativeToolTip": "CapaPresentacion\\CapaPresentacion\\FormProducto.xaml.cs*",
+              "ViewState": "AgIAAAwBAAAAAAAAAAAAACUAAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-15T13:14:20.343Z",
+              "IsPinned": true,
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Producto.cs",
+              "DocumentMoniker": "C:\\Users\\Brenda A. Garcia\\Desktop\\Proyecto-p2\\CapaEntidad\\CapaEntidad\\Producto.cs",
+              "RelativeDocumentMoniker": "CapaEntidad\\CapaEntidad\\Producto.cs",
+              "ToolTip": "C:\\Users\\Brenda A. Garcia\\Desktop\\Proyecto-p2\\CapaEntidad\\CapaEntidad\\Producto.cs",
+              "RelativeToolTip": "CapaEntidad\\CapaEntidad\\Producto.cs",
+              "ViewState": "AgIAAAsAAAAAAAAAAAA9wAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-15T13:45:39.394Z",
+              "EditorCaption": ""
+            },
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{eefa5220-e298-11d0-8f78-00a0c9110057}"
