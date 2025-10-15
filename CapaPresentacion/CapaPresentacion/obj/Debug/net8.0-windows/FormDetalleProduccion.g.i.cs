@@ -100,7 +100,7 @@ namespace CapaPresentacion {
                 return;
             }
             _contentLoaded = true;
-            System.Uri resourceLocater = new System.Uri("/CapaPresentacion;component/formdetalleproduccion.xaml", System.UriKind.Relative);
+            System.Uri resourceLocater = new System.Uri("/CapaPresentacion;V1.0.0.0;component/formdetalleproduccion.xaml", System.UriKind.Relative);
             
             #line 1 "..\..\..\FormDetalleProduccion.xaml"
             System.Windows.Application.LoadComponent(this, resourceLocater);
