@@ -2,7 +2,7 @@
 using CapaEntidad;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.SqlClient;
+using Microsoft.Data.SqlClient;
 
 namespace CapaNegocio
 {
@@ -54,21 +54,22 @@ namespace CapaNegocio
         }
 
         public bool Eliminar(int idProducto, out string mensaje)
-            {
-                return cdProducto.Eliminar(idProducto, out mensaje);
-            }
+        {
+            return cdProducto.Eliminar(idProducto, out mensaje);
+        }
 
-            // MÉTODOS CORREGIDOS
-            public List<string> ListarTiposProducto()
-            {
-                return cdProducto.ListarTiposProducto();
-            }
+        // MÉTODOS CORREGIDOS
+        public List<string> ListarTiposProducto()
+        {
+            return cdProducto.ListarTiposProducto();
+        }
 
-            // MÉTODOS NUEVOS (sin cambios)
-            public List<Producto> ObtenerProductosParaVerificar()
-            {
-                return cdProducto.ObtenerProductosParaVerificar();
-            }
+        // MÉTODOS NUEVOS (sin cambios)
+        public List<Producto> ObtenerProductosParaVerificar()
+        {
+            return cdProducto.ObtenerProductosParaVerificar();
+        }
+
         // En CN_Producto.cs, modifica el método ActualizarCostoProducto
         public bool ActualizarCostoProducto(int idProducto)
         {
@@ -94,64 +95,93 @@ namespace CapaNegocio
         }
 
         public bool ActualizarStockProducto(int idProducto, int cantidad)
+        {
+            return cdProducto.ActualizarStockProducto(idProducto, cantidad);
+        }
+
+        public Producto ObtenerProductoPorId(int idProducto)
+        {
+            return cdProducto.ObtenerProductoPorId(idProducto);
+        }
+
+        public void VerificarAlertasStock(int idProducto)
+        {
+            CN_Alerta cnAlerta = new CN_Alerta();
+            cnAlerta.VerificarAlertasProducto(idProducto);
+        }
+
+        public bool CalcularCostoProducto(int idProducto, out decimal costo, out decimal precio, out string mensaje)
+        {
+            try
             {
-                return cdProducto.ActualizarStockProducto(idProducto, cantidad);
+                costo = cdProducto.CalcularCostoMateriasPrimas(idProducto);
+                decimal costosFijos = cdProducto.CalcularCostosFijosUnitarios();
+                costo += costosFijos;
+
+                Producto producto = ObtenerProductoPorId(idProducto);
+                precio = costo * (1 + (producto.MargenGanancia / 100));
+
+                mensaje = "Costo calculado correctamente";
+                return true;
             }
-
-            public Producto ObtenerProductoPorId(int idProducto)
+            catch (Exception ex)
             {
-                return cdProducto.ObtenerProductoPorId(idProducto);
+                costo = 0;
+                precio = 0;
+                mensaje = "Error al calcular costo: " + ex.Message;
+                return false;
             }
+        }
 
-            public void VerificarAlertasStock(int idProducto)
+        public void RecalcularTodosLosProductos()
+        {
+            try
             {
-                CN_Alerta cnAlerta = new CN_Alerta();
-                cnAlerta.VerificarAlertasProducto(idProducto);
-            }
-
-            public bool CalcularCostoProducto(int idProducto, out decimal costo, out decimal precio, out string mensaje)
-            {
-                try
+                var productos = Listar();
+                foreach (var producto in productos)
                 {
-                    costo = cdProducto.CalcularCostoMateriasPrimas(idProducto);
-                    decimal costosFijos = cdProducto.CalcularCostosFijosUnitarios();
-                    costo += costosFijos;
-
-                    Producto producto = ObtenerProductoPorId(idProducto);
-                    precio = costo * (1 + (producto.MargenGanancia / 100));
-
-                    mensaje = "Costo calculado correctamente";
-                    return true;
-                }
-                catch (Exception ex)
-                {
-                    costo = 0;
-                    precio = 0;
-                    mensaje = "Error al calcular costo: " + ex.Message;
-                    return false;
-                }
-            }
-
-            public void RecalcularTodosLosProductos()
-            {
-                try
-                {
-                    var productos = Listar();
-                    foreach (var producto in productos)
-                    {
-                        ActualizarCostoProducto(producto.IdProducto);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    throw new Exception("Error al recalcular productos: " + ex.Message);
+                    ActualizarCostoProducto(producto.IdProducto);
                 }
             }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al recalcular productos: " + ex.Message);
+            }
+        }
 
         public decimal CalcularCostosFijosUnitarios()
         {
             return cdProducto.CalcularCostosFijosUnitarios();
         }
 
+        //boton cambiar de estado 
+        public bool CambiarVisible(int idProducto, bool nuevoVisible, out string mensaje)
+        {
+            try
+            {
+                using (SqlConnection cn = new SqlConnection(Conexion.cadena))
+                using (SqlCommand cmd = cn.CreateCommand())
+                {
+                    cmd.CommandText = "UPDATE Producto SET Visible = @Visible WHERE IdProducto = @IdProducto";
+
+                    // Parámetro tipado (recomendado)
+                    var pVisible = cmd.Parameters.Add("@Visible", SqlDbType.Bit);
+                    pVisible.Value = nuevoVisible;
+
+                    cmd.Parameters.Add("@IdProducto", SqlDbType.Int).Value = idProducto;
+
+                    cn.Open();
+                    int filas = cmd.ExecuteNonQuery();
+
+                    mensaje = filas > 0 ? "La visibilidad se actualizó correctamente." : "No se encontró el producto o no se actualizó.";
+                    return filas > 0;
+                }
+            }
+            catch (Exception ex)
+            {
+                mensaje = "Error al cambiar la visibilidad: " + ex.Message;
+                return false;
+            }
+        }
     }
-    }
+}

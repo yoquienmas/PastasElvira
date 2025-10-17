@@ -60,15 +60,14 @@
                 <DataGrid x:Name="dgvHistorialVentas" AutoGenerateColumns="False" IsReadOnly="True"
               Background="White" BorderThickness="0" SelectionChanged="dgvHistorialVentas_SelectionChanged">
                     <DataGrid.Columns>
-                        <DataGridTextColumn Header="ID Venta" Binding="{Binding IdVenta}" Width="80"/>
-                        <DataGridTextColumn Header="Fecha" Binding="{Binding Fecha, StringFormat=\{0:dd/MM/yyyy HH:mm\}}" Width="160"/>
-                        <DataGridTextColumn Header="Cliente" Binding="{Binding Cliente}" Width="*"/>
-                        <DataGridTextColumn Header="DNI Cliente" Binding="{Binding DNI}" Width="120"/>
-                        <DataGridTextColumn Header="Productos" Binding="{Binding Productos}" Width="250"/>
-                        <DataGridTextColumn Header="Total" Binding="{Binding Total, StringFormat=C}" Width="120"/>
+                        <DataGridTextColumn Header="ID Venta" Binding="{Binding IdVenta}" Width="250"/>
+                        <DataGridTextColumn Header="Fecha" Binding="{Binding Fecha, StringFormat=\{0:dd/MM/yyyy HH:mm\}}" Width="250"/>
+                        <DataGridTextColumn Header="Cliente" Binding="{Binding Cliente}" Width="250"/>
+                        <DataGridTextColumn Header="DNI Cliente" Binding="{Binding DNI}" Width="250"/>
+                       
 
                         <!-- Nueva columna para el botón de detalles -->
-                        <DataGridTemplateColumn Header="Detalles" Width="80">
+                        <DataGridTemplateColumn Header="Detalles" Width="250">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <Button Content="📋 Detalles" 

@@ -99,17 +99,16 @@ namespace CapaDatos
                     using (var command = new SqlCommand())
                     {
                         command.Connection = oconexion;
-
-                        // ✅ USAR LOS NOMBRES CORRECTOS DE COLUMNAS
                         command.CommandText = @"
-                    INSERT INTO Venta (Fecha, IdCliente, IdUsuario, Total)
-                    VALUES (@Fecha, @IdCliente, @IdUsuario, @Total);
+                    INSERT INTO Venta (Fecha, IdCliente, IdUsuario, Total, MetodoPago)
+                    VALUES (@Fecha, @IdCliente, @IdUsuario, @Total, @MetodoPago);
                     SELECT SCOPE_IDENTITY();";
 
                         command.Parameters.AddWithValue("@Fecha", venta.FechaVenta);
                         command.Parameters.AddWithValue("@IdCliente", venta.IdCliente);
                         command.Parameters.AddWithValue("@IdUsuario", venta.IdVendedor);
                         command.Parameters.AddWithValue("@Total", venta.Total);
+                        command.Parameters.AddWithValue("@MetodoPago", venta.MetodoPagoId); // ✅ USAR MetodoPagoId
 
                         venta.IdVenta = Convert.ToInt32(command.ExecuteScalar());
 
@@ -153,6 +152,7 @@ namespace CapaDatos
                 return false;
             }
         }
+
         public List<ItemVenta> ObtenerDetallesVenta(int idVenta)
         {
             List<ItemVenta> detalles = new List<ItemVenta>();
@@ -163,7 +163,12 @@ namespace CapaDatos
                 {
                     oconexion.Open();
                     SqlCommand comando = new SqlCommand(@"
-                SELECT dv.IdProducto, p.Nombre as NombreProducto, 
+                SELECT dv.IdProducto, 
+                       CASE 
+                           WHEN p.Tipo IS NULL OR p.Tipo = '' OR p.Tipo = 'NULL' 
+                           THEN p.Nombre
+                           ELSE p.Tipo + ' - ' + p.Nombre 
+                       END as NombreProducto,
                        dv.Cantidad, dv.PrecioUnitario, dv.Subtotal
                 FROM DetalleVenta dv
                 INNER JOIN Producto p ON dv.IdProducto = p.IdProducto
@@ -194,5 +199,66 @@ namespace CapaDatos
 
             return detalles;
         }
+
+        // En CD_Reporte o donde obtengas las ventas para el historial
+        public List<ReporteVenta> ObtenerVentasPorFecha(DateTime fechaInicio, DateTime fechaFin)
+        {
+            List<ReporteVenta> ventas = new List<ReporteVenta>();
+
+            using (SqlConnection conexion = new SqlConnection(Conexion.cadena))
+            {
+                try
+                {
+                    conexion.Open();
+                    string query = @"
+                SELECT 
+                    v.IdVenta, 
+                    v.Fecha, 
+                    v.Total, 
+                    v.IdUsuario, 
+                    mp.Nombre as MetodoPago, -- ✅ OBTENER NOMBRE
+                    c.Nombre as Cliente, 
+                    c.DNI, 
+                    u.Nombre as Usuario
+                FROM Venta v 
+                LEFT JOIN Clientes c ON v.IdCliente = c.IdCliente
+                LEFT JOIN Usuarios u ON v.IdUsuario = u.IdUsuario
+                LEFT JOIN MetodoPago mp ON v.MetodoPago = mp.IdMetodoPago -- ✅ JOIN NUEVO
+                WHERE v.Fecha BETWEEN @FechaInicio AND @FechaFin
+                ORDER BY v.Fecha DESC";
+
+                    using (SqlCommand cmd = new SqlCommand(query, conexion))
+                    {
+                        cmd.Parameters.AddWithValue("@FechaInicio", fechaInicio);
+                        cmd.Parameters.AddWithValue("@FechaFin", fechaFin);
+
+                        using (SqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                ventas.Add(new ReporteVenta
+                                {
+                                    IdVenta = Convert.ToInt32(reader["IdVenta"]),
+                                    Fecha = Convert.ToDateTime(reader["Fecha"]),
+                                    Total = Convert.ToDecimal(reader["Total"]),
+                                    IdUsuario = Convert.ToInt32(reader["IdUsuario"]),
+                                    MetodoPago = Convert.ToInt32(reader["MetodoPago"]),
+                                    Cliente = reader["Cliente"]?.ToString() ?? "CONSUMIDOR FINAL",
+                                    DNI = reader["DNI"]?.ToString() ?? "",
+                                    Usuario = reader["Usuario"]?.ToString() ?? ""
+                                });
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Error al obtener ventas: " + ex.Message);
+                }
+            }
+
+            return ventas;
+        }
+
     }
 }

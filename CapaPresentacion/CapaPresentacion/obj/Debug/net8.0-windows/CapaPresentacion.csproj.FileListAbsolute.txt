@@ -117,3 +117,5 @@ C:\Users\danie\Source\Repos\PastasElvira\CapaPresentacion\CapaPresentacion\obj\D
 C:\Users\danie\Source\Repos\PastasElvira\CapaPresentacion\CapaPresentacion\obj\Debug\net8.0-windows\CapaPresentacion.pdb
 C:\Users\danie\Source\Repos\PastasElvira\CapaPresentacion\CapaPresentacion\obj\Debug\net8.0-windows\CapaPresentacion.genruntimeconfig.cache
 C:\Users\danie\Source\Repos\PastasElvira\CapaPresentacion\CapaPresentacion\obj\Debug\net8.0-windows\ref\CapaPresentacion.dll
+C:\Users\danie\Source\Repos\PastasElvira\CapaPresentacion\CapaPresentacion\obj\Debug\net8.0-windows\FormBuscarCliente.baml
+C:\Users\danie\Source\Repos\PastasElvira\CapaPresentacion\CapaPresentacion\obj\Debug\net8.0-windows\FormBuscarCliente.g.cs

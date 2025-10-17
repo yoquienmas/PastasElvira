@@ -14,6 +14,120 @@
             <Setter Property="Cursor" Value="Hand"/>
             <Setter Property="FontWeight" Value="Bold"/>
         </Style>
+
+        <!-- Estilos de alineación para texto -->
+        <Style x:Key="CenterAlignedTextStyle" TargetType="TextBlock">
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="TextAlignment" Value="Center"/>
+        </Style>
+
+        <Style x:Key="RightAlignedTextStyle" TargetType="TextBlock">
+            <Setter Property="HorizontalAlignment" Value="Right"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="TextAlignment" Value="Right"/>
+        </Style>
+
+        <!-- Estilos mejorados para el DataGrid -->
+        <Style x:Key="EnhancedDataGridStyle" TargetType="DataGrid">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="HeadersVisibility" Value="Column"/>
+            <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto"/>
+            <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto"/>
+            <Setter Property="AutoGenerateColumns" Value="False"/>
+            <Setter Property="IsReadOnly" Value="True"/>
+            <Setter Property="GridLinesVisibility" Value="None"/>
+            <Setter Property="HorizontalGridLinesBrush" Value="#e0e0e0"/>
+            <Setter Property="VerticalGridLinesBrush" Value="#e0e0e0"/>
+            <Setter Property="RowBackground" Value="White"/>
+            <Setter Property="AlternatingRowBackground" Value="#f8f9fa"/>
+            <Setter Property="SelectionMode" Value="Single"/>
+            <Setter Property="SelectionUnit" Value="FullRow"/>
+        </Style>
+
+        <Style x:Key="DataGridHeaderStyle" TargetType="DataGridColumnHeader">
+            <Setter Property="Background" Value="#e2a42d"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Padding" Value="10,8"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="BorderThickness" Value="0,0,1,0"/>
+            <Setter Property="BorderBrush" Value="#d1941a"/>
+        </Style>
+
+        <Style x:Key="DataGridCellStyle" TargetType="DataGridCell">
+            <Setter Property="Padding" Value="10,8"/>
+            <Setter Property="BorderThickness" Value="0,0,1,1"/>
+            <Setter Property="BorderBrush" Value="#f0f0f0"/>
+            <Setter Property="Foreground" Value="#333333"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Style.Triggers>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Background" Value="#e3f2fd"/>
+                    <Setter Property="BorderBrush" Value="#2196F3"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- Estilos específicos para la columna de Stock -->
+        <Style x:Key="StockTextStyle" TargetType="TextBlock">
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Padding" Value="5,2"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding StockActual}" Value="0">
+                    <Setter Property="Foreground" Value="#d32f2f"/>
+                    <Setter Property="Background" Value="#ffebee"/>
+                    <Setter Property="ToolTip" Value="Producto sin stock"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding StockActual}">
+                    <DataTrigger.Value>
+                        <sys:Int32>10</sys:Int32>
+                    </DataTrigger.Value>
+                    <Setter Property="Foreground" Value="#f57c00"/>
+                    <Setter Property="Background" Value="#fff3e0"/>
+                    <Setter Property="ToolTip" Value="Stock bajo"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding StockActual}">
+                    <DataTrigger.Value>
+                        <sys:Int32>10</sys:Int32>
+                    </DataTrigger.Value>
+                    <Setter Property="Foreground" Value="#2e7d32"/>
+                    <Setter Property="Background" Value="#e8f5e8"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- Estilo para la columna de Estado -->
+        <Style x:Key="EstadoTextStyle" TargetType="TextBlock">
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Padding" Value="5,2"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding StockActual}" Value="0">
+                    <Setter Property="Text" Value="SIN STOCK"/>
+                    <Setter Property="Foreground" Value="#d32f2f"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding StockActual}">
+                    <DataTrigger.Value>
+                        <sys:Int32>10</sys:Int32>
+                    </DataTrigger.Value>
+                    <Setter Property="Text" Value="STOCK BAJO"/>
+                    <Setter Property="Foreground" Value="#f57c00"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding StockActual}">
+                    <DataTrigger.Value>
+                        <sys:Int32>10</sys:Int32>
+                    </DataTrigger.Value>
+                    <Setter Property="Text" Value="DISPONIBLE"/>
+                    <Setter Property="Foreground" Value="#2e7d32"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
     </Window.Resources>
 
     <Grid Margin="10">
@@ -34,7 +148,7 @@
                     </StackPanel>
                 </Border>
 
-                <!-- Filtros -->
+                <!-- Filtros SIMPLIFICADOS - Sin estilos personalizados -->
                 <Border Background="#f5f5f5" CornerRadius="5" Padding="10" Margin="0,0,0,10">
                     <WrapPanel>
                         <TextBlock Text="Filtrar por:" VerticalAlignment="Center" FontWeight="Bold" Margin="0,0,10,0"/>
@@ -44,23 +158,11 @@
                         <ComboBox x:Name="cmbFiltroTipo" Width="150" Margin="5"
                                  SelectionChanged="cmbFiltro_SelectionChanged"
                                  ToolTip="Filtrar por tipo">
-                            <ComboBox.ItemContainerStyle>
-                                <Style TargetType="ComboBoxItem">
-                                    <Setter Property="HorizontalContentAlignment" Value="Left"/>
-                                    <Setter Property="VerticalContentAlignment" Value="Center"/>
-                                </Style>
-                            </ComboBox.ItemContainerStyle>
                             <ComboBoxItem Content="Todos los tipos" IsSelected="True"/>
                         </ComboBox>
                         <ComboBox x:Name="cmbFiltroStock" Width="150" Margin="5"
                                  SelectionChanged="cmbFiltro_SelectionChanged"
                                  ToolTip="Filtrar por estado de stock">
-                            <ComboBox.ItemContainerStyle>
-                                <Style TargetType="ComboBoxItem">
-                                    <Setter Property="HorizontalContentAlignment" Value="Left"/>
-                                    <Setter Property="VerticalContentAlignment" Value="Center"/>
-                                </Style>
-                            </ComboBox.ItemContainerStyle>
                             <ComboBoxItem Content="Todo el stock" IsSelected="True"/>
                             <ComboBoxItem Content="Con stock"/>
                             <ComboBoxItem Content="Sin stock"/>
@@ -99,61 +201,44 @@
                     </Border>
                 </WrapPanel>
 
-                <!-- Grid de productos -->
-                <Border Background="White" CornerRadius="5" Padding="5"
-                       BorderBrush="#bdbdbd" BorderThickness="1">
-                    <DataGrid x:Name="dgvProductos" AutoGenerateColumns="False" IsReadOnly="True"
-                             Height="350" Background="White" BorderThickness="0"
-                             ScrollViewer.VerticalScrollBarVisibility="Auto"
-                             ScrollViewer.HorizontalScrollBarVisibility="Auto">
+                <!-- Grid de productos MEJORADO -->
+                <Border Background="White" CornerRadius="8" Padding="0"
+                       BorderBrush="#ddd" BorderThickness="1" Margin="0,0,0,10">
+                    <DataGrid x:Name="dgvProductos" 
+                             Style="{StaticResource EnhancedDataGridStyle}"
+                             ColumnHeaderStyle="{StaticResource DataGridHeaderStyle}"
+                             CellStyle="{StaticResource DataGridCellStyle}"
+                             Height="300"
+                             SelectionChanged="DgvProductos_SelectionChanged">
                         <DataGrid.Columns>
-                            <DataGridTextColumn Header="🔤 ID" Binding="{Binding IdProducto}" Width="60"/>
-                            <DataGridTextColumn Header="📝 Producto" Binding="{Binding NombreProducto}" Width="200"/>
-                            <DataGridTextColumn Header="🏷️ Tipo" Binding="{Binding Tipo}" Width="120"/>
-                            <DataGridTextColumn Header="💰 Precio Venta" Binding="{Binding PrecioVenta, StringFormat=C}" Width="100"/>
-                            <DataGridTextColumn Header="📊 Stock Actual" Binding="{Binding StockActual}" Width="80">
-                                <DataGridTextColumn.CellStyle>
-                                    <Style TargetType="DataGridCell">
-                                        <Setter Property="Foreground" Value="Black"/>
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding StockActual}" Value="0">
-                                                <Setter Property="Foreground" Value="Red"/>
-                                                <Setter Property="FontWeight" Value="Bold"/>
-                                                <Setter Property="ToolTip" Value="Producto sin stock"/>
-                                            </DataTrigger>
-                                            <DataTrigger Binding="{Binding StockActual}">
-                                                <DataTrigger.Value>
-                                                    <sys:Int32>10</sys:Int32>
-                                                </DataTrigger.Value>
-                                                <Setter Property="Foreground" Value="Orange"/>
-                                                <Setter Property="FontWeight" Value="Bold"/>
-                                                <Setter Property="ToolTip" Value="Stock bajo"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </DataGridTextColumn.CellStyle>
-                            </DataGridTextColumn>
-                            <DataGridTextColumn Header="📉 Stock Mínimo" Binding="{Binding StockMinimo}" Width="80"/>
-                            <DataGridTextColumn Header="💵 Costo" Binding="{Binding CostoProduccion, StringFormat=C}" Width="90"/>
-                            <DataGridTextColumn Header="📈 Margen" Binding="{Binding MargenGanancia, StringFormat=C}" Width="90"/>
-                            <DataGridCheckBoxColumn Header="👀 Visible" Binding="{Binding Visible}" Width="70"/>
-                            <DataGridCheckBoxColumn Header="🏭 Base" Binding="{Binding EsProductoBase}" Width="70"/>
-                            <DataGridTextColumn Header="⚙️ Estado" Binding="{Binding Estado}" Width="80">
-                                <DataGridTextColumn.CellStyle>
-                                    <Style TargetType="DataGridCell">
-                                        <Setter Property="Foreground" Value="Black"/>
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding Estado}" Value="Activo">
-                                                <Setter Property="Foreground" Value="Green"/>
-                                                <Setter Property="FontWeight" Value="Bold"/>
-                                            </DataTrigger>
-                                            <DataTrigger Binding="{Binding Estado}" Value="Inactivo">
-                                                <Setter Property="Foreground" Value="Red"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </DataGridTextColumn.CellStyle>
-                            </DataGridTextColumn>
+                            <!-- ID Producto -->
+                            <DataGridTextColumn Header="🔤 ID" 
+                                              Binding="{Binding IdProducto}" 
+                                              Width="250"
+                                              ElementStyle="{StaticResource CenterAlignedTextStyle}"/>
+
+                            <!-- Nombre Producto -->
+                            <DataGridTextColumn Header="📝 PRODUCTO" 
+                                              Binding="{Binding Nombre}" 
+                                              Width="250"/>
+
+                            <!-- Tipo -->
+                            <DataGridTextColumn Header="🏷️ TIPO" 
+                                              Binding="{Binding Tipo}" 
+                                              Width="250"/>
+
+                            <!-- Precio Venta -->
+                            <DataGridTextColumn Header="💰 PRECIO" 
+                                              Binding="{Binding PrecioVenta, StringFormat=C}" 
+                                              Width="250"
+                                              ElementStyle="{StaticResource RightAlignedTextStyle}"/>
+
+                            <!-- Stock Actual -->
+                            <DataGridTextColumn Header="📊 STOCK" 
+                                              Binding="{Binding StockActual}" 
+                                              Width="250"
+                                              ElementStyle="{StaticResource StockTextStyle}"/>
+                          
                         </DataGrid.Columns>
                     </DataGrid>
                 </Border>

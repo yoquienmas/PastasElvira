@@ -29,15 +29,15 @@ namespace CapaNegocio
             return cdCliente.Eliminar(idCliente, out mensaje);
         }
 
-        // NUEVOS MÉTODOS AGREGADOS
-        public bool ExisteDocumento(string documento)
+        // MÉTODOS ACTUALIZADOS - Ahora aceptan el idClienteActual para excluirlo en las validaciones
+        public bool ExisteDocumento(string documento, int idClienteActual = 0)
         {
-            return cdCliente.ExisteDocumento(documento);
+            return cdCliente.ExisteDocumento(documento, idClienteActual);
         }
 
-        public bool ExisteCuil(string cuil)
+        public bool ExisteCuil(string cuil, int idClienteActual = 0)
         {
-            return cdCliente.ExisteCuil(cuil);
+            return cdCliente.ExisteCuil(cuil, idClienteActual);
         }
     }
 }

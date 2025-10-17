@@ -10,6 +10,9 @@ using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Documents;
+using System.Data.SqlClient;
+using Microsoft.Data.SqlClient;
+
 
 namespace CapaPresentacion
 {
@@ -20,6 +23,15 @@ namespace CapaPresentacion
         private CN_Reporte cnReporte = new CN_Reporte();
         private CN_Venta cnVenta = new CN_Venta();
         private List<ReporteVenta> ventasOriginales;
+
+        // Enum para métodos de pago
+        public enum MetodoPago
+        {
+            Efectivo,
+            TarjetaDebito,
+            TarjetaCredito,
+            BilleteraVirtual
+        }
 
         public FormHistorialVentas(int idUsuario, string nombreUsuario)
         {
@@ -33,6 +45,110 @@ namespace CapaPresentacion
             dtpFechaFin.SelectedDate = DateTime.Now;
 
             CargarVentas();
+        }
+
+        private string ObtenerTextoMetodoPago(MetodoPago metodo)
+        {
+            switch (metodo)
+            {
+                case MetodoPago.Efectivo:
+                    return "EFECTIVO";
+                case MetodoPago.TarjetaDebito:
+                    return "TARJETA DE DÉBITO";
+                case MetodoPago.TarjetaCredito:
+                    return "TARJETA DE CRÉDITO";
+                case MetodoPago.BilleteraVirtual:
+                    return "BILLETERA VIRTUAL";
+                default:
+                    return "";
+            }
+        }
+
+
+        // Método auxiliar para convertir ID de método de pago a texto
+        private string ConvertirIdMetodoPagoATexto(int metodoId)
+        {
+            switch (metodoId)
+            {
+                case 1: return "Efectivo";
+                case 2: return "TarjetaDebito";
+                case 3: return "TarjetaCredito";
+                case 4: return "BilleteraVirtual";
+                default: return "";
+            }
+        }
+
+        // Método ultra-simplificado ahora que tenemos la estructura clara
+        // Método simplificado
+        private string ObtenerMetodoPagoDesdeBD(int idVenta)
+        {
+            try
+            {
+                // Primero buscar en las ventas originales
+                var venta = ventasOriginales?.FirstOrDefault(v => v.IdVenta == idVenta);
+                if (venta != null)
+                {
+                    // Si la entidad ReporteVenta ya tiene la propiedad MetodoPago
+                    if (venta.MetodoPago > 0)
+                    {
+                        return venta.MetodoPago switch
+                        {
+                            1 => "Efectivo",
+                            2 => "TarjetaDebito",
+                            3 => "TarjetaCredito",
+                            4 => "BilleteraVirtual",
+                            _ => "Desconocido"
+                        };
+                    }
+                }
+
+                // Si no está en las ventas originales, consultar directamente
+                return ObtenerMetodoPagoDirectoBD(idVenta);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error obteniendo método de pago: {ex.Message}");
+                return "Desconocido";
+            }
+        }
+
+        private string ObtenerMetodoPagoDirectoBD(int idVenta)
+        {
+            try
+            {
+                using (SqlConnection conexion = new SqlConnection("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=PastasElviraDB;Integrated Security=True"))
+                {
+                    conexion.Open();
+
+                    // ✅ CORREGIDO: Usar el nombre correcto de la tabla "Venta" (singular)
+                    string query = "SELECT MetodoPago FROM Venta WHERE IdVenta = @IdVenta";
+
+                    using (SqlCommand cmd = new SqlCommand(query, conexion))
+                    {
+                        cmd.Parameters.AddWithValue("@IdVenta", idVenta);
+                        var resultado = cmd.ExecuteScalar();
+
+                        if (resultado != null && resultado != DBNull.Value)
+                        {
+                            int metodoPagoId = Convert.ToInt32(resultado);
+                            return metodoPagoId switch
+                            {
+                                1 => "Efectivo",
+                                2 => "TarjetaDebito",
+                                3 => "TarjetaCredito",
+                                4 => "BilleteraVirtual",
+                                _ => "Desconocido"
+                            };
+                        }
+                    }
+                }
+                return "Desconocido";
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error en ObtenerMetodoPagoDirectoBD: {ex.Message}");
+                return "Desconocido";
+            }
         }
 
         private void CargarVentas()
@@ -174,26 +290,7 @@ namespace CapaPresentacion
                 MessageBox.Show($"Error: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
-
-        private void ProbarConFiltroFecha()
-        {
-            try
-            {
-                DateTime fechaInicio = new DateTime(2024, 1, 1);
-                DateTime fechaFin = DateTime.Now;
-
-                var ventasFiltradas = cnReporte.ObtenerVentasPorFecha(fechaInicio, fechaFin);
-
-                MessageBox.Show($"🔍 MÉTODO CON FECHA:\nEntrada: {fechaInicio} a {fechaFin}\nResultado: {ventasFiltradas?.Count ?? 0} ventas",
-                              "Prueba Fecha", MessageBoxButton.OK, MessageBoxImage.Information);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"❌ ERROR EN MÉTODO FECHA: {ex.Message}",
-                              "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-        }
-
+        
         private void btnConsultar_Click(object sender, RoutedEventArgs e)
         {
             CargarVentas();
@@ -345,48 +442,107 @@ namespace CapaPresentacion
             }
         }
 
-        private void ImprimirDetallesVenta(int idVenta, object detalles, decimal total)
+        private void ImprimirDetallesVenta(int idVenta, System.Collections.IList detalles, decimal total)
         {
             try
             {
-                // Crear lista de items para impresión
-                var itemsParaImprimir = new List<dynamic>();
-
-                if (detalles is System.Collections.IEnumerable enumerable)
+                PrintDialog printDialog = new PrintDialog();
+                if (printDialog.ShowDialog() == true)
                 {
-                    foreach (var item in enumerable)
+                    // Obtener la venta original
+                    var ventaOriginal = ventasOriginales?.FirstOrDefault(v => v.IdVenta == idVenta);
+
+                    // ✅ Obtener método de pago CORREGIDO
+                    string metodoPagoStr = ObtenerMetodoPagoDesdeBD(idVenta);
+
+                    FlowDocument document = new FlowDocument();
+                    document.PagePadding = new Thickness(50);
+                    document.FontFamily = new System.Windows.Media.FontFamily("Courier New");
+                    document.FontSize = 12;
+
+                    // Encabezado
+                    Paragraph header = new Paragraph();
+                    header.Inlines.Add(new Run("PASTAS ELVIRA\n") { FontSize = 16, FontWeight = FontWeights.Bold });
+                    header.Inlines.Add(new Run("Factura de Venta\n\n"));
+                    header.Inlines.Add(new Run($"Fecha: {DateTime.Now:dd/MM/yyyy HH:mm:ss}\n"));
+                    header.Inlines.Add(new Run($"N° Venta: {idVenta}\n"));
+
+                    if (ventaOriginal != null)
                     {
-                        // Usar reflexión para acceder a las propiedades dinámicamente
-                        var tipo = item.GetType();
-                        itemsParaImprimir.Add(new
-                        {
-                            NombreProducto = tipo.GetProperty("NombreProducto")?.GetValue(item)?.ToString() ?? "Producto",
-                            Cantidad = Convert.ToInt32(tipo.GetProperty("Cantidad")?.GetValue(item) ?? 0),
-                            PrecioUnitario = Convert.ToDecimal(tipo.GetProperty("PrecioUnitario")?.GetValue(item) ?? 0m),
-                            Subtotal = Convert.ToDecimal(tipo.GetProperty("Subtotal")?.GetValue(item) ?? 0m)
-                        });
+                        header.Inlines.Add(new Run($"Cliente: {ventaOriginal.Cliente ?? "CONSUMIDOR FINAL"}\n"));
+                        if (!string.IsNullOrEmpty(ventaOriginal.DNI))
+                            header.Inlines.Add(new Run($"Documento: {ventaOriginal.DNI}\n"));
                     }
+
+                    // ✅ MÉTODO DE PAGO - CORREGIDO
+                    header.Inlines.Add(new Run($"Método de Pago: {metodoPagoStr.ToUpper()}\n"));
+                    header.Inlines.Add(new Run($"Vendedor: {_nombreUsuario}\n"));
+                    header.Inlines.Add(new Run("".PadRight(50, '=') + "\n\n"));
+                    document.Blocks.Add(header);
+
+                    // Detalle de productos
+                    if (detalles != null && detalles.Count > 0)
+                    {
+                        Table table = new Table();
+                        table.Columns.Add(new TableColumn { Width = new GridLength(200) });
+                        table.Columns.Add(new TableColumn { Width = new GridLength(70) });
+                        table.Columns.Add(new TableColumn { Width = new GridLength(100) });
+                        table.Columns.Add(new TableColumn { Width = new GridLength(100) });
+
+                        TableRowGroup rowGroup = new TableRowGroup();
+
+                        // Encabezado de tabla
+                        TableRow headerRow = new TableRow { Background = Brushes.LightGray };
+                        headerRow.Cells.Add(new TableCell(new Paragraph(new Run("Producto")) { FontWeight = FontWeights.Bold }));
+                        headerRow.Cells.Add(new TableCell(new Paragraph(new Run("Cant")) { FontWeight = FontWeights.Bold }));
+                        headerRow.Cells.Add(new TableCell(new Paragraph(new Run("Precio")) { FontWeight = FontWeights.Bold }));
+                        headerRow.Cells.Add(new TableCell(new Paragraph(new Run("Subtotal")) { FontWeight = FontWeights.Bold }));
+                        rowGroup.Rows.Add(headerRow);
+
+                        // Productos
+                        foreach (var item in detalles)
+                        {
+                            var tipo = item.GetType();
+
+                            string nombreProducto = tipo.GetProperty("NombreProducto")?.GetValue(item)?.ToString() ?? "Producto";
+                            int cantidad = Convert.ToInt32(tipo.GetProperty("Cantidad")?.GetValue(item) ?? 0);
+                            decimal precioUnitario = Convert.ToDecimal(tipo.GetProperty("PrecioUnitario")?.GetValue(item) ?? 0m);
+                            decimal subtotal = Convert.ToDecimal(tipo.GetProperty("Subtotal")?.GetValue(item) ?? 0m);
+
+                            TableRow row = new TableRow();
+                            row.Cells.Add(new TableCell(new Paragraph(new Run(nombreProducto))));
+                            row.Cells.Add(new TableCell(new Paragraph(new Run(cantidad.ToString()))));
+                            row.Cells.Add(new TableCell(new Paragraph(new Run(precioUnitario.ToString("C")))));
+                            row.Cells.Add(new TableCell(new Paragraph(new Run(subtotal.ToString("C")))));
+                            rowGroup.Rows.Add(row);
+                        }
+
+                        table.RowGroups.Add(rowGroup);
+                        document.Blocks.Add(table);
+                    }
+
+                    // Total y footer
+                    Paragraph footer = new Paragraph();
+                    footer.Inlines.Add(new Run("\n" + "".PadRight(50, '=') + "\n"));
+                    footer.Inlines.Add(new Run($"TOTAL: {total.ToString("C")}") { FontSize = 14, FontWeight = FontWeights.Bold });
+
+                    // ✅ MÉTODO DE PAGO EN FOOTER - CORREGIDO
+                    footer.Inlines.Add(new Run($"\nMÉTODO DE PAGO: {metodoPagoStr.ToUpper()}")
+                    {
+                        FontSize = 12,
+                        FontWeight = FontWeights.Bold
+                    });
+
+                    footer.Inlines.Add(new Run("\n\n¡Gracias por su compra!"));
+                    document.Blocks.Add(footer);
+
+                    // Imprimir
+                    printDialog.PrintDocument(((IDocumentPaginatorSource)document).DocumentPaginator, "Factura Pastas Elvira");
                 }
-
-                // Crear venta temporal para impresión
-                var ventaTemporal = new
-                {
-                    IdVenta = idVenta,
-                    FechaVenta = DateTime.Now,
-                    IdVendedor = _idUsuario,
-                    NombreVendedor = _nombreUsuario,
-                    Cliente = "CONSUMIDOR FINAL",
-                    DocumentoCliente = "",
-                    Total = total,
-                    Items = itemsParaImprimir
-                };
-
-                GenerarFactura(ventaTemporal);
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error al preparar impresión: {ex.Message}", "Error",
-                              MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("Error al imprimir: " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -404,6 +560,9 @@ namespace CapaPresentacion
                         MessageBox.Show("No hay detalles para imprimir.", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
                         return;
                     }
+
+                    // Obtener método de pago
+                    string metodoPago = ObtenerMetodoPagoDesdeBD(ventaSeleccionada.IdVenta);
 
                     // Crear lista de items para impresión
                     var itemsParaImprimir = new List<dynamic>();
@@ -430,6 +589,7 @@ namespace CapaPresentacion
                         Cliente = ventaSeleccionada.Cliente ?? "CONSUMIDOR FINAL",
                         DocumentoCliente = ventaSeleccionada.DNI ?? "",
                         Total = ventaSeleccionada.Total,
+                        MetodoPago = metodoPago,
                         Items = itemsParaImprimir
                     };
 
@@ -455,7 +615,7 @@ namespace CapaPresentacion
                 PrintDialog printDialog = new PrintDialog();
                 if (printDialog.ShowDialog() == true)
                 {
-                    // Crear documento para impresión
+                    // Crear documento para impresión - MISMOS FORMATOS
                     FlowDocument document = new FlowDocument();
                     document.PagePadding = new Thickness(50);
                     document.FontFamily = new System.Windows.Media.FontFamily("Courier New");
@@ -470,23 +630,38 @@ namespace CapaPresentacion
                     header.Inlines.Add(new Run($"Cliente: {venta.Cliente}\n"));
                     if (!string.IsNullOrEmpty(venta.DocumentoCliente))
                         header.Inlines.Add(new Run($"Documento: {venta.DocumentoCliente}\n"));
+
+                    // Agregar método de pago
+                    if (!string.IsNullOrEmpty(venta.MetodoPago))
+                    {
+                        MetodoPago metodoPago;
+                        if (Enum.TryParse(venta.MetodoPago, out metodoPago))
+                        {
+                            header.Inlines.Add(new Run($"Método de Pago: {ObtenerTextoMetodoPago(metodoPago)}\n"));
+                        }
+                        else
+                        {
+                            header.Inlines.Add(new Run($"Método de Pago: {venta.MetodoPago}\n"));
+                        }
+                    }
+
                     header.Inlines.Add(new Run($"Vendedor: {venta.NombreVendedor}\n"));
                     header.Inlines.Add(new Run("".PadRight(50, '=') + "\n\n"));
                     document.Blocks.Add(header);
 
-                    // Detalle de productos
+                    // Detalle de productos - MISMOS ANCHOS
                     if (venta.Items != null && venta.Items.Count > 0)
                     {
                         Table table = new Table();
-                        table.Columns.Add(new TableColumn { Width = new GridLength(300) }); // Producto
-                        table.Columns.Add(new TableColumn { Width = new GridLength(80) });  // Cantidad
+                        table.Columns.Add(new TableColumn { Width = new GridLength(200) }); // Producto                      
+                        table.Columns.Add(new TableColumn { Width = new GridLength(70) }); // Cantidad
                         table.Columns.Add(new TableColumn { Width = new GridLength(100) }); // Precio
                         table.Columns.Add(new TableColumn { Width = new GridLength(100) }); // Subtotal
 
                         TableRowGroup rowGroup = new TableRowGroup();
 
                         // Encabezado de tabla
-                        TableRow headerRow = new TableRow { Background = System.Windows.Media.Brushes.LightGray };
+                        TableRow headerRow = new TableRow { Background = Brushes.LightGray };
                         headerRow.Cells.Add(new TableCell(new Paragraph(new Run("Producto")) { FontWeight = FontWeights.Bold }));
                         headerRow.Cells.Add(new TableCell(new Paragraph(new Run("Cant")) { FontWeight = FontWeights.Bold }));
                         headerRow.Cells.Add(new TableCell(new Paragraph(new Run("Precio")) { FontWeight = FontWeights.Bold }));
@@ -512,6 +687,29 @@ namespace CapaPresentacion
                     Paragraph footer = new Paragraph();
                     footer.Inlines.Add(new Run("\n" + "".PadRight(50, '=') + "\n"));
                     footer.Inlines.Add(new Run($"TOTAL: {venta.Total.ToString("C")}") { FontSize = 14, FontWeight = FontWeights.Bold });
+
+                    // Agregar método de pago en el footer
+                    if (!string.IsNullOrEmpty(venta.MetodoPago))
+                    {
+                        MetodoPago metodoPago;
+                        if (Enum.TryParse(venta.MetodoPago, out metodoPago))
+                        {
+                            footer.Inlines.Add(new Run($"\nMÉTODO DE PAGO: {ObtenerTextoMetodoPago(metodoPago)}")
+                            {
+                                FontSize = 12,
+                                FontWeight = FontWeights.Bold
+                            });
+                        }
+                        else
+                        {
+                            footer.Inlines.Add(new Run($"\nMÉTODO DE PAGO: {venta.MetodoPago}")
+                            {
+                                FontSize = 12,
+                                FontWeight = FontWeights.Bold
+                            });
+                        }
+                    }
+
                     footer.Inlines.Add(new Run("\n\n¡Gracias por su compra!"));
                     document.Blocks.Add(footer);
 
@@ -544,6 +742,29 @@ namespace CapaPresentacion
         private void dgvHistorialVentas_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             // Tu código existente aquí
+        }
+
+        // Método simplificado para obtener el nombre del producto
+        private string ObtenerNombreProductoCompleto(object itemDetalle)
+        {
+            try
+            {
+                var tipo = itemDetalle.GetType();
+
+                // Usar directamente la propiedad NombreProducto que ya viene de la BD
+                var nombreProductoProp = tipo.GetProperty("NombreProducto");
+                if (nombreProductoProp != null)
+                {
+                    return nombreProductoProp.GetValue(itemDetalle)?.ToString() ?? "Producto";
+                }
+
+                return "Producto";
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error obteniendo nombre producto: {ex.Message}");
+                return "Producto";
+            }
         }
     }
 }

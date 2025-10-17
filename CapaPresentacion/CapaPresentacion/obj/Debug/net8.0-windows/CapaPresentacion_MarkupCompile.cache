@@ -10,11 +10,11 @@ none
 false
 TRACE;DEBUG;NET;NET8_0;NETCOREAPP;WINDOWS;WINDOWS7_0;NET5_0_OR_GREATER;NET6_0_OR_GREATER;NET7_0_OR_GREATER;NET8_0_OR_GREATER;NETCOREAPP3_0_OR_GREATER;NETCOREAPP3_1_OR_GREATER;WINDOWS7_0_OR_GREATER
 C:\Users\danie\Source\Repos\PastasElvira\CapaPresentacion\CapaPresentacion\App.xaml
-22-1996723218
+23-482429986
 
-23319603995
+24988733131
 2202013301439
-FormAlertas.xaml;FormCliente.xaml;FormConsumoPorVenta.xaml;FormCostoFijo.xaml;FormDetalleProduccion.xaml;FormEditarUsuario.xaml;FormGestionUsuarios.xaml;FormHistorialProduccion.xaml;FormHistorialVentas.xaml;FormMateria.xaml;FormProduccion.xaml;FormProducto.xaml;FormProductosDisponibles.xaml;FormReceta.xaml;FormReporteConsumo.xaml;FormReportes.xaml;FormReporteVentas.xaml;FormVenta.xaml;MenuAdmin.xaml;MenuDueño.xaml;MenuPrincipal.xaml;MenuVendedor.xaml;
+FormAlertas.xaml;FormBuscarCliente.xaml;FormCliente.xaml;FormConsumoPorVenta.xaml;FormCostoFijo.xaml;FormDetalleProduccion.xaml;FormEditarUsuario.xaml;FormGestionUsuarios.xaml;FormHistorialProduccion.xaml;FormHistorialVentas.xaml;FormMateria.xaml;FormProduccion.xaml;FormProducto.xaml;FormProductosDisponibles.xaml;FormReceta.xaml;FormReporteConsumo.xaml;FormReportes.xaml;FormReporteVentas.xaml;FormVenta.xaml;MenuAdmin.xaml;MenuDueño.xaml;MenuPrincipal.xaml;MenuVendedor.xaml;
 
 False
 

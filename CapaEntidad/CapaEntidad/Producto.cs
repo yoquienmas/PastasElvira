@@ -27,7 +27,7 @@ namespace CapaEntidad
                 if (string.IsNullOrEmpty(Tipo) || Tipo == "NULL")
                     return Nombre;
                 else
-                    return $"{Tipo} - {Nombre}";
+                    return $"{Tipo} {Nombre}";
             }
         }
 

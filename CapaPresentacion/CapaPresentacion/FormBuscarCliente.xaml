@@ -1,0 +1,195 @@
+﻿<Window x:Class="CapaPresentacion.FormBuscarCliente"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Buscar Cliente - Pastas Elvira" Height="500" Width="800"
+        WindowStartupLocation="CenterScreen"
+        Background="#fff8e1"
+        FontFamily="Segoe UI"
+        ResizeMode="NoResize">
+
+    <Window.Resources>
+        <!-- Estilos para el DataGrid -->
+        <Style x:Key="DataGridHeaderStyle" TargetType="DataGridColumnHeader">
+            <Setter Property="Background" Value="#a36b00"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="FontSize" Value="11"/>
+            <Setter Property="Padding" Value="10,8"/>
+            <Setter Property="BorderThickness" Value="0"/>
+        </Style>
+
+        <Style x:Key="CenterAlignStyle" TargetType="TextBlock">
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+
+        <Style x:Key="RoundedButtonStyle" TargetType="Button">
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" 
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <Border Background="White" Padding="20" BorderBrush="#e2a42d" BorderThickness="2" Margin="15">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <!-- Encabezado -->
+            <Border Grid.Row="0" Background="#a36b00" Padding="15" Margin="0,0,0,20">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                    <TextBlock Text="👥" FontSize="24" Margin="0,0,15,0"/>
+                    <TextBlock Text="BUSCAR CLIENTE" 
+                               FontSize="20" 
+                               FontWeight="Bold"
+                               Foreground="White"
+                               VerticalAlignment="Center"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Búsqueda -->
+            <GroupBox Grid.Row="1" 
+                      Header="CRITERIOS DE BÚSQUEDA" 
+                      FontWeight="SemiBold" 
+                      Foreground="#a36b00"
+                      FontSize="13"
+                      BorderBrush="#e2a42d"
+                      BorderThickness="2"
+                      Margin="0,0,0,15">
+                <Grid Margin="15">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Text="DOCUMENTO O NOMBRE:" 
+                               FontWeight="Bold" 
+                               Foreground="#5c3a00" 
+                               FontSize="12"
+                               VerticalAlignment="Center"
+                               Margin="0,0,15,0"/>
+
+                    <TextBox x:Name="txtDocumento" 
+                             Height="35" 
+                             Grid.Column="1"
+                             VerticalContentAlignment="Center"
+                             Padding="10,4"
+                             Background="White"
+                             BorderBrush="#d4b483"
+                             FontSize="12"
+                             KeyDown="txtDocumento_KeyDown">
+                        <TextBox.ToolTip>
+                            <ToolTip>
+                                <TextBlock Text="Ingrese documento, nombre o apellido del cliente"/>
+                            </ToolTip>
+                        </TextBox.ToolTip>
+                    </TextBox>
+
+                    <Button x:Name="btnBuscar" 
+                            Content="🔍 BUSCAR" 
+                            Width="120" 
+                            Height="35"
+                            Grid.Column="2"
+                            Background="#2196F3"
+                            Style="{StaticResource RoundedButtonStyle}"
+                            Margin="15,0,0,0"
+                            Click="btnBuscar_Click"/>
+                </Grid>
+            </GroupBox>
+
+            <!-- Lista de clientes -->
+            <GroupBox Grid.Row="2" 
+                      Header="RESULTADOS DE LA BÚSQUEDA" 
+                      FontWeight="SemiBold" 
+                      Foreground="#a36b00"
+                      FontSize="13"
+                      BorderBrush="#e2a42d"
+                      BorderThickness="2">
+                <Border Background="White" 
+                        Padding="2" 
+                        BorderBrush="#e2a42d" 
+                        BorderThickness="1"
+                        Margin="5">
+                    <DataGrid x:Name="dgClientes" 
+                              AutoGenerateColumns="False" 
+                              IsReadOnly="True" 
+                              SelectionMode="Single"
+                              Background="White" 
+                              BorderThickness="0"
+                              HeadersVisibility="Column"
+                              RowHeight="35"
+                              FontSize="12"
+                              HorizontalGridLinesBrush="#f0f0f0"
+                              VerticalGridLinesBrush="#f0f0f0"
+                              MouseDoubleClick="dgClientes_MouseDoubleClick">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="DOCUMENTO" 
+                                                Binding="{Binding Documento}" 
+                                                Width="120"
+                                                HeaderStyle="{StaticResource DataGridHeaderStyle}"
+                                                ElementStyle="{StaticResource CenterAlignStyle}"/>
+                            <DataGridTextColumn Header="NOMBRE COMPLETO" 
+                                                Binding="{Binding NombreCompleto}" 
+                                                Width="250"
+                                                HeaderStyle="{StaticResource DataGridHeaderStyle}"/>
+                            <DataGridTextColumn Header="TELÉFONO" 
+                                                Binding="{Binding Telefono}" 
+                                                Width="130"
+                                                HeaderStyle="{StaticResource DataGridHeaderStyle}"
+                                                ElementStyle="{StaticResource CenterAlignStyle}"/>
+                            <DataGridTextColumn Header="EMAIL" 
+                                                Binding="{Binding Email}" 
+                                                Width="200"
+                                                HeaderStyle="{StaticResource DataGridHeaderStyle}"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Border>
+            </GroupBox>
+
+            <!-- Botones -->
+            <Border Grid.Row="3" 
+                    Background="#f8f8f8" 
+                    Padding="15" 
+                    Margin="0,15,0,0"
+                    BorderBrush="#d4b483"
+                    BorderThickness="1">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                    <Button x:Name="btnSeleccionar" 
+                            Content="✅ SELECCIONAR" 
+                            Width="140" 
+                            Height="40"
+                            Background="#4CAF50"
+                            Style="{StaticResource RoundedButtonStyle}"
+                            Click="btnSeleccionar_Click"
+                            Margin="0,0,15,0"/>
+
+                    <Button x:Name="btnCancelar" 
+                            Content="❌ CANCELAR" 
+                            Width="120" 
+                            Height="40"
+                            Background="#f44336"
+                            Style="{StaticResource RoundedButtonStyle}"
+                            Click="btnCancelar_Click"/>
+                </StackPanel>
+            </Border>
+        </Grid>
+    </Border>
+</Window>

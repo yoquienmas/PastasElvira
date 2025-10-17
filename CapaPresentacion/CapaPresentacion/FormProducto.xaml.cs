@@ -2,8 +2,10 @@
 using CapaNegocio;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 
 namespace CapaPresentacion
 {
@@ -62,8 +64,6 @@ namespace CapaPresentacion
 
             btnAgregar.Content = "➕ Agregar";
             btnEditar.IsEnabled = false;
-            btnEliminar.IsEnabled = false;
-
             // Calcular costo automáticamente al limpiar
             CalcularCostoYActualizarPrecio();
         }
@@ -225,38 +225,7 @@ namespace CapaPresentacion
                 MessageBox.Show(mensaje, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
-
-        private void btnEliminar_Click(object sender, RoutedEventArgs e)
-        {
-            if (productoSeleccionado == null)
-            {
-                MessageBox.Show("Seleccione un producto para eliminar", "Error",
-                              MessageBoxButton.OK, MessageBoxImage.Warning);
-                return;
-            }
-
-            var confirmacion = MessageBox.Show(
-                $"¿Está seguro de eliminar el producto: '{productoSeleccionado.Nombre}'?",
-                "Confirmar Eliminación",
-                MessageBoxButton.YesNo,
-                MessageBoxImage.Question);
-
-            if (confirmacion == MessageBoxResult.Yes)
-            {
-                string mensaje;
-                bool resultado = cnProducto.Eliminar(productoSeleccionado.IdProducto, out mensaje);
-
-                MessageBox.Show(mensaje, resultado ? "Éxito" : "Error",
-                    MessageBoxButton.OK,
-                    resultado ? MessageBoxImage.Information : MessageBoxImage.Error);
-
-                if (resultado)
-                {
-                    CargarProductos();
-                    LimpiarFormulario();
-                }
-            }
-        }
+     
 
         private void btnLimpiar_Click(object sender, RoutedEventArgs e)
         {
@@ -279,13 +248,57 @@ namespace CapaPresentacion
 
                 btnAgregar.Content = "➕ Agregar";
                 btnEditar.IsEnabled = true;
-                btnEliminar.IsEnabled = true;
             }
         }
 
         private void cboTipo_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             // Puedes agregar lógica adicional si es necesario
+        }
+
+        //BOTON Estado - cambia el estado del producto
+        private void btnEstado_Click(object sender, RoutedEventArgs e)
+        {
+            // Validar selección
+            if (dgvProductos.SelectedItem is not Producto producto)
+            {
+                MessageBox.Show("Seleccione un producto para cambiar su estado.", "Aviso",
+                                MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            bool nuevoVisible = !producto.Visible;
+            string accion = nuevoVisible ? "activar" : "desactivar";
+
+            var confirmacion = MessageBox.Show(
+                $"¿Desea {accion} el producto '{producto.Nombre}'?",
+                "Confirmar cambio de visibilidad",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Question);
+
+            if (confirmacion != MessageBoxResult.Yes) return;
+
+            string mensaje;
+            bool resultado = cnProducto.CambiarVisible(producto.IdProducto, nuevoVisible, out mensaje);
+
+            MessageBox.Show(mensaje, resultado ? "Éxito" : "Error",
+                            MessageBoxButton.OK,
+                            resultado ? MessageBoxImage.Information : MessageBoxImage.Error);
+
+            if (resultado)
+            {
+                // Actualizamos el objeto en memoria y refrescamos la vista sin recargar la lista
+                producto.Visible = nuevoVisible;
+
+                // Actualizar controles del formulario si está seleccionado
+                chkVisible.IsChecked = producto.Visible;
+
+                // Refresca la grilla para que muestre el nuevo texto (Estado)
+                dgvProductos.Items.Refresh();
+
+                // Opcional: actualizar texto del botón
+                btnEstado.Content = producto.Visible ? "🔒 Desactivar" : "✔️ Activar";
+            }
         }
     }
 }

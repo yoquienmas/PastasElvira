@@ -317,11 +317,7 @@ namespace CapaPresentacion
                 // Usar valores por defecto seguros
                 txtDetalleNombre.Text = $"Producto: {producto.NombreProducto ?? "N/A"}";
                 txtDetallePrecio.Text = $"Precio: {producto.PrecioVenta.ToString("C")}";
-                txtDetalleStock.Text = $"Stock: {producto.StockActual} (Mín: {producto.StockMinimo})";
-                txtDetalleTipo.Text = $"Tipo: {producto.Tipo ?? "No especificado"}";
-                txtDetalleCosto.Text = $"Costo: {producto.CostoProduccion.ToString("C")}";
-                txtDetalleMargen.Text = $"Margen: {producto.MargenGanancia.ToString("F2")}%";
-                txtDetalleVisible.Text = $"Visible: {(producto.Visible ? "Sí" : "No")}";
+                txtDetalleStock.Text = $"Stock: {producto.StockActual} (Mín: {producto.StockMinimo})";            
             }
             catch (Exception ex)
             {

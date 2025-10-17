@@ -86,13 +86,14 @@
                         <Button x:Name="btnEditar" Content="✏️ Editar" Width="120" Height="35" Margin="0,0,10,0"
                                 Background="#FF9800" Foreground="White" FontWeight="Bold"
                                 Click="btnEditar_Click"/>
-                        <Button x:Name="btnEliminar" Content="🗑️ Eliminar" Width="120" Height="35" Margin="0,0,10,0"
-                                Background="#f44336" Foreground="White" FontWeight="Bold"
-                                Click="btnEliminar_Click"/>
-                        <Button x:Name="btnLimpiar" Content="Limpiar" Width="120" Height="35"
+                        <Button x:Name="btnEstado" Content="🔒 Desactivar" Width="120" Height="35" Margin="0,0,10,0"
+                                Background="#2196F3" Foreground="White" FontWeight="Bold"
+                                Click="btnEstado_Click"
+                                ToolTip="Cambia el estado del producto entre activo e inactivo"/>
+                        <Button x:Name="btnLimpiar" Content="Limpiar" Width="120" Height="35" Margin="0,0,10,0"
                                 Background="#6c757d" Foreground="White" FontWeight="Bold"
                                 Click="btnLimpiar_Click"/>
-                        <Button x:Name="btnRecalcularCosto" Content="🔄 Recalcular" Width="120" Height="35" Margin="10,0,0,0"
+                        <Button x:Name="btnRecalcularCosto" Content="🔄 Recalcular" Width="120" Height="35"
                                 Background="#9C27B0" Foreground="White" FontWeight="Bold"
                                 Click="btnRecalcularCosto_Click"
                                 ToolTip="Recalcula el costo automáticamente"/>

@@ -141,34 +141,58 @@ namespace CapaDatos
         }
 
         // NUEVOS MÉTODOS AGREGADOS
-        public bool ExisteDocumento(string documento)
+        public bool ExisteDocumento(string documento, int idClienteActual = 0)
         {
-            using (SqlConnection cn = new SqlConnection(Conexion.cadena))
+            using (SqlConnection conexion = new SqlConnection(Conexion.cadena))
             {
-                cn.Open();
-                string query = "SELECT COUNT(*) FROM Cliente WHERE Documento = @Documento";
-                using (SqlCommand cmd = new SqlCommand(query, cn))
+                try
                 {
+                    string query = @"SELECT COUNT(1) FROM Cliente 
+                                   WHERE Documento = @Documento 
+                                   AND IdCliente != @IdClienteActual";
+
+                    SqlCommand cmd = new SqlCommand(query, conexion);
                     cmd.Parameters.AddWithValue("@Documento", documento);
-                    int count = (int)cmd.ExecuteScalar();
+                    cmd.Parameters.AddWithValue("@IdClienteActual", idClienteActual);
+
+                    conexion.Open();
+                    int count = Convert.ToInt32(cmd.ExecuteScalar());
                     return count > 0;
+                }
+                catch (Exception ex)
+                {
+                    // Manejar la excepción
+                    return false;
                 }
             }
         }
 
-        public bool ExisteCuil(string cuil)
+
+        public bool ExisteCuil(string cuil, int idClienteActual = 0)
         {
-            using (SqlConnection cn = new SqlConnection(Conexion.cadena))
+            using (SqlConnection conexion = new SqlConnection(Conexion.cadena))
             {
-                cn.Open();
-                string query = "SELECT COUNT(*) FROM Cliente WHERE Cuil = @Cuil";
-                using (SqlCommand cmd = new SqlCommand(query, cn))
+                try
                 {
+                    string query = @"SELECT COUNT(1) FROM Cliente 
+                                   WHERE Cuil = @Cuil 
+                                   AND IdCliente != @IdClienteActual";
+
+                    SqlCommand cmd = new SqlCommand(query, conexion);
                     cmd.Parameters.AddWithValue("@Cuil", cuil);
-                    int count = (int)cmd.ExecuteScalar();
+                    cmd.Parameters.AddWithValue("@IdClienteActual", idClienteActual);
+
+                    conexion.Open();
+                    int count = Convert.ToInt32(cmd.ExecuteScalar());
                     return count > 0;
                 }
+                catch (Exception ex)
+                {
+                    // Manejar la excepción
+                    return false;
+                }
             }
+
         }
     }
 }

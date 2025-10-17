@@ -45,6 +45,9 @@ namespace CapaPresentacion
             txtDireccion.Text = "";
             btnGuardar.Content = "Guardar";
 
+            // NUEVO: Habilitar botón Guardar a "Actualizar"
+            btnGuardar.IsEnabled = true;
+
             // NUEVO: Deshabilitar botones Editar y Eliminar
             btnEditar.IsEnabled = false;
 
@@ -70,6 +73,10 @@ namespace CapaPresentacion
         private void btnGuardar_Click(object sender, RoutedEventArgs e)
         {
             if (!ValidarFormulario())
+                return;
+
+            // NUEVO: Validar si ya existe cliente con el mismo DNI o CUIL
+            if (!ValidarDocumentoYCuilUnicos())
                 return;
 
             // Crear objeto cliente
@@ -120,6 +127,10 @@ namespace CapaPresentacion
             if (!ValidarFormulario())
                 return;
 
+            // NUEVO: Validar si ya existe cliente con el mismo DNI o CUIL (excluyendo el actual)
+            if (!ValidarDocumentoYCuilUnicos(clienteSeleccionado.IdCliente))
+                return;
+
             // Crear objeto cliente con los datos actualizados (CORREGIDO)
             Cliente cliente = new Cliente
             {
@@ -145,6 +156,42 @@ namespace CapaPresentacion
                 CargarClientes();
                 LimpiarFormulario();
             }
+        }
+
+        // NUEVO: Método para validar que el DNI y CUIL sean únicos
+        private bool ValidarDocumentoYCuilUnicos(int idClienteActual = 0)
+        {
+            string documento = txtDocumento.Text.Trim();
+            string cuil = string.IsNullOrWhiteSpace(txtCuil.Text) ? "" : txtCuil.Text.Replace("-", "").Replace(" ", "").Trim();
+
+            bool existeDocumento = cnCliente.ExisteDocumento(documento, idClienteActual);
+            bool existeCuil = false;
+
+            if (!string.IsNullOrWhiteSpace(cuil))
+            {
+                existeCuil = cnCliente.ExisteCuil(cuil, idClienteActual);
+            }
+
+            if (existeDocumento && existeCuil)
+            {
+                MessageBox.Show("Error: Ya existe un cliente registrado con ese DNI y CUIL.", "Error",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+                return false;
+            }
+            else if (existeDocumento)
+            {
+                MessageBox.Show("Error: Ya existe un cliente registrado con ese DNI.", "Error",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+                return false;
+            }
+            else if (existeCuil)
+            {
+                MessageBox.Show("Error: Ya existe un cliente registrado con ese CUIL.", "Error",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+                return false;
+            }
+
+            return true;
         }
 
         private bool ValidarFormulario()
@@ -267,8 +314,8 @@ namespace CapaPresentacion
                 txtCuil.Text = cliente.Cuil;
                 txtDireccion.Text = cliente.Direccion;
 
-                // Cambiar el texto del botón Guardar a "Actualizar"
-                btnGuardar.Content = "Actualizar";
+                // NUEVO: Deshabilitar botón Guardar a "Actualizar"
+                btnGuardar.IsEnabled = false;
 
                 // NUEVO: Habilitar botón Editar
                 btnEditar.IsEnabled = true;
@@ -289,7 +336,8 @@ namespace CapaPresentacion
         {
             if (!string.IsNullOrEmpty(txtDocumento.Text) && EsDocumentoValido(txtDocumento.Text))
             {
-                if (cnCliente.ExisteDocumento(txtDocumento.Text))
+                int idActual = clienteSeleccionado?.IdCliente ?? 0;
+                if (cnCliente.ExisteDocumento(txtDocumento.Text, idActual))
                 {
                     txtDocumento.BorderBrush = Brushes.Red;
                     ToolTipService.SetToolTip(txtDocumento, "Ya existe un cliente con este DNI.");
@@ -319,7 +367,8 @@ namespace CapaPresentacion
         {
             if (!string.IsNullOrEmpty(txtCuil.Text) && EsCuilValido(txtCuil.Text))
             {
-                if (cnCliente.ExisteCuil(txtCuil.Text))
+                int idActual = clienteSeleccionado?.IdCliente ?? 0;
+                if (cnCliente.ExisteCuil(txtCuil.Text, idActual))
                 {
                     txtCuil.BorderBrush = Brushes.Red;
                     ToolTipService.SetToolTip(txtCuil, "Ya existe un cliente con este CUIL.");
