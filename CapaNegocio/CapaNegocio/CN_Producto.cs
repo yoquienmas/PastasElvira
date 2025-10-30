@@ -18,16 +18,43 @@ namespace CapaNegocio
         // En CN_Producto.cs, modifica el método Registrar y Editar para validar
         public bool Registrar(Producto producto, out string mensaje)
         {
-            // Validar que no se intente manipular los campos automáticos
-            if (producto.CostoProduccion <= 0)
+            mensaje = string.Empty;
+
+            // Validaciones básicas
+            if (producto.IdTipo <= 0)
             {
-                mensaje = "El costo de producción debe ser mayor a cero";
+                mensaje = "Debe seleccionar un tipo de producto";
                 return false;
             }
 
-            if (producto.PrecioVenta <= producto.CostoProduccion)
+            if (producto.IdSabor <= 0)
             {
-                mensaje = "El precio de venta debe ser mayor al costo de producción";
+                mensaje = "Debe seleccionar un sabor de producto";
+                return false;
+            }
+
+            if (producto.PrecioVenta <= 0)
+            {
+                mensaje = "El precio de venta debe ser mayor a cero";
+                return false;
+            }
+
+            if (producto.StockActual < 0)
+            {
+                mensaje = "El stock actual no puede ser negativo";
+                return false;
+            }
+
+            if (producto.StockMinimo < 0)
+            {
+                mensaje = "El stock mínimo no puede ser negativo";
+                return false;
+            }
+
+            // El costo de producción puede ser 0 inicialmente, se calculará después
+            if (producto.CostoProduccion < 0)
+            {
+                mensaje = "El costo de producción no puede ser negativo";
                 return false;
             }
 
@@ -37,16 +64,43 @@ namespace CapaNegocio
 
         public bool Editar(Producto producto, out string mensaje)
         {
-            // Validar que no se intente manipular los campos automáticos
-            if (producto.CostoProduccion <= 0)
+            mensaje = string.Empty;
+
+            // Validaciones básicas
+            if (producto.IdTipo <= 0)
             {
-                mensaje = "El costo de producción debe ser mayor a cero";
+                mensaje = "Debe seleccionar un tipo de producto";
                 return false;
             }
 
-            if (producto.PrecioVenta <= producto.CostoProduccion)
+            if (producto.IdSabor <= 0)
             {
-                mensaje = "El precio de venta debe ser mayor al costo de producción";
+                mensaje = "Debe seleccionar un sabor de producto";
+                return false;
+            }
+
+            if (producto.PrecioVenta <= 0)
+            {
+                mensaje = "El precio de venta debe ser mayor a cero";
+                return false;
+            }
+
+            if (producto.StockActual < 0)
+            {
+                mensaje = "El stock actual no puede ser negativo";
+                return false;
+            }
+
+            if (producto.StockMinimo < 0)
+            {
+                mensaje = "El stock mínimo no puede ser negativo";
+                return false;
+            }
+
+            // El costo de producción puede ser 0 inicialmente
+            if (producto.CostoProduccion < 0)
+            {
+                mensaje = "El costo de producción no puede ser negativo";
                 return false;
             }
 
@@ -62,6 +116,24 @@ namespace CapaNegocio
         public List<string> ListarTiposProducto()
         {
             return cdProducto.ListarTiposProducto();
+        }
+
+        // NUEVO MÉTODO: Listar sabores
+        public List<string> ListarSaboresProducto()
+        {
+            return cdProducto.ListarSaboresProducto();
+        }
+
+        // NUEVO MÉTODO: Obtener ID de Tipo por nombre
+        public int ObtenerIdTipoPorNombre(string nombreTipo)
+        {
+            return cdProducto.ObtenerIdTipoPorNombre(nombreTipo);
+        }
+
+        // NUEVO MÉTODO: Obtener ID de Sabor por nombre
+        public int ObtenerIdSaborPorNombre(string nombreSabor)
+        {
+            return cdProducto.ObtenerIdSaborPorNombre(nombreSabor);
         }
 
         // MÉTODOS NUEVOS (sin cambios)
@@ -119,10 +191,18 @@ namespace CapaNegocio
                 costo += costosFijos;
 
                 Producto producto = ObtenerProductoPorId(idProducto);
-                precio = costo * (1 + (producto.MargenGanancia / 100));
-
-                mensaje = "Costo calculado correctamente";
-                return true;
+                if (producto != null)
+                {
+                    precio = costo * (1 + (producto.MargenGanancia / 100));
+                    mensaje = "Costo calculado correctamente";
+                    return true;
+                }
+                else
+                {
+                    precio = 0;
+                    mensaje = "No se encontró el producto";
+                    return false;
+                }
             }
             catch (Exception ex)
             {
@@ -183,5 +263,50 @@ namespace CapaNegocio
                 return false;
             }
         }
+
+        // NUEVO MÉTODO: Buscar productos por tipo y sabor
+        public List<Producto> BuscarProductos(int? idTipo = null, int? idSabor = null)
+        {
+            // Este método podría implementarse en CD_Producto si es necesario
+            // Por ahora, filtramos desde la lista completa
+            var todosProductos = Listar();
+            var productosFiltrados = todosProductos;
+
+            if (idTipo.HasValue && idTipo > 0)
+            {
+                productosFiltrados = productosFiltrados.FindAll(p => p.IdTipo == idTipo.Value);
+            }
+
+            if (idSabor.HasValue && idSabor > 0)
+            {
+                productosFiltrados = productosFiltrados.FindAll(p => p.IdSabor == idSabor.Value);
+            }
+
+            return productosFiltrados;
+        }
+
+        // NUEVO MÉTODO: Validar combinación única de Tipo y Sabor
+        public bool ExisteCombinacionTipoSabor(int idTipo, int idSabor, int idProductoExcluir = 0)
+        {
+            var productos = Listar();
+            return productos.Exists(p =>
+                p.IdTipo == idTipo &&
+                p.IdSabor == idSabor &&
+                p.IdProducto != idProductoExcluir &&
+                p.Visible);
+        }
+
+        // NUEVO MÉTODO: Obtener producto por tipo y sabor
+        public Producto ObtenerProductoPorTipoYSabor(int idTipo, int idSabor)
+        {
+            var productos = Listar();
+            return productos.Find(p => p.IdTipo == idTipo && p.IdSabor == idSabor && p.Visible);
+        }
+
+        public int ContarProductosEnBD()
+        {
+            return cdProducto.ContarProductosEnBD();
+        }
+
     }
 }
