@@ -556,7 +556,72 @@ namespace CapaPresentacion
 
         private void btnExportarExcel_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("Exportar a Excel - Funcionalidad en desarrollo", "Información", MessageBoxButton.OK, MessageBoxImage.Information);
+            try
+            {
+                if (dgvReporte.ItemsSource == null)
+                {
+                    MessageBox.Show("No hay datos para exportar.", "Advertencia", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+
+                // Diálogo para elegir dónde guardar
+                Microsoft.Win32.SaveFileDialog saveFileDialog = new Microsoft.Win32.SaveFileDialog();
+                saveFileDialog.Filter = "Archivo CSV (*.csv)|*.csv";
+                saveFileDialog.FileName = "Reporte.csv";
+
+                if (saveFileDialog.ShowDialog() == true)
+                {
+                    using (var writer = new System.IO.StreamWriter(saveFileDialog.FileName, false, System.Text.Encoding.UTF8))
+                    {
+                        // Escribir cabeceras (headers)
+                        var headers = dgvReporte.Columns
+                            .Where(c => c.Header != null)
+                            .Select(c => c.Header.ToString())
+                            .ToArray();
+
+                        writer.WriteLine(string.Join(";", headers));
+
+                        // Escribir las filas
+                        foreach (var item in dgvReporte.ItemsSource)
+                        {
+                            var values = new List<string>();
+
+                            foreach (var column in dgvReporte.Columns)
+                            {
+                                if (column is DataGridBoundColumn boundColumn)
+                                {
+                                    var binding = boundColumn.Binding as System.Windows.Data.Binding;
+                                    if (binding != null)
+                                    {
+                                        var propertyName = binding.Path.Path;
+                                        var prop = item.GetType().GetProperty(propertyName);
+                                        if (prop != null)
+                                        {
+                                            var value = prop.GetValue(item);
+                                            // Si hay comas o punto y coma, las escapamos entre comillas
+                                            string text = value != null ? value.ToString().Replace(";", ",") : "";
+                                            values.Add($"\"{text}\"");
+                                        }
+                                    }
+                                }
+                            }
+
+                            writer.WriteLine(string.Join(";", values));
+                        }
+                    }
+
+                    MessageBox.Show("📄 Archivo exportado correctamente.\nPodés abrirlo con Excel.",
+                                    "Éxito", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al exportar: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+
+
+
+
         }
 
         private void btnImprimir_Click(object sender, RoutedEventArgs e)
