@@ -619,9 +619,6 @@ namespace CapaPresentacion
                 MessageBox.Show($"Error al exportar: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
 
-
-
-
         }
 
         private void btnImprimir_Click(object sender, RoutedEventArgs e)
