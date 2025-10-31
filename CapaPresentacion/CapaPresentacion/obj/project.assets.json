@@ -1800,23 +1800,23 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\danie\\.nuget\\packages\\": {},
+    "C:\\Users\\Brenda A. Garcia\\.nuget\\packages\\": {},
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\danie\\Source\\Repos\\PastasElvira\\CapaPresentacion\\CapaPresentacion\\CapaPresentacion.csproj",
+      "projectUniqueName": "C:\\Users\\Brenda A. Garcia\\Desktop\\Proyecto-P3\\CapaPresentacion\\CapaPresentacion\\CapaPresentacion.csproj",
       "projectName": "CapaPresentacion",
-      "projectPath": "C:\\Users\\danie\\Source\\Repos\\PastasElvira\\CapaPresentacion\\CapaPresentacion\\CapaPresentacion.csproj",
-      "packagesPath": "C:\\Users\\danie\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\danie\\Source\\Repos\\PastasElvira\\CapaPresentacion\\CapaPresentacion\\obj\\",
+      "projectPath": "C:\\Users\\Brenda A. Garcia\\Desktop\\Proyecto-P3\\CapaPresentacion\\CapaPresentacion\\CapaPresentacion.csproj",
+      "packagesPath": "C:\\Users\\Brenda A. Garcia\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\Brenda A. Garcia\\Desktop\\Proyecto-P3\\CapaPresentacion\\CapaPresentacion\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
       ],
       "configFilePaths": [
-        "C:\\Users\\danie\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\Brenda A. Garcia\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
@@ -1831,14 +1831,14 @@
         "net8.0-windows7.0": {
           "targetAlias": "net8.0-windows",
           "projectReferences": {
-            "C:\\Users\\danie\\Source\\Repos\\PastasElvira\\CapaDatos\\CapaDatos\\CapaDatos.csproj": {
-              "projectPath": "C:\\Users\\danie\\Source\\Repos\\PastasElvira\\CapaDatos\\CapaDatos\\CapaDatos.csproj"
+            "C:\\Users\\Brenda A. Garcia\\Desktop\\Proyecto-P3\\CapaDatos\\CapaDatos\\CapaDatos.csproj": {
+              "projectPath": "C:\\Users\\Brenda A. Garcia\\Desktop\\Proyecto-P3\\CapaDatos\\CapaDatos\\CapaDatos.csproj"
             },
-            "C:\\Users\\danie\\Source\\Repos\\PastasElvira\\CapaEntidad\\CapaEntidad\\CapaEntidad.csproj": {
-              "projectPath": "C:\\Users\\danie\\Source\\Repos\\PastasElvira\\CapaEntidad\\CapaEntidad\\CapaEntidad.csproj"
+            "C:\\Users\\Brenda A. Garcia\\Desktop\\Proyecto-P3\\CapaEntidad\\CapaEntidad\\CapaEntidad.csproj": {
+              "projectPath": "C:\\Users\\Brenda A. Garcia\\Desktop\\Proyecto-P3\\CapaEntidad\\CapaEntidad\\CapaEntidad.csproj"
             },
-            "C:\\Users\\danie\\Source\\Repos\\PastasElvira\\CapaNegocio\\CapaNegocio\\CapaNegocio.csproj": {
-              "projectPath": "C:\\Users\\danie\\Source\\Repos\\PastasElvira\\CapaNegocio\\CapaNegocio\\CapaNegocio.csproj"
+            "C:\\Users\\Brenda A. Garcia\\Desktop\\Proyecto-P3\\CapaNegocio\\CapaNegocio\\CapaNegocio.csproj": {
+              "projectPath": "C:\\Users\\Brenda A. Garcia\\Desktop\\Proyecto-P3\\CapaNegocio\\CapaNegocio\\CapaNegocio.csproj"
             }
           }
         }

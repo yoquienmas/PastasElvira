@@ -5,13 +5,13 @@ VisualStudioVersion = 17.14.36203.30
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PastasElvira", "PastasElvira\PastasElvira.csproj", "{5A66DBAB-973D-4E04-B4CC-6AE92816F28D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CapaEntidad", "..\CapaEntidad\CapaEntidad\CapaEntidad.csproj", "{E7D39169-3B78-C802-C971-088CDC5B167A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CapaEntidad", "CapaEntidad\CapaEntidad\CapaEntidad.csproj", "{E7D39169-3B78-C802-C971-088CDC5B167A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CapaDatos", "..\CapaDatos\CapaDatos\CapaDatos.csproj", "{52374688-EF5F-7B50-97F6-497F919C7BAC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CapaDatos", "CapaDatos\CapaDatos\CapaDatos.csproj", "{52374688-EF5F-7B50-97F6-497F919C7BAC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CapaNegocio", "..\CapaNegocio\CapaNegocio\CapaNegocio.csproj", "{9F3A0735-28FA-AFB7-AF0A-205334FB31A7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CapaNegocio", "CapaNegocio\CapaNegocio\CapaNegocio.csproj", "{9F3A0735-28FA-AFB7-AF0A-205334FB31A7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CapaPresentacion", "..\CapaPresentacion\CapaPresentacion\CapaPresentacion.csproj", "{C9F6F791-1C4B-957C-360E-B4FB731214B1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CapaPresentacion", "CapaPresentacion\CapaPresentacion\CapaPresentacion.csproj", "{C9F6F791-1C4B-957C-360E-B4FB731214B1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

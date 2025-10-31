@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\danie\\Source\\Repos\\PastasElvira\\CapaDatos\\CapaDatos\\CapaDatos.csproj": {}
+    "C:\\Users\\Brenda A. Garcia\\Desktop\\Proyecto-P3\\CapaDatos\\CapaDatos\\CapaDatos.csproj": {}
   },
   "projects": {
-    "C:\\Users\\danie\\Source\\Repos\\PastasElvira\\CapaDatos\\CapaDatos\\CapaDatos.csproj": {
+    "C:\\Users\\Brenda A. Garcia\\Desktop\\Proyecto-P3\\CapaDatos\\CapaDatos\\CapaDatos.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\danie\\Source\\Repos\\PastasElvira\\CapaDatos\\CapaDatos\\CapaDatos.csproj",
+        "projectUniqueName": "C:\\Users\\Brenda A. Garcia\\Desktop\\Proyecto-P3\\CapaDatos\\CapaDatos\\CapaDatos.csproj",
         "projectName": "CapaDatos",
-        "projectPath": "C:\\Users\\danie\\Source\\Repos\\PastasElvira\\CapaDatos\\CapaDatos\\CapaDatos.csproj",
-        "packagesPath": "C:\\Users\\danie\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\danie\\Source\\Repos\\PastasElvira\\CapaDatos\\CapaDatos\\obj\\",
+        "projectPath": "C:\\Users\\Brenda A. Garcia\\Desktop\\Proyecto-P3\\CapaDatos\\CapaDatos\\CapaDatos.csproj",
+        "packagesPath": "C:\\Users\\Brenda A. Garcia\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Brenda A. Garcia\\Desktop\\Proyecto-P3\\CapaDatos\\CapaDatos\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\danie\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Brenda A. Garcia\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -32,8 +32,8 @@
           "net8.0-windows7.0": {
             "targetAlias": "net8.0-windows",
             "projectReferences": {
-              "C:\\Users\\danie\\Source\\Repos\\PastasElvira\\CapaEntidad\\CapaEntidad\\CapaEntidad.csproj": {
-                "projectPath": "C:\\Users\\danie\\Source\\Repos\\PastasElvira\\CapaEntidad\\CapaEntidad\\CapaEntidad.csproj"
+              "C:\\Users\\Brenda A. Garcia\\Desktop\\Proyecto-P3\\CapaEntidad\\CapaEntidad\\CapaEntidad.csproj": {
+                "projectPath": "C:\\Users\\Brenda A. Garcia\\Desktop\\Proyecto-P3\\CapaEntidad\\CapaEntidad\\CapaEntidad.csproj"
               }
             }
           }
@@ -82,20 +82,20 @@
         }
       }
     },
-    "C:\\Users\\danie\\Source\\Repos\\PastasElvira\\CapaEntidad\\CapaEntidad\\CapaEntidad.csproj": {
+    "C:\\Users\\Brenda A. Garcia\\Desktop\\Proyecto-P3\\CapaEntidad\\CapaEntidad\\CapaEntidad.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\danie\\Source\\Repos\\PastasElvira\\CapaEntidad\\CapaEntidad\\CapaEntidad.csproj",
+        "projectUniqueName": "C:\\Users\\Brenda A. Garcia\\Desktop\\Proyecto-P3\\CapaEntidad\\CapaEntidad\\CapaEntidad.csproj",
         "projectName": "CapaEntidad",
-        "projectPath": "C:\\Users\\danie\\Source\\Repos\\PastasElvira\\CapaEntidad\\CapaEntidad\\CapaEntidad.csproj",
-        "packagesPath": "C:\\Users\\danie\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\danie\\Source\\Repos\\PastasElvira\\CapaEntidad\\CapaEntidad\\obj\\",
+        "projectPath": "C:\\Users\\Brenda A. Garcia\\Desktop\\Proyecto-P3\\CapaEntidad\\CapaEntidad\\CapaEntidad.csproj",
+        "packagesPath": "C:\\Users\\Brenda A. Garcia\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Brenda A. Garcia\\Desktop\\Proyecto-P3\\CapaEntidad\\CapaEntidad\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\danie\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Brenda A. Garcia\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
