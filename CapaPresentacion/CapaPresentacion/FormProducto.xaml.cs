@@ -561,6 +561,7 @@ namespace CapaPresentacion
                 // Esto indica que el usuario está editando manualmente el nombre
                 // Podemos cambiar el comportamiento si es necesario
             }
+
         }
     }
 }

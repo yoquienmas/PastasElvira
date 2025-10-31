@@ -16,3 +16,21 @@ C:\Users\danie\Source\Repos\PastasElvira\CapaNegocio\CapaNegocio\obj\Debug\net8.
 C:\Users\danie\Source\Repos\PastasElvira\CapaNegocio\CapaNegocio\obj\Debug\net8.0-windows\refint\CapaNegocio.dll
 C:\Users\danie\Source\Repos\PastasElvira\CapaNegocio\CapaNegocio\obj\Debug\net8.0-windows\CapaNegocio.pdb
 C:\Users\danie\Source\Repos\PastasElvira\CapaNegocio\CapaNegocio\obj\Debug\net8.0-windows\ref\CapaNegocio.dll
+C:\Users\Brenda A. Garcia\Desktop\Proyecto-P3\CapaNegocio\CapaNegocio\bin\Debug\net8.0-windows\CapaNegocio.deps.json
+C:\Users\Brenda A. Garcia\Desktop\Proyecto-P3\CapaNegocio\CapaNegocio\bin\Debug\net8.0-windows\CapaNegocio.dll
+C:\Users\Brenda A. Garcia\Desktop\Proyecto-P3\CapaNegocio\CapaNegocio\bin\Debug\net8.0-windows\CapaNegocio.pdb
+C:\Users\Brenda A. Garcia\Desktop\Proyecto-P3\CapaNegocio\CapaNegocio\bin\Debug\net8.0-windows\CapaDatos.dll
+C:\Users\Brenda A. Garcia\Desktop\Proyecto-P3\CapaNegocio\CapaNegocio\bin\Debug\net8.0-windows\CapaEntidad.dll
+C:\Users\Brenda A. Garcia\Desktop\Proyecto-P3\CapaNegocio\CapaNegocio\bin\Debug\net8.0-windows\CapaDatos.pdb
+C:\Users\Brenda A. Garcia\Desktop\Proyecto-P3\CapaNegocio\CapaNegocio\bin\Debug\net8.0-windows\CapaEntidad.pdb
+C:\Users\Brenda A. Garcia\Desktop\Proyecto-P3\CapaNegocio\CapaNegocio\obj\Debug\net8.0-windows\CapaNegocio.csproj.AssemblyReference.cache
+C:\Users\Brenda A. Garcia\Desktop\Proyecto-P3\CapaNegocio\CapaNegocio\obj\Debug\net8.0-windows\CapaNegocio.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Brenda A. Garcia\Desktop\Proyecto-P3\CapaNegocio\CapaNegocio\obj\Debug\net8.0-windows\CapaNegocio.AssemblyInfoInputs.cache
+C:\Users\Brenda A. Garcia\Desktop\Proyecto-P3\CapaNegocio\CapaNegocio\obj\Debug\net8.0-windows\CapaNegocio.AssemblyInfo.cs
+C:\Users\Brenda A. Garcia\Desktop\Proyecto-P3\CapaNegocio\CapaNegocio\obj\Debug\net8.0-windows\CapaNegocio.csproj.CoreCompileInputs.cache
+C:\Users\Brenda A. Garcia\Desktop\Proyecto-P3\CapaNegocio\CapaNegocio\obj\Debug\net8.0-windows\CapaNegocio.sourcelink.json
+C:\Users\Brenda A. Garcia\Desktop\Proyecto-P3\CapaNegocio\CapaNegocio\obj\Debug\net8.0-windows\CapaNego.81B9D119.Up2Date
+C:\Users\Brenda A. Garcia\Desktop\Proyecto-P3\CapaNegocio\CapaNegocio\obj\Debug\net8.0-windows\CapaNegocio.dll
+C:\Users\Brenda A. Garcia\Desktop\Proyecto-P3\CapaNegocio\CapaNegocio\obj\Debug\net8.0-windows\refint\CapaNegocio.dll
+C:\Users\Brenda A. Garcia\Desktop\Proyecto-P3\CapaNegocio\CapaNegocio\obj\Debug\net8.0-windows\CapaNegocio.pdb
+C:\Users\Brenda A. Garcia\Desktop\Proyecto-P3\CapaNegocio\CapaNegocio\obj\Debug\net8.0-windows\ref\CapaNegocio.dll
