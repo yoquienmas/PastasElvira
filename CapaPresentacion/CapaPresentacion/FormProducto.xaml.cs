@@ -438,6 +438,9 @@ namespace CapaPresentacion
 
                 Console.WriteLine($"Producto seleccionado: {producto.Nombre}");
                 Console.WriteLine($"Tipo: {producto.Tipo}, Sabor: {producto.Sabor}");
+
+                
+
             }
         }
 

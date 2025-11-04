@@ -149,7 +149,7 @@ namespace CapaPresentacion {
                 return;
             }
             _contentLoaded = true;
-            System.Uri resourceLocater = new System.Uri("/CapaPresentacion;V1.0.0.0;component/menudue%c3%b1o.xaml", System.UriKind.Relative);
+            System.Uri resourceLocater = new System.Uri("/CapaPresentacion;component/menudue%c3%b1o.xaml", System.UriKind.Relative);
             
             #line 1 "..\..\..\MenuDueño.xaml"
             System.Windows.Application.LoadComponent(this, resourceLocater);

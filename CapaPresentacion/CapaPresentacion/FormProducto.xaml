@@ -144,8 +144,24 @@
                         <DataGridTextColumn Header="Margen %" Binding="{Binding MargenGanancia, StringFormat=F2}" Width="80"/>
                         <DataGridTextColumn Header="Stock" Binding="{Binding StockActual}" Width="80"/>
                         <DataGridTextColumn Header="Mínimo" Binding="{Binding StockMinimo}" Width="80"/>
-                        <DataGridTextColumn Header="Estado" Binding="{Binding Estado}" Width="80"/>
+                        <DataGridTextColumn Header="Estado" Binding="{Binding EstadoTexto}" Width="100"/>
+
                     </DataGrid.Columns>
+                    
+                    <!-- pone color a la fila --> 
+                    <DataGrid.RowStyle>
+                        <Style TargetType="DataGridRow">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Visible}" Value="False">
+                                    <Setter Property="Background" Value="#FFEEEEEE"/>
+                                    <!-- Gris claro -->
+                                    <Setter Property="Foreground" Value="#FFB22222"/>
+                                    <!-- Texto rojizo -->
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </DataGrid.RowStyle>
+
                 </DataGrid>
             </Border>
         </Grid>

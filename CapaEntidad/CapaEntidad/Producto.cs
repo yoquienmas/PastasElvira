@@ -18,6 +18,15 @@ namespace CapaEntidad
         public int IdTipo { get; set; } // Nueva propiedad FK
         public int IdSabor { get; set; } // Nueva propiedad FK
 
+
+        public string EstadoTexto
+        {
+            get { return Visible ? "Activo" : "Desactivado"; }
+        }
+
+
+
+
         public string NombreProducto
         {
             get

@@ -3,12 +3,16 @@
   "WorkspaceRootPath": "C:\\Users\\Brenda A. Garcia\\Desktop\\Proyecto-P3\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{C9F6F791-1C4B-957C-360E-B4FB731214B1}|CapaPresentacion\\CapaPresentacion\\CapaPresentacion.csproj|c:\\users\\brenda a. garcia\\desktop\\proyecto-p3\\capapresentacion\\capapresentacion\\formreportes.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{C9F6F791-1C4B-957C-360E-B4FB731214B1}|CapaPresentacion\\CapaPresentacion\\CapaPresentacion.csproj|solutionrelative:capapresentacion\\capapresentacion\\formreportes.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{C9F6F791-1C4B-957C-360E-B4FB731214B1}|CapaPresentacion\\CapaPresentacion\\CapaPresentacion.csproj|c:\\users\\brenda a. garcia\\desktop\\proyecto-p3\\capapresentacion\\capapresentacion\\formproducto.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C9F6F791-1C4B-957C-360E-B4FB731214B1}|CapaPresentacion\\CapaPresentacion\\CapaPresentacion.csproj|solutionrelative:capapresentacion\\capapresentacion\\formproducto.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{C9F6F791-1C4B-957C-360E-B4FB731214B1}|CapaPresentacion\\CapaPresentacion\\CapaPresentacion.csproj|c:\\users\\brenda a. garcia\\desktop\\proyecto-p3\\capapresentacion\\capapresentacion\\formreportes.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
-      "RelativeMoniker": "D:0:0:{C9F6F791-1C4B-957C-360E-B4FB731214B1}|CapaPresentacion\\CapaPresentacion\\CapaPresentacion.csproj|solutionrelative:capapresentacion\\capapresentacion\\formreportes.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+      "AbsoluteMoniker": "D:0:0:{C9F6F791-1C4B-957C-360E-B4FB731214B1}|CapaPresentacion\\CapaPresentacion\\CapaPresentacion.csproj|c:\\users\\brenda a. garcia\\desktop\\proyecto-p3\\capapresentacion\\capapresentacion\\formproducto.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{C9F6F791-1C4B-957C-360E-B4FB731214B1}|CapaPresentacion\\CapaPresentacion\\CapaPresentacion.csproj|solutionrelative:capapresentacion\\capapresentacion\\formproducto.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E7D39169-3B78-C802-C971-088CDC5B167A}|CapaEntidad\\CapaEntidad\\CapaEntidad.csproj|c:\\users\\brenda a. garcia\\desktop\\proyecto-p3\\capaentidad\\capaentidad\\producto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E7D39169-3B78-C802-C971-088CDC5B167A}|CapaEntidad\\CapaEntidad\\CapaEntidad.csproj|solutionrelative:capaentidad\\capaentidad\\producto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -18,32 +22,46 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": 2,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "FormReportes.xaml.cs",
-              "DocumentMoniker": "C:\\Users\\Brenda A. Garcia\\Desktop\\Proyecto-P3\\CapaPresentacion\\CapaPresentacion\\FormReportes.xaml.cs",
-              "RelativeDocumentMoniker": "CapaPresentacion\\CapaPresentacion\\FormReportes.xaml.cs",
-              "ToolTip": "C:\\Users\\Brenda A. Garcia\\Desktop\\Proyecto-P3\\CapaPresentacion\\CapaPresentacion\\FormReportes.xaml.cs",
-              "RelativeToolTip": "CapaPresentacion\\CapaPresentacion\\FormReportes.xaml.cs",
-              "ViewState": "AgIAAB4CAAAAAAAAAAAAAGsCAAANAAAAAAAAAA==",
+              "DocumentIndex": 2,
+              "Title": "Producto.cs",
+              "DocumentMoniker": "C:\\Users\\Brenda A. Garcia\\Desktop\\Proyecto-P3\\CapaEntidad\\CapaEntidad\\Producto.cs",
+              "RelativeDocumentMoniker": "CapaEntidad\\CapaEntidad\\Producto.cs",
+              "ToolTip": "C:\\Users\\Brenda A. Garcia\\Desktop\\Proyecto-P3\\CapaEntidad\\CapaEntidad\\Producto.cs",
+              "RelativeToolTip": "CapaEntidad\\CapaEntidad\\Producto.cs",
+              "ViewState": "AgIAAAoAAAAAAAAAAAAAABkAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-31T16:46:18.844Z",
+              "WhenOpened": "2025-11-04T16:19:48.675Z",
               "IsPinned": true,
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 1,
-              "Title": "FormReportes.xaml",
-              "DocumentMoniker": "C:\\Users\\Brenda A. Garcia\\Desktop\\Proyecto-P3\\CapaPresentacion\\CapaPresentacion\\FormReportes.xaml",
-              "RelativeDocumentMoniker": "CapaPresentacion\\CapaPresentacion\\FormReportes.xaml",
-              "ToolTip": "C:\\Users\\Brenda A. Garcia\\Desktop\\Proyecto-P3\\CapaPresentacion\\CapaPresentacion\\FormReportes.xaml",
-              "RelativeToolTip": "CapaPresentacion\\CapaPresentacion\\FormReportes.xaml",
+              "Title": "FormProducto.xaml",
+              "DocumentMoniker": "C:\\Users\\Brenda A. Garcia\\Desktop\\Proyecto-P3\\CapaPresentacion\\CapaPresentacion\\FormProducto.xaml",
+              "RelativeDocumentMoniker": "CapaPresentacion\\CapaPresentacion\\FormProducto.xaml",
+              "ToolTip": "C:\\Users\\Brenda A. Garcia\\Desktop\\Proyecto-P3\\CapaPresentacion\\CapaPresentacion\\FormProducto.xaml",
+              "RelativeToolTip": "CapaPresentacion\\CapaPresentacion\\FormProducto.xaml",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
-              "WhenOpened": "2025-10-31T16:45:24.686Z",
+              "WhenOpened": "2025-11-04T16:17:10.803Z",
+              "IsPinned": true,
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "FormProducto.xaml.cs",
+              "DocumentMoniker": "C:\\Users\\Brenda A. Garcia\\Desktop\\Proyecto-P3\\CapaPresentacion\\CapaPresentacion\\FormProducto.xaml.cs",
+              "RelativeDocumentMoniker": "CapaPresentacion\\CapaPresentacion\\FormProducto.xaml.cs",
+              "ToolTip": "C:\\Users\\Brenda A. Garcia\\Desktop\\Proyecto-P3\\CapaPresentacion\\CapaPresentacion\\FormProducto.xaml.cs",
+              "RelativeToolTip": "CapaPresentacion\\CapaPresentacion\\FormProducto.xaml.cs",
+              "ViewState": "AgIAAJ8BAAAAAAAAAAAAALkBAAAQAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-04T16:22:51.892Z",
               "IsPinned": true,
               "EditorCaption": ""
             },
