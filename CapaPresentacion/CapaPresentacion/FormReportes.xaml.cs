@@ -7,6 +7,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 
@@ -623,7 +624,111 @@ namespace CapaPresentacion
 
         private void btnImprimir_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("Imprimir - Funcionalidad en desarrollo", "Información", MessageBoxButton.OK, MessageBoxImage.Information);
+            // MessageBox.Show("Imprimir - Funcionalidad en desarrollo", "Información", MessageBoxButton.OK, MessageBoxImage.Information);
+
+            try
+            {
+                if (dgvReporte.ItemsSource == null)
+                {
+                    MessageBox.Show("No hay datos para imprimir.", "Aviso",
+                                    MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+
+                // Crear documento
+                FlowDocument doc = new FlowDocument();
+                doc.PagePadding = new Thickness(50);
+                doc.FontFamily = new FontFamily("Segoe UI");
+                doc.FontSize = 13;
+                doc.TextAlignment = TextAlignment.Left;
+
+                // Título principal
+                Paragraph titulo = new Paragraph(new Run("📋 Reporte generado"))
+                {
+                    FontSize = 20,
+                    FontWeight = FontWeights.Bold,
+                    TextAlignment = TextAlignment.Center,
+                    Margin = new Thickness(0, 0, 0, 20)
+                };
+                doc.Blocks.Add(titulo);
+
+                // Crear tabla
+                Table tabla = new Table();
+                doc.Blocks.Add(tabla);
+
+                // Detectar columnas visibles del DataGrid
+                var columnas = dgvReporte.Columns.Where(c => c.Header != null).ToList();
+
+                // Crear columnas en el documento
+                foreach (var c in columnas)
+                {
+                    tabla.Columns.Add(new TableColumn());
+                }
+
+                // Encabezado
+                TableRowGroup encabezado = new TableRowGroup();
+                tabla.RowGroups.Add(encabezado);
+                TableRow filaEncabezado = new TableRow();
+                encabezado.Rows.Add(filaEncabezado);
+
+                foreach (var c in columnas)
+                {
+                    var celda = new TableCell(new Paragraph(new Bold(new Run(c.Header.ToString()))))
+                    {
+                        Padding = new Thickness(4),
+                        Background = new SolidColorBrush(Color.FromRgb(52, 73, 94)), // gris oscuro
+                        Foreground = Brushes.White
+                    };
+                    filaEncabezado.Cells.Add(celda);
+                }
+
+                // Cuerpo
+                TableRowGroup cuerpo = new TableRowGroup();
+                tabla.RowGroups.Add(cuerpo);
+
+                // Recorrer los elementos del DataGrid
+                foreach (var item in dgvReporte.ItemsSource)
+                {
+                    TableRow fila = new TableRow();
+
+                    foreach (var col in columnas)
+                    {
+                        string texto = "";
+
+                        if (col is DataGridBoundColumn boundCol)
+                        {
+                            var binding = boundCol.Binding as System.Windows.Data.Binding;
+                            if (binding != null)
+                            {
+                                var prop = item.GetType().GetProperty(binding.Path.Path);
+                                if (prop != null)
+                                {
+                                    var valor = prop.GetValue(item);
+                                    texto = valor != null ? valor.ToString() : "";
+                                }
+                            }
+                        }
+
+                        fila.Cells.Add(new TableCell(new Paragraph(new Run(texto))) { Padding = new Thickness(3) });
+                    }
+
+                    cuerpo.Rows.Add(fila);
+                }
+
+                // Mostrar diálogo de impresión
+                PrintDialog printDialog = new PrintDialog();
+                if (printDialog.ShowDialog() == true)
+                {
+                    doc.PageHeight = printDialog.PrintableAreaHeight;
+                    doc.PageWidth = printDialog.PrintableAreaWidth;
+                    printDialog.PrintDocument(((IDocumentPaginatorSource)doc).DocumentPaginator, "Reporte de Sistema Verona");
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al imprimir: {ex.Message}", "Error",
+                                MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private void dgvReporte_SelectionChanged(object sender, SelectionChangedEventArgs e)
