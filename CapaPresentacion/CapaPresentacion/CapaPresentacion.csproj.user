@@ -5,10 +5,10 @@
     <Compile Update="FormBuscarCliente.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="FormDetalleProduccion.xaml.cs">
+    <Compile Update="FormEditarUsuario.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="FormEditarUsuario.xaml.cs">
+    <Compile Update="FormGestionarSabores.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="FormGestionUsuarios.xaml.cs">
@@ -36,6 +36,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="MenuVendedor.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="FormGestionarTipos.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>

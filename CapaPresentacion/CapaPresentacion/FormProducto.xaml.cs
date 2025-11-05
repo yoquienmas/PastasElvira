@@ -432,7 +432,7 @@ namespace CapaPresentacion
                 txtStockMinimo.Text = producto.StockMinimo.ToString();
                 chkVisible.IsChecked = producto.Visible;
 
-                btnAgregar.Content = "➕ Agregar";
+                btnAgregar.IsEnabled = false;
                 btnEditar.IsEnabled = true;
                 btnEstado.IsEnabled = true;
 
@@ -542,15 +542,24 @@ namespace CapaPresentacion
         // NUEVO: Botón para gestionar tipos
         private void btnGestionarTipos_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("Funcionalidad para gestionar tipos de productos", "Información",
-                          MessageBoxButton.OK, MessageBoxImage.Information);
+            FormGestionarTipos formTipos = new FormGestionarTipos();
+            formTipos.Owner = this;
+            formTipos.Closed += (s, args) => {
+                // Recargar tipos cuando se cierre el formulario
+                CargarTiposProducto();
+            };
+            formTipos.ShowDialog();
         }
 
-        // NUEVO: Botón para gestionar sabores
         private void btnGestionarSabores_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("Funcionalidad para gestionar sabores de productos", "Información",
-                          MessageBoxButton.OK, MessageBoxImage.Information);
+            FormGestionarSabores formSabores = new FormGestionarSabores();
+            formSabores.Owner = this;
+            formSabores.Closed += (s, args) => {
+                // Recargar sabores cuando se cierre el formulario
+                CargarSaboresProducto();
+            };
+            formSabores.ShowDialog();
         }
 
         private void txtNombre_TextChanged(object sender, TextChangedEventArgs e)

@@ -62,7 +62,6 @@ C:\Users\danie\Source\Repos\PastasElvira\CapaPresentacion\CapaPresentacion\obj\D
 C:\Users\danie\Source\Repos\PastasElvira\CapaPresentacion\CapaPresentacion\obj\Debug\net8.0-windows\FormCliente.baml
 C:\Users\danie\Source\Repos\PastasElvira\CapaPresentacion\CapaPresentacion\obj\Debug\net8.0-windows\FormConsumoPorVenta.baml
 C:\Users\danie\Source\Repos\PastasElvira\CapaPresentacion\CapaPresentacion\obj\Debug\net8.0-windows\FormCostoFijo.baml
-C:\Users\danie\Source\Repos\PastasElvira\CapaPresentacion\CapaPresentacion\obj\Debug\net8.0-windows\FormDetalleProduccion.baml
 C:\Users\danie\Source\Repos\PastasElvira\CapaPresentacion\CapaPresentacion\obj\Debug\net8.0-windows\FormEditarUsuario.baml
 C:\Users\danie\Source\Repos\PastasElvira\CapaPresentacion\CapaPresentacion\obj\Debug\net8.0-windows\FormGestionUsuarios.baml
 C:\Users\danie\Source\Repos\PastasElvira\CapaPresentacion\CapaPresentacion\obj\Debug\net8.0-windows\FormHistorialProduccion.baml
@@ -71,7 +70,6 @@ C:\Users\danie\Source\Repos\PastasElvira\CapaPresentacion\CapaPresentacion\obj\D
 C:\Users\danie\Source\Repos\PastasElvira\CapaPresentacion\CapaPresentacion\obj\Debug\net8.0-windows\FormProduccion.baml
 C:\Users\danie\Source\Repos\PastasElvira\CapaPresentacion\CapaPresentacion\obj\Debug\net8.0-windows\FormProducto.baml
 C:\Users\danie\Source\Repos\PastasElvira\CapaPresentacion\CapaPresentacion\obj\Debug\net8.0-windows\FormProductosDisponibles.baml
-C:\Users\danie\Source\Repos\PastasElvira\CapaPresentacion\CapaPresentacion\obj\Debug\net8.0-windows\FormReceta.baml
 C:\Users\danie\Source\Repos\PastasElvira\CapaPresentacion\CapaPresentacion\obj\Debug\net8.0-windows\FormReporteConsumo.baml
 C:\Users\danie\Source\Repos\PastasElvira\CapaPresentacion\CapaPresentacion\obj\Debug\net8.0-windows\FormReportes.baml
 C:\Users\danie\Source\Repos\PastasElvira\CapaPresentacion\CapaPresentacion\obj\Debug\net8.0-windows\FormReporteVentas.baml
@@ -83,7 +81,6 @@ C:\Users\danie\Source\Repos\PastasElvira\CapaPresentacion\CapaPresentacion\obj\D
 C:\Users\danie\Source\Repos\PastasElvira\CapaPresentacion\CapaPresentacion\obj\Debug\net8.0-windows\FormCliente.g.cs
 C:\Users\danie\Source\Repos\PastasElvira\CapaPresentacion\CapaPresentacion\obj\Debug\net8.0-windows\FormConsumoPorVenta.g.cs
 C:\Users\danie\Source\Repos\PastasElvira\CapaPresentacion\CapaPresentacion\obj\Debug\net8.0-windows\FormCostoFijo.g.cs
-C:\Users\danie\Source\Repos\PastasElvira\CapaPresentacion\CapaPresentacion\obj\Debug\net8.0-windows\FormDetalleProduccion.g.cs
 C:\Users\danie\Source\Repos\PastasElvira\CapaPresentacion\CapaPresentacion\obj\Debug\net8.0-windows\FormEditarUsuario.g.cs
 C:\Users\danie\Source\Repos\PastasElvira\CapaPresentacion\CapaPresentacion\obj\Debug\net8.0-windows\FormGestionUsuarios.g.cs
 C:\Users\danie\Source\Repos\PastasElvira\CapaPresentacion\CapaPresentacion\obj\Debug\net8.0-windows\FormHistorialProduccion.g.cs
@@ -92,7 +89,6 @@ C:\Users\danie\Source\Repos\PastasElvira\CapaPresentacion\CapaPresentacion\obj\D
 C:\Users\danie\Source\Repos\PastasElvira\CapaPresentacion\CapaPresentacion\obj\Debug\net8.0-windows\FormProduccion.g.cs
 C:\Users\danie\Source\Repos\PastasElvira\CapaPresentacion\CapaPresentacion\obj\Debug\net8.0-windows\FormProducto.g.cs
 C:\Users\danie\Source\Repos\PastasElvira\CapaPresentacion\CapaPresentacion\obj\Debug\net8.0-windows\FormProductosDisponibles.g.cs
-C:\Users\danie\Source\Repos\PastasElvira\CapaPresentacion\CapaPresentacion\obj\Debug\net8.0-windows\FormReceta.g.cs
 C:\Users\danie\Source\Repos\PastasElvira\CapaPresentacion\CapaPresentacion\obj\Debug\net8.0-windows\FormReporteConsumo.g.cs
 C:\Users\danie\Source\Repos\PastasElvira\CapaPresentacion\CapaPresentacion\obj\Debug\net8.0-windows\FormReportes.g.cs
 C:\Users\danie\Source\Repos\PastasElvira\CapaPresentacion\CapaPresentacion\obj\Debug\net8.0-windows\FormReporteVentas.g.cs
@@ -119,3 +115,7 @@ C:\Users\danie\Source\Repos\PastasElvira\CapaPresentacion\CapaPresentacion\obj\D
 C:\Users\danie\Source\Repos\PastasElvira\CapaPresentacion\CapaPresentacion\obj\Debug\net8.0-windows\ref\CapaPresentacion.dll
 C:\Users\danie\Source\Repos\PastasElvira\CapaPresentacion\CapaPresentacion\obj\Debug\net8.0-windows\FormBuscarCliente.baml
 C:\Users\danie\Source\Repos\PastasElvira\CapaPresentacion\CapaPresentacion\obj\Debug\net8.0-windows\FormBuscarCliente.g.cs
+C:\Users\danie\Source\Repos\PastasElvira\CapaPresentacion\CapaPresentacion\obj\Debug\net8.0-windows\FormGestionarSabores.baml
+C:\Users\danie\Source\Repos\PastasElvira\CapaPresentacion\CapaPresentacion\obj\Debug\net8.0-windows\FormGestionarTipos.baml
+C:\Users\danie\Source\Repos\PastasElvira\CapaPresentacion\CapaPresentacion\obj\Debug\net8.0-windows\FormGestionarSabores.g.cs
+C:\Users\danie\Source\Repos\PastasElvira\CapaPresentacion\CapaPresentacion\obj\Debug\net8.0-windows\FormGestionarTipos.g.cs

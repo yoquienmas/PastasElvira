@@ -86,16 +86,12 @@ namespace CapaPresentacion
                 var productoSeleccionado = cboProductos.SelectedItem as Producto;
                 int cantidad = int.Parse(txtCantidad.Text);
 
-                // Validar materias primas
-                string errorMaterias = cnProduccion.ValidarDisponibilidadMateriasPrimas(idProducto, cantidad);
-                if (!string.IsNullOrEmpty(errorMaterias))
-                {
-                    MessageBox.Show(errorMaterias, "Error de Materias Primas", MessageBoxButton.OK, MessageBoxImage.Error);
-                    return;
-                }
+                // ✅ ELIMINADA la validación de materias primas - PRODUCCIÓN DIRECTA
 
-                // Confirmar producción
-                string mensajeConfirmacion = $"¿Está seguro que desea producir {cantidad} unidades de {productoSeleccionado.NombreProducto}?";
+                // Confirmar producción con información del stock
+                string mensajeConfirmacion = $"¿Está seguro que desea producir {cantidad} unidades de {productoSeleccionado.NombreProducto}?\n\n" +
+                                           $"✅ Se agregarán {cantidad} unidades al stock actual del producto.";
+
                 if (MessageBox.Show(mensajeConfirmacion, "Confirmar Producción",
                     MessageBoxButton.YesNo, MessageBoxImage.Question) != MessageBoxResult.Yes)
                 {
@@ -115,7 +111,8 @@ namespace CapaPresentacion
                 {
                     MessageBox.Show($"✅ Producción registrada exitosamente!\n\n" +
                                   $"Producto: {productoSeleccionado.NombreProducto}\n" +
-                                  $"Cantidad: {cantidad} unidades",
+                                  $"Cantidad: {cantidad} unidades\n\n" +
+                                  $"Stock actualizado automáticamente.",
                                   "Éxito", MessageBoxButton.OK, MessageBoxImage.Information);
 
                     LimpiarCampos();
@@ -160,16 +157,7 @@ namespace CapaPresentacion
                     var productoSeleccionado = cboProductos.SelectedItem as Producto;
                     int cantidad = int.Parse(txtCantidad.Text);
 
-                    // Validar materias primas si la cantidad cambió
-                    if (cantidad != produccionSeleccionada.CantidadProducida)
-                    {
-                        string errorMaterias = cnProduccion.ValidarDisponibilidadMateriasPrimas(idProducto, cantidad);
-                        if (!string.IsNullOrEmpty(errorMaterias))
-                        {
-                            MessageBox.Show(errorMaterias, "Error de Materias Primas", MessageBoxButton.OK, MessageBoxImage.Error);
-                            return;
-                        }
-                    }
+                    // ✅ ELIMINADA la validación de materias primas
 
                     // Confirmar edición
                     string mensajeConfirmacion = $"¿Está seguro que desea actualizar la producción?\n\n" +
@@ -238,7 +226,7 @@ namespace CapaPresentacion
                                            $"ID: {produccionSeleccionada.IdProduccion}\n" +
                                            $"Producto: {produccionSeleccionada.NombreProducto}\n" +
                                            $"Cantidad: {produccionSeleccionada.CantidadProducida} unidades\n\n" +
-                                           $"Esta acción no se puede deshacer.";
+                                           $"✅ El stock del producto se ajustará automáticamente.";
 
                 if (MessageBox.Show(mensajeConfirmacion, "Confirmar Eliminación",
                     MessageBoxButton.YesNo, MessageBoxImage.Warning) != MessageBoxResult.Yes)

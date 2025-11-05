@@ -232,9 +232,57 @@ namespace CapaNegocio
             return cdReporte.ObtenerTopClientes(inicio, fin, cantidad);
         }
 
-        public List<ReporteProductoVendido> ObtenerProductosMasVendidos(DateTime inicio, DateTime fin, int cantidad)
+        // En CD_Reporte.cs - CORREGIR este método
+        // En CD_Reporte.cs - REEMPLAZAR el método ObtenerProductosMasVendidos
+        public List<ReporteProductoVendido> ObtenerProductosMasVendidos(DateTime fechaInicio, DateTime fechaFin, int top = 5)
         {
-            return cdReporte.ObtenerProductosMasVendidos(inicio, fin, cantidad);
+            List<ReporteProductoVendido> lista = new List<ReporteProductoVendido>();
+
+            using (SqlConnection oconexion = new SqlConnection(Conexion.cadena))
+            {
+                try
+                {
+                    string query = @"
+        SELECT TOP (@Top) 
+            COALESCE(p.Nombre, CONCAT(s.Descripcion, ' ', t.Descripcion)) as NombreProducto,
+            SUM(dv.Cantidad) as CantidadVendida,
+            SUM(dv.Cantidad * dv.PrecioUnitario) as TotalVendido
+        FROM DetalleVenta dv
+        INNER JOIN Venta v ON dv.IdVenta = v.IdVenta
+        INNER JOIN Producto p ON dv.IdProducto = p.IdProducto
+        INNER JOIN Tipo t ON p.IdTipo = t.IdTipo  -- ✅ JOIN CORREGIDO
+        INNER JOIN Sabor s ON p.IdSabor = s.IdSabor  -- ✅ JOIN CORREGIDO
+        WHERE v.Fecha BETWEEN @FechaInicio AND @FechaFin
+        GROUP BY p.Nombre, s.Descripcion, t.Descripcion
+        HAVING SUM(dv.Cantidad) > 0
+        ORDER BY CantidadVendida DESC";
+
+                    SqlCommand cmd = new SqlCommand(query, oconexion);
+                    cmd.Parameters.AddWithValue("@FechaInicio", fechaInicio);
+                    cmd.Parameters.AddWithValue("@FechaFin", fechaFin);
+                    cmd.Parameters.AddWithValue("@Top", top);
+
+                    oconexion.Open();
+
+                    using (SqlDataReader dr = cmd.ExecuteReader())
+                    {
+                        while (dr.Read())
+                        {
+                            lista.Add(new ReporteProductoVendido()
+                            {
+                                NombreProducto = dr["NombreProducto"].ToString(),
+                                CantidadVendida = Convert.ToInt32(dr["CantidadVendida"]),
+                                TotalVendido = Convert.ToDecimal(dr["TotalVendido"])
+                            });
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception($"Error en ObtenerProductosMasVendidos: {ex.Message}");
+                }
+            }
+            return lista;
         }
     }
 }

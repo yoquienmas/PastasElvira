@@ -18,25 +18,25 @@ namespace CapaDatos
             {
                 try
                 {
-                    // QUERY CORREGIDA - sin errores de sintaxis
+                    // QUERY MODIFICADA - QUITAR EL FILTRO WHERE p.Visible = 1
                     string query = @"SELECT 
-                    p.IdProducto, 
-                    p.Nombre,
-                    t.Descripcion AS Tipo, 
-                    s.Descripcion AS Sabor, 
-                    p.PrecioVenta, 
-                    p.Visible, 
-                    p.CostoProduccion, 
-                    p.MargenGanancia, 
-                    p.StockActual, 
-                    p.StockMinimo, 
-                    p.EsProductoBase, 
-                    p.IdTipo, 
-                    p.IdSabor
-                FROM Producto p
-                INNER JOIN Tipo t ON p.IdTipo = t.IdTipo
-                INNER JOIN Sabor s ON p.IdSabor = s.IdSabor
-                WHERE p.Visible = 1";
+                p.IdProducto, 
+                p.Nombre,
+                t.Descripcion AS Tipo, 
+                s.Descripcion AS Sabor, 
+                p.PrecioVenta, 
+                p.Visible, 
+                p.CostoProduccion, 
+                p.MargenGanancia, 
+                p.StockActual, 
+                p.StockMinimo, 
+                p.EsProductoBase, 
+                p.IdTipo, 
+                p.IdSabor
+            FROM Producto p
+            INNER JOIN Tipo t ON p.IdTipo = t.IdTipo
+            INNER JOIN Sabor s ON p.IdSabor = s.IdSabor";
+                    // QUITAR: WHERE p.Visible = 1
 
                     SqlCommand cmd = new SqlCommand(query, oconexion);
                     cmd.CommandType = CommandType.Text;
@@ -93,22 +93,6 @@ namespace CapaDatos
                 }
             }
             return lista;
-        }
-
-        // Agrega este método helper en la clase CD_Producto
-        private decimal SafeConvertToDecimal(object value)
-        {
-            if (value == null || value == DBNull.Value)
-                return 0;
-
-            try
-            {
-                return Convert.ToDecimal(value);
-            }
-            catch
-            {
-                return 0;
-            }
         }
 
         public int Registrar(Producto producto, out string mensaje)
@@ -368,15 +352,15 @@ namespace CapaDatos
                 {
                     command.Connection = oconexion;
                     command.CommandText = @"SELECT 
-                            p.IdProducto, 
-                            t.Descripcion AS Tipo, 
-                            s.Descripcion AS Sabor, 
-                            p.StockActual, 
-                            p.StockMinimo
-                        FROM Producto p
-                        INNER JOIN Tipo t ON p.IdTipo = t.IdTipo
-                        INNER JOIN Sabor s ON p.IdSabor = s.IdSabor
-                        WHERE p.Visible = 1";
+                    p.IdProducto, 
+                    t.Descripcion AS Tipo, 
+                    s.Descripcion AS Sabor, 
+                    p.StockActual, 
+                    p.StockMinimo
+                FROM Producto p
+                INNER JOIN Tipo t ON p.IdTipo = t.IdTipo
+                INNER JOIN Sabor s ON p.IdSabor = s.IdSabor";
+                    // QUITAR: WHERE p.Visible = 1
                     command.CommandType = CommandType.Text;
 
                     using (var reader = command.ExecuteReader())
@@ -545,32 +529,7 @@ namespace CapaDatos
             }
         }
 
-        public decimal CalcularCostoMateriasPrimas(int idProducto)
-        {
-            decimal costoTotal = 0;
-
-            using (SqlConnection oconexion = new SqlConnection(Conexion.cadena))
-            {
-                oconexion.Open();
-                using (var command = new SqlCommand())
-                {
-                    command.Connection = oconexion;
-                    command.CommandText = @"
-                SELECT SUM(mp.PrecioUnitario * dr.CantidadNecesaria) as CostoTotal
-                FROM DetalleReceta dr
-                INNER JOIN MateriaPrima mp ON dr.IdMateria = mp.IdMateria
-                WHERE dr.IdProducto = @IdProducto";
-                    command.Parameters.AddWithValue("@IdProducto", idProducto);
-
-                    var result = command.ExecuteScalar();
-                    if (result != null && result != DBNull.Value)
-                    {
-                        costoTotal = Convert.ToDecimal(result);
-                    }
-                }
-            }
-            return costoTotal;
-        }
+     
 
         public bool ActualizarCostoYPrecioProducto(int idProducto, decimal nuevoCosto, decimal nuevoPrecio)
         {
@@ -598,7 +557,8 @@ namespace CapaDatos
             {
                 using (SqlConnection conexion = new SqlConnection(Conexion.cadena))
                 {
-                    string query = "SELECT COUNT(*) FROM Producto WHERE Visible = 1";
+                    // QUITAR EL FILTRO WHERE Visible = 1
+                    string query = "SELECT COUNT(*) FROM Producto";
                     SqlCommand cmd = new SqlCommand(query, conexion);
 
                     conexion.Open();
@@ -610,6 +570,33 @@ namespace CapaDatos
                 Console.WriteLine($"Error al contar productos: {ex.Message}");
                 return 0;
             }
+        }
+
+        public decimal CalcularCostoMateriasPrimas(int idProducto)
+        {
+            decimal costoTotal = 0;
+
+            using (SqlConnection oconexion = new SqlConnection(Conexion.cadena))
+            {
+                oconexion.Open();
+                using (var command = new SqlCommand())
+                {
+                    command.Connection = oconexion;
+                    command.CommandText = @"
+                SELECT SUM(mp.PrecioUnitario * dr.CantidadNecesaria) as CostoTotal
+                FROM DetalleReceta dr
+                INNER JOIN MateriaPrima mp ON dr.IdMateria = mp.IdMateria
+                WHERE dr.IdProducto = @IdProducto";
+                    command.Parameters.AddWithValue("@IdProducto", idProducto);
+
+                    var result = command.ExecuteScalar();
+                    if (result != null && result != DBNull.Value)
+                    {
+                        costoTotal = Convert.ToDecimal(result);
+                    }
+                }
+            }
+            return costoTotal;
         }
     }
 }

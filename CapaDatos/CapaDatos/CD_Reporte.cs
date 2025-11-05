@@ -46,7 +46,7 @@ namespace CapaDatos
             return lista;
         }
 
-        // En CD_Reporte.cs - actualiza el método si es necesario
+       
         public List<ReporteVenta> ObtenerVentasPorFecha(DateTime fechaInicio, DateTime fechaFin)
         {
             List<ReporteVenta> lista = new List<ReporteVenta>();
@@ -57,27 +57,27 @@ namespace CapaDatos
                 {
                     oconexion.Open();
 
-                    // ✅ CORREGIDO: Nombres exactos de las tablas
+                    // ✅ QUERY CORREGIDA con nombres de tablas consistentes
                     string query = @"
         SELECT 
             v.IdVenta, 
             v.Fecha, 
-            c.Nombre + ' ' + ISNULL(c.Apellido, '') as Cliente,
-            c.Documento as DNI,
+            ISNULL(c.Nombre + ' ' + ISNULL(c.Apellido, ''), 'CONSUMIDOR FINAL') as Cliente,
+            ISNULL(c.Documento, '') as DNI,
             u.NombreUsuario as Usuario,
             v.Total,
             v.IdUsuario,
             STUFF((
-                SELECT ', ' + p.Nombre + ' (' + CAST(iv.Cantidad AS VARCHAR) + ')'
-                FROM ItemVenta iv  -- ✅ CAMBIADO: DetalleVenta → ItemVenta
-                INNER JOIN Producto p ON iv.IdProducto = p.IdProducto  -- ✅ Producto (singular)
-                WHERE iv.IdVenta = v.IdVenta
+                SELECT ', ' + p.Nombre + ' (' + CAST(dv.Cantidad AS VARCHAR) + ')'
+                FROM DetalleVenta dv
+                INNER JOIN Producto p ON dv.IdProducto = p.IdProducto
+                WHERE dv.IdVenta = v.IdVenta
                 FOR XML PATH('')
             ), 1, 2, '') as Productos,
-            (SELECT COUNT(*) FROM ItemVenta iv WHERE iv.IdVenta = v.IdVenta) as CantidadProductos
-        FROM Venta v  -- ✅ CORREGIDO: Ventas → Venta
-        INNER JOIN Cliente c ON v.IdCliente = c.IdCliente  -- ✅ CORREGIDO: Clientes → Cliente
-        INNER JOIN Usuario u ON v.IdUsuario = u.IdUsuario  -- ✅ CORREGIDO: Usuarios → Usuario
+            (SELECT COUNT(*) FROM DetalleVenta dv WHERE dv.IdVenta = v.IdVenta) as CantidadProductos
+        FROM Venta v
+        LEFT JOIN Cliente c ON v.IdCliente = c.IdCliente
+        INNER JOIN Usuario u ON v.IdUsuario = u.IdUsuario
         WHERE v.Fecha BETWEEN @FechaInicio AND @FechaFin
         ORDER BY v.Fecha DESC";
 
@@ -307,6 +307,7 @@ namespace CapaDatos
             return lista;
         }
 
+        // En CD_Reporte.cs - REEMPLAZAR el método ObtenerProductosStockBajo
         public List<ReporteStock> ObtenerProductosStockBajo()
         {
             List<ReporteStock> lista = new List<ReporteStock>();
@@ -315,8 +316,24 @@ namespace CapaDatos
             {
                 try
                 {
-                    SqlCommand cmd = new SqlCommand("sp_ProductosStockBajo", oconexion);
-                    cmd.CommandType = CommandType.StoredProcedure;
+                    SqlCommand cmd = new SqlCommand(@"
+                SELECT 
+                    p.IdProducto, 
+                    COALESCE(p.Nombre, CONCAT(s.Descripcion, ' ', t.Descripcion)) as Nombre,
+                    t.Descripcion as Tipo,  -- ✅ COLUMNA CORREGIDA
+                    p.StockActual, 
+                    p.StockMinimo,
+                    CASE 
+                        WHEN p.StockActual <= p.StockMinimo THEN 'CRÍTICO'
+                        WHEN p.StockActual <= p.StockMinimo * 1.5 THEN 'ALERTA' 
+                        ELSE 'NORMAL'
+                    END as Estado
+                FROM Producto p
+                INNER JOIN Tipo t ON p.IdTipo = t.IdTipo  -- ✅ JOIN CORREGIDO
+                INNER JOIN Sabor s ON p.IdSabor = s.IdSabor  -- ✅ JOIN CORREGIDO
+                WHERE p.Visible = 1
+                AND p.StockActual <= (p.StockMinimo * 1.5)  -- Stock bajo o crítico
+                ORDER BY p.StockActual ASC", oconexion);
 
                     oconexion.Open();
 
@@ -324,32 +341,27 @@ namespace CapaDatos
                     {
                         while (dr.Read())
                         {
-                            var producto = new ReporteStock()
+                            lista.Add(new ReporteStock()
                             {
                                 IdProducto = Convert.ToInt32(dr["IdProducto"]),
                                 Nombre = dr["Nombre"].ToString(),
+                                Tipo = dr["Tipo"].ToString(),
                                 StockActual = Convert.ToInt32(dr["StockActual"]),
                                 StockMinimo = Convert.ToInt32(dr["StockMinimo"]),
-                                Estado = "CRÍTICO"
-                            };
-
-                            if (producto.StockActual == producto.StockMinimo)
-                                producto.Estado = "ALERTA";
-                            else if (producto.StockActual < producto.StockMinimo)
-                                producto.Estado = "CRÍTICO";
-
-                            lista.Add(producto);
+                                Estado = dr["Estado"].ToString()
+                            });
                         }
                     }
                 }
                 catch (Exception ex)
                 {
-                    lista = new List<ReporteStock>();
+                    throw new Exception($"Error en ObtenerProductosStockBajo: {ex.Message}");
                 }
             }
             return lista;
         }
 
+        // En CD_Reporte.cs - REEMPLAZAR el método ObtenerTodosProductosConStock
         public List<ReporteStock> ObtenerTodosProductosConStock()
         {
             List<ReporteStock> lista = new List<ReporteStock>();
@@ -359,15 +371,23 @@ namespace CapaDatos
                 try
                 {
                     SqlCommand cmd = new SqlCommand(@"
-                        SELECT p.IdProducto, p.Nombre, p.Tipo, p.StockActual, p.StockMinimo, p.PrecioVenta,
-                               CASE 
-                                   WHEN p.StockActual <= p.StockMinimo THEN 'CRÍTICO'
-                                   WHEN p.StockActual <= p.StockMinimo * 1.5 THEN 'ALERTA' 
-                                   ELSE 'NORMAL'
-                               END as Estado
-                        FROM Producto p
-                        WHERE p.Visible = 1
-                        ORDER BY p.StockActual ASC", oconexion);
+                SELECT 
+                    p.IdProducto, 
+                    COALESCE(p.Nombre, CONCAT(s.Descripcion, ' ', t.Descripcion)) as Nombre,
+                    t.Descripcion as Tipo,  -- ✅ COLUMNA CORREGIDA
+                    p.StockActual, 
+                    p.StockMinimo, 
+                    p.PrecioVenta,
+                    CASE 
+                        WHEN p.StockActual <= p.StockMinimo THEN 'CRÍTICO'
+                        WHEN p.StockActual <= p.StockMinimo * 1.5 THEN 'ALERTA' 
+                        ELSE 'NORMAL'
+                    END as Estado
+                FROM Producto p
+                INNER JOIN Tipo t ON p.IdTipo = t.IdTipo  -- ✅ JOIN CORREGIDO
+                INNER JOIN Sabor s ON p.IdSabor = s.IdSabor  -- ✅ JOIN CORREGIDO
+                WHERE p.Visible = 1
+                ORDER BY p.StockActual ASC", oconexion);
 
                     oconexion.Open();
 
@@ -390,7 +410,7 @@ namespace CapaDatos
                 }
                 catch (Exception ex)
                 {
-                    lista = new List<ReporteStock>();
+                    throw new Exception($"Error en ObtenerTodosProductosConStock: {ex.Message}");
                 }
             }
             return lista;
@@ -524,6 +544,8 @@ namespace CapaDatos
 
             return ventas;
         }
+        // En CD_Reporte.cs - CORREGIR este método
+        // En CD_Reporte.cs - REEMPLAZAR el método ObtenerVentasPorTipo
         public List<ReporteVentaPorTipo> ObtenerVentasPorTipo(DateTime fechaInicio, DateTime fechaFin)
         {
             List<ReporteVentaPorTipo> lista = new List<ReporteVentaPorTipo>();
@@ -533,16 +555,17 @@ namespace CapaDatos
                 try
                 {
                     string query = @"
-                SELECT 
-                    p.Tipo,
-                    SUM(dv.Cantidad) as Cantidad,
-                    SUM(dv.Cantidad * dv.PrecioVenta) as Total
-                FROM DetalleVenta dv
-                INNER JOIN Venta v ON dv.IdVenta = v.IdVenta
-                INNER JOIN Producto p ON dv.IdProducto = p.IdProducto
-                WHERE v.Fecha BETWEEN @FechaInicio AND @FechaFin
-                GROUP BY p.Tipo
-                ORDER BY Total DESC";
+        SELECT 
+            COALESCE(t.Descripcion, 'Sin Tipo') as Tipo,
+            SUM(dv.Cantidad) as Cantidad,
+            SUM(dv.Cantidad * dv.PrecioUnitario) as Total
+        FROM DetalleVenta dv
+        INNER JOIN Venta v ON dv.IdVenta = v.IdVenta
+        INNER JOIN Producto p ON dv.IdProducto = p.IdProducto
+        INNER JOIN Tipo t ON p.IdTipo = t.IdTipo  -- ✅ JOIN CORREGIDO
+        WHERE v.Fecha BETWEEN @FechaInicio AND @FechaFin
+        GROUP BY t.Descripcion
+        ORDER BY Total DESC";
 
                     SqlCommand cmd = new SqlCommand(query, oconexion);
                     cmd.Parameters.AddWithValue("@FechaInicio", fechaInicio);
@@ -565,12 +588,12 @@ namespace CapaDatos
                 }
                 catch (Exception ex)
                 {
-                    lista = new List<ReporteVentaPorTipo>();
+                    throw new Exception($"Error en ObtenerVentasPorTipo: {ex.Message}");
                 }
             }
             return lista;
         }
-
+        // En CD_Reporte.cs - CORREGIR este método
         public List<ReporteTopCliente> ObtenerTopClientes(DateTime fechaInicio, DateTime fechaFin, int top = 5)
         {
             List<ReporteTopCliente> lista = new List<ReporteTopCliente>();
@@ -580,15 +603,16 @@ namespace CapaDatos
                 try
                 {
                     string query = @"
-                SELECT TOP (@Top) 
-                    c.Nombre + ' ' + ISNULL(c.Apellido, '') as Nombre,
-                    COUNT(v.IdVenta) as CantidadCompras,
-                    SUM(v.Total) as TotalGastado
-                FROM Venta v
-                INNER JOIN Cliente c ON v.IdCliente = c.IdCliente
-                WHERE v.Fecha BETWEEN @FechaInicio AND @FechaFin
-                GROUP BY c.Nombre, c.Apellido
-                ORDER BY TotalGastado DESC";
+        SELECT TOP (@Top) 
+            COALESCE(c.Nombre + ' ' + ISNULL(c.Apellido, ''), 'CONSUMIDOR FINAL') as Nombre,
+            COUNT(v.IdVenta) as CantidadCompras,
+            SUM(v.Total) as TotalGastado
+        FROM Venta v
+        LEFT JOIN Cliente c ON v.IdCliente = c.IdCliente
+        WHERE v.Fecha BETWEEN @FechaInicio AND @FechaFin
+        GROUP BY c.Nombre, c.Apellido
+        HAVING COUNT(v.IdVenta) > 0
+        ORDER BY TotalGastado DESC";
 
                     SqlCommand cmd = new SqlCommand(query, oconexion);
                     cmd.Parameters.AddWithValue("@FechaInicio", fechaInicio);
@@ -612,55 +636,7 @@ namespace CapaDatos
                 }
                 catch (Exception ex)
                 {
-                    lista = new List<ReporteTopCliente>();
-                }
-            }
-            return lista;
-        }
-
-        public List<ReporteProductoVendido> ObtenerProductosMasVendidos(DateTime fechaInicio, DateTime fechaFin, int top = 5)
-        {
-            List<ReporteProductoVendido> lista = new List<ReporteProductoVendido>();
-
-            using (SqlConnection oconexion = new SqlConnection(Conexion.cadena))
-            {
-                try
-                {
-                    string query = @"
-                SELECT TOP (@Top) 
-                    p.Nombre as NombreProducto,
-                    SUM(dv.Cantidad) as CantidadVendida,
-                    SUM(dv.Cantidad * dv.PrecioVenta) as TotalVendido
-                FROM DetalleVenta dv
-                INNER JOIN Venta v ON dv.IdVenta = v.IdVenta
-                INNER JOIN Producto p ON dv.IdProducto = p.IdProducto
-                WHERE v.Fecha BETWEEN @FechaInicio AND @FechaFin
-                GROUP BY p.Nombre
-                ORDER BY CantidadVendida DESC";
-
-                    SqlCommand cmd = new SqlCommand(query, oconexion);
-                    cmd.Parameters.AddWithValue("@FechaInicio", fechaInicio);
-                    cmd.Parameters.AddWithValue("@FechaFin", fechaFin);
-                    cmd.Parameters.AddWithValue("@Top", top);
-
-                    oconexion.Open();
-
-                    using (SqlDataReader dr = cmd.ExecuteReader())
-                    {
-                        while (dr.Read())
-                        {
-                            lista.Add(new ReporteProductoVendido()
-                            {
-                                NombreProducto = dr["NombreProducto"].ToString(),
-                                CantidadVendida = Convert.ToInt32(dr["CantidadVendida"]),
-                                TotalVendido = Convert.ToDecimal(dr["TotalVendido"])
-                            });
-                        }
-                    }
-                }
-                catch (Exception ex)
-                {
-                    lista = new List<ReporteProductoVendido>();
+                    throw new Exception($"Error en ObtenerTopClientes: {ex.Message}");
                 }
             }
             return lista;

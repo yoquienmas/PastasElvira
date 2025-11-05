@@ -71,36 +71,53 @@ namespace CapaPresentacion
                 DateTime inicioMes = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1);
                 DateTime finMes = inicioMes.AddMonths(1).AddDays(-1);
 
+                Console.WriteLine($"Cargando dashboard para: {inicioMes:dd/MM/yyyy} - {finMes:dd/MM/yyyy}");
+
                 // 1. Ventas del mes
                 decimal totalVentasMes = cnReporte.ObtenerTotalVentasPeriodo(inicioMes, finMes);
                 txtVentasMes.Text = totalVentasMes.ToString("C", new CultureInfo("es-AR"));
+                Console.WriteLine($"Ventas del mes: {totalVentasMes}");
 
                 // 2. Total clientes
                 var clientes = cnCliente.ListarClientes();
-                txtTotalClientes.Text = clientes.Count.ToString();
+                txtTotalClientes.Text = clientes?.Count.ToString() ?? "0";
+                Console.WriteLine($"Total clientes: {clientes?.Count}");
 
                 // 3. Productos vendidos
                 var ventasMes = cnReporte.ObtenerVentasPorFecha(inicioMes, finMes);
-                int totalProductos = ventasMes.Sum(v => v.CantidadProductos);
+                int totalProductos = ventasMes?.Sum(v => v.CantidadProductos) ?? 0;
                 txtProductosVendidos.Text = totalProductos.ToString();
+                Console.WriteLine($"Productos vendidos: {totalProductos}");
 
                 // 4. Stock crítico
                 var stockCritico = cnReporte.ObtenerProductosStockBajo();
-                txtStockCritico.Text = $"{stockCritico.Count} productos";
+                txtStockCritico.Text = $"{(stockCritico?.Count ?? 0)} productos";
+                Console.WriteLine($"Stock crítico: {stockCritico?.Count}");
 
                 // 5. Gráficos
+                Console.WriteLine("Cargando gráficos...");
                 CargarGraficoVentasPorTipo(inicioMes, finMes);
                 CargarGraficoTopClientes(inicioMes, finMes);
                 CargarGraficoProductosVendidos(inicioMes, finMes);
                 CargarGraficoStockCritico();
 
                 // 6. Cargar datos en las tablas
+                Console.WriteLine("Cargando tablas...");
                 CargarDatosTablas(inicioMes, finMes);
+
+                Console.WriteLine("Dashboard cargado exitosamente");
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error al cargar dashboard: {ex.Message}", "Error",
-                    MessageBoxButton.OK, MessageBoxImage.Error);
+                Console.WriteLine($"ERROR en CargarDashboardDueño: {ex.Message}");
+                MessageBox.Show($"Error al cargar dashboard: {ex.Message}\n\nDetalles: {ex.StackTrace}",
+                    "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+
+                // Establecer valores por defecto en caso de error
+                txtVentasMes.Text = "$0.00";
+                txtTotalClientes.Text = "0";
+                txtProductosVendidos.Text = "0";
+                txtStockCritico.Text = "0 productos";
             }
         }
 

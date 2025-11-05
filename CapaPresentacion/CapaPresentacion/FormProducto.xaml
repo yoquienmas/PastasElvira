@@ -134,6 +134,21 @@
             <Border Grid.Row="2" Margin="0,20,0,0" Background="White" CornerRadius="10" Padding="5"
                     BorderBrush="#e2a42d" BorderThickness="2">
                 <DataGrid x:Name="dgvProductos" AutoGenerateColumns="False" SelectionChanged="dgvProductos_SelectionChanged">
+
+                    <!-- Pone color a la fila -->
+                    <DataGrid.RowStyle>
+                        <Style TargetType="DataGridRow">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Visible}" Value="False">
+                                    <Setter Property="Background" Value="#FFEEEEEE"/>
+                                    <!-- Gris claro -->
+                                    <Setter Property="Foreground" Value="#FFB22222"/>
+                                    <!-- Texto rojizo -->
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </DataGrid.RowStyle>
+
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="ID" Binding="{Binding IdProducto}" Width="60"/>
                         <DataGridTextColumn Header="Nombre" Binding="{Binding Nombre}" Width="*"/>
@@ -144,7 +159,22 @@
                         <DataGridTextColumn Header="Margen %" Binding="{Binding MargenGanancia, StringFormat=F2}" Width="80"/>
                         <DataGridTextColumn Header="Stock" Binding="{Binding StockActual}" Width="80"/>
                         <DataGridTextColumn Header="Mínimo" Binding="{Binding StockMinimo}" Width="80"/>
-                        <DataGridTextColumn Header="Estado" Binding="{Binding Estado}" Width="80"/>
+
+                        <!-- NUEVA COLUMNA CON CHECKBOX PARA ESTADO -->
+                        <DataGridTemplateColumn Header="Estado" Width="80">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <CheckBox IsChecked="{Binding Visible}" 
+                              HorizontalAlignment="Center" 
+                              VerticalAlignment="Center"
+                              IsEnabled="False"
+                              ToolTip="{Binding Estado}"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+
+                        <!-- OPCIONAL: Mantener la columna de texto también si quieres -->
+                        <DataGridTextColumn Header="Estado Texto" Binding="{Binding Estado}" Width="80" Visibility="Collapsed"/>
                     </DataGrid.Columns>
                 </DataGrid>
             </Border>
