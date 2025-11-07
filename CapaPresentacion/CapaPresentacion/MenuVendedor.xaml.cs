@@ -27,6 +27,7 @@ namespace CapaPresentacion
             txtInfoVendedor.Text = $"Vendedor: {_nombreCompletoVendedor}";
 
             CargarDashboardVendedor();
+            ActualizarDashboard();
         }
 
         private void CargarDashboardVendedor()
@@ -165,6 +166,7 @@ namespace CapaPresentacion
         {
             try
             {
+                // ✅ USAR EL MÉTODO CORRECTO de CD_Reporte
                 var misVentas = cnReporte.ObtenerVentasPorVendedor(_idVendedor, inicio, fin);
 
                 // Actualizar métricas
@@ -172,16 +174,37 @@ namespace CapaPresentacion
                 int cantidadVentas = misVentas.Count;
                 decimal ticketPromedio = cantidadVentas > 0 ? totalVendido / cantidadVentas : 0;
 
+                // Actualizar UI
                 txtMisVentasTotal.Text = totalVendido.ToString("C");
                 txtMisVentasCantidad.Text = cantidadVentas.ToString();
                 txtMisTicketPromedio.Text = ticketPromedio.ToString("C");
 
-                // Mostrar últimas ventas
-                dgvMisVentas.ItemsSource = misVentas.Take(10);
+        
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error al cargar ventas: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Error al cargar ventas: {ex.Message}", "Error",
+                               MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void ActualizarDashboard()
+        {
+            try
+            {
+                DateTime inicioMes = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1);
+                DateTime finMes = inicioMes.AddMonths(1).AddDays(-1);
+
+                CargarMisVentasMes(inicioMes, finMes);
+                CargarProductosDisponibles();
+
+                // ✅ MOSTRAR FECHA DE ACTUALIZACIÓN
+                txtInfoVendedor.Text = $"Vendedor: {_nombreCompletoVendedor} | Actualizado: {DateTime.Now:HH:mm}";
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al actualizar dashboard: {ex.Message}", "Error",
+                               MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -191,7 +214,7 @@ namespace CapaPresentacion
         {
             FormProductosDisponibles formproductosdisponibles = new FormProductosDisponibles();
             formproductosdisponibles.Show();
-            }
+        }
 
         private void btnActualizarProductos_Click(object sender, RoutedEventArgs e)
         {
@@ -219,17 +242,47 @@ namespace CapaPresentacion
             formCliente.Show();
         }
 
-        private void btnVerDetalleVenta_Click(object sender, RoutedEventArgs e)
+
+        
+
+        // ✅ MÉTODO ACTUALIZADO Y COMPLETADO
+        private void BtnActualizar_Click(object sender, RoutedEventArgs e)
         {
-            if (dgvMisVentas.SelectedItem != null)
+            try
             {
-                MessageBox.Show("Mostrando detalle de venta seleccionada", "Detalle de Venta", MessageBoxButton.OK, MessageBoxImage.Information);
+                // Actualizar las ventas del mes
+                DateTime inicioMes = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1);
+                DateTime finMes = inicioMes.AddMonths(1).AddDays(-1);
+                CargarMisVentasMes(inicioMes, finMes);
+
+                // Actualizar productos disponibles
+                CargarProductosDisponibles();
+
+                // Actualizar estadísticas y mostrar hora de actualización
+                txtInfoVendedor.Text = $"Vendedor: {_nombreCompletoVendedor} | Actualizado: {DateTime.Now:HH:mm}";
+
+                MessageBox.Show("Datos actualizados correctamente", "Actualización",
+                                MessageBoxButton.OK, MessageBoxImage.Information);
             }
-            else
+            catch (Exception ex)
             {
-                MessageBox.Show("Por favor, seleccione una venta para ver su detalle", "Advertencia", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show($"Error al actualizar datos: {ex.Message}", "Error",
+                                MessageBoxButton.OK, MessageBoxImage.Error);
             }
+            ActualizarDashboard();
+            MessageBox.Show("Dashboard actualizado correctamente.",
+                           "Actualizado", MessageBoxButton.OK, MessageBoxImage.Information);
         }
+
+        // ✅ ACTUALIZAR AL VOLVER A LA VENTANA
+        protected override void OnActivated(EventArgs e)
+        {
+            base.OnActivated(e);
+            // Actualizar solo si han pasado más de 2 minutos desde la última actualización
+            ActualizarDashboard();
+        }
+
+        #endregion
 
         private void BtnCerrarSesion_Click(object sender, RoutedEventArgs e)
         {
@@ -240,6 +293,5 @@ namespace CapaPresentacion
             }
             this.Close();
         }
-        #endregion
     }
 }

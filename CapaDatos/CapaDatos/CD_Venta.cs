@@ -163,13 +163,11 @@ namespace CapaDatos
                 {
                     oconexion.Open();
                     SqlCommand comando = new SqlCommand(@"
-                SELECT dv.IdProducto, 
-                       CASE 
-                           WHEN p.Tipo IS NULL OR p.Tipo = '' OR p.Tipo = 'NULL' 
-                           THEN p.Nombre
-                           ELSE p.Tipo + ' - ' + p.Nombre 
-                       END as NombreProducto,
-                       dv.Cantidad, dv.PrecioUnitario, dv.Subtotal
+                SELECT 
+                    dv.IdProducto, 
+                    p.Nombre as NombreProducto,  -- ✅ SOLO usar el nombre del producto
+                    dv.Cantidad, 
+                    dv.PrecioUnitario
                 FROM DetalleVenta dv
                 INNER JOIN Producto p ON dv.IdProducto = p.IdProducto
                 WHERE dv.IdVenta = @IdVenta", oconexion);

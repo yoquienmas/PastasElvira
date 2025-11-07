@@ -46,7 +46,7 @@ namespace CapaDatos
             return lista;
         }
 
-       
+
         public List<ReporteVenta> ObtenerVentasPorFecha(DateTime fechaInicio, DateTime fechaFin)
         {
             List<ReporteVenta> lista = new List<ReporteVenta>();
@@ -57,7 +57,7 @@ namespace CapaDatos
                 {
                     oconexion.Open();
 
-                    // ✅ QUERY CORREGIDA con nombres de tablas consistentes
+                    // ✅ QUERY ACTUALIZADA con MétodoPago
                     string query = @"
         SELECT 
             v.IdVenta, 
@@ -67,6 +67,7 @@ namespace CapaDatos
             u.NombreUsuario as Usuario,
             v.Total,
             v.IdUsuario,
+            v.MetodoPago, -- ✅ AGREGADO: Método de pago
             STUFF((
                 SELECT ', ' + p.Nombre + ' (' + CAST(dv.Cantidad AS VARCHAR) + ')'
                 FROM DetalleVenta dv
@@ -100,6 +101,7 @@ namespace CapaDatos
                                 Usuario = reader["Usuario"].ToString(),
                                 Total = (decimal)reader["Total"],
                                 IdUsuario = (int)reader["IdUsuario"],
+                                MetodoPago = reader["MetodoPago"] != DBNull.Value ? (int)reader["MetodoPago"] : 1, // ✅ AGREGADO
                                 Productos = reader["Productos"] != DBNull.Value ? reader["Productos"].ToString() : "Sin productos",
                                 CantidadProductos = (int)reader["CantidadProductos"]
                             });
@@ -115,26 +117,27 @@ namespace CapaDatos
             return lista;
         }
 
-        // NUEVO MÉTODO: Obtener ventas por vendedor con información de DNI y productos
-        // El error está probablemente en un método como este:
         public List<ReporteVenta> ObtenerVentasPorVendedor(int idVendedor, DateTime fechaInicio, DateTime fechaFin)
         {
             List<ReporteVenta> lista = new List<ReporteVenta>();
 
-            using (SqlConnection oconexion = new SqlConnection(Conexion.cadena))
+            using (SqlConnection oconexion = new SqlConnection(Conexion.cadena)) // ✅ USAR Conexion.cadena
             {
                 try
                 {
                     oconexion.Open();
-                    SqlCommand comando = new SqlCommand(@"
+
+                    // ✅ QUERY SIMPLIFICADA Y CORREGIDA
+                    string query = @"
                 SELECT 
                     v.IdVenta, 
                     v.Fecha, 
-                    c.Nombre + ' ' + c.Apellido as Cliente,
-                    c.Documento as DNI,
+                    ISNULL(c.Nombre + ' ' + ISNULL(c.Apellido, ''), 'CONSUMIDOR FINAL') as Cliente,
+                    ISNULL(c.Documento, '') as DNI,
                     u.NombreUsuario as Usuario,
                     v.Total,
                     v.IdUsuario,
+                    v.MetodoPago,
                     STUFF((
                         SELECT ', ' + p.Nombre + ' (' + CAST(dv.Cantidad AS VARCHAR) + ')'
                         FROM DetalleVenta dv
@@ -144,15 +147,18 @@ namespace CapaDatos
                     ), 1, 2, '') as Productos,
                     (SELECT COUNT(*) FROM DetalleVenta dv WHERE dv.IdVenta = v.IdVenta) as CantidadProductos
                 FROM Venta v
-                INNER JOIN Cliente c ON v.IdCliente = c.IdCliente
+                LEFT JOIN Cliente c ON v.IdCliente = c.IdCliente
                 INNER JOIN Usuario u ON v.IdUsuario = u.IdUsuario
                 WHERE v.Fecha BETWEEN @FechaInicio AND @FechaFin
-                AND v.IdUsuario = @IdVendedor  -- ✅ Aquí debe usar el parámetro correcto
-                ORDER BY v.Fecha DESC", oconexion);
+                AND v.IdUsuario = @IdVendedor
+                ORDER BY v.Fecha DESC";
 
-                    comando.Parameters.AddWithValue("@FechaInicio", fechaInicio);
-                    comando.Parameters.AddWithValue("@FechaFin", fechaFin);
-                    comando.Parameters.AddWithValue("@IdVendedor", idVendedor);  // ✅ Usar el parámetro del método
+                    SqlCommand comando = new SqlCommand(query, oconexion);
+
+                    // ✅ PARÁMETROS CORRECTOS
+                    comando.Parameters.AddWithValue("@FechaInicio", fechaInicio.Date);
+                    comando.Parameters.AddWithValue("@FechaFin", fechaFin.Date.AddDays(1).AddSeconds(-1));
+                    comando.Parameters.AddWithValue("@IdVendedor", idVendedor);
 
                     using (SqlDataReader reader = comando.ExecuteReader())
                     {
@@ -160,29 +166,30 @@ namespace CapaDatos
                         {
                             lista.Add(new ReporteVenta
                             {
-                                IdVenta = (int)reader["IdVenta"],
-                                Fecha = (DateTime)reader["Fecha"],
-                                Cliente = reader["Cliente"].ToString(),
-                                DNI = reader["DNI"].ToString(),
-                                Usuario = reader["Usuario"].ToString(),
-                                Total = (decimal)reader["Total"],
-                                IdUsuario = (int)reader["IdUsuario"],
+                                IdVenta = reader["IdVenta"] != DBNull.Value ? Convert.ToInt32(reader["IdVenta"]) : 0,
+                                Fecha = reader["Fecha"] != DBNull.Value ? Convert.ToDateTime(reader["Fecha"]) : DateTime.MinValue,
+                                Cliente = reader["Cliente"]?.ToString() ?? "CONSUMIDOR FINAL",
+                                DNI = reader["DNI"]?.ToString() ?? "",
+                                Usuario = reader["Usuario"]?.ToString() ?? "",
+                                Total = reader["Total"] != DBNull.Value ? Convert.ToDecimal(reader["Total"]) : 0,
+                                IdUsuario = reader["IdUsuario"] != DBNull.Value ? Convert.ToInt32(reader["IdUsuario"]) : 0,
+                                MetodoPago = reader["MetodoPago"] != DBNull.Value ? Convert.ToInt32(reader["MetodoPago"]) : 1,
                                 Productos = reader["Productos"] != DBNull.Value ? reader["Productos"].ToString() : "Sin productos",
-                                CantidadProductos = (int)reader["CantidadProductos"]
+                                CantidadProductos = reader["CantidadProductos"] != DBNull.Value ? Convert.ToInt32(reader["CantidadProductos"]) : 0
                             });
                         }
                     }
                 }
                 catch (Exception ex)
                 {
-                    throw new Exception("Error al obtener ventas por vendedor: " + ex.Message);
+                    // ✅ MEJOR MANEJO DE ERRORES
+                    throw new Exception($"Error al obtener ventas por vendedor {idVendedor}: {ex.Message}");
                 }
             }
 
             return lista;
         }
 
-        // NUEVO MÉTODO: Obtener ventas por vendedor con filtros adicionales
         public List<ReporteVenta> ObtenerVentasPorVendedorConFiltros(int idVendedor, DateTime fechaInicio, DateTime fechaFin, string dniCliente = null, string nombreProducto = null)
         {
             List<ReporteVenta> lista = new List<ReporteVenta>();
@@ -199,6 +206,7 @@ namespace CapaDatos
                             c.DNI as DNI,
                             u.NombreCompleto as Usuario,
                             v.Total,
+                            v.MetodoPago, -- ✅ AGREGADO: Método de pago
                             STUFF((
                                 SELECT ', ' + p.Nombre + ' (' + CAST(dv.Cantidad AS VARCHAR) + ')'
                                 FROM DetalleVenta dv
@@ -256,9 +264,10 @@ namespace CapaDatos
                                 IdVenta = Convert.ToInt32(dr["IdVenta"]),
                                 Fecha = Convert.ToDateTime(dr["Fecha"]),
                                 Cliente = dr["Cliente"].ToString(),
-                                DNI = dr["DniCliente"] != DBNull.Value ? dr["DniCliente"].ToString() : "",
+                                DNI = dr["DNI"] != DBNull.Value ? dr["DNI"].ToString() : "",
                                 Usuario = dr["Usuario"].ToString(),
                                 Total = Convert.ToDecimal(dr["Total"]),
+                                MetodoPago = dr["MetodoPago"] != DBNull.Value ? Convert.ToInt32(dr["MetodoPago"]) : 1, // ✅ AGREGADO
                                 Productos = dr["Productos"] != DBNull.Value ? dr["Productos"].ToString() : ""
                             });
                         }
@@ -280,28 +289,59 @@ namespace CapaDatos
             {
                 try
                 {
-                    SqlCommand cmd = new SqlCommand("sp_VentasPorCliente", oconexion);
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("@IdCliente", idCliente);
-
                     oconexion.Open();
 
-                    using (SqlDataReader dr = cmd.ExecuteReader())
+                    // ✅ QUERY ACTUALIZADA con MétodoPago
+                    string query = @"
+                SELECT 
+                    v.IdVenta, 
+                    v.Fecha, 
+                    ISNULL(c.Nombre + ' ' + ISNULL(c.Apellido, ''), 'CONSUMIDOR FINAL') as Cliente,
+                    ISNULL(c.Documento, '') as DNI,
+                    u.NombreUsuario as Usuario,
+                    v.Total,
+                    v.IdUsuario,
+                    v.MetodoPago, -- ✅ AGREGADO: Método de pago
+                    STUFF((
+                        SELECT ', ' + p.Nombre + ' (' + CAST(dv.Cantidad AS VARCHAR) + ')'
+                        FROM DetalleVenta dv
+                        INNER JOIN Producto p ON dv.IdProducto = p.IdProducto
+                        WHERE dv.IdVenta = v.IdVenta
+                        FOR XML PATH('')
+                    ), 1, 2, '') as Productos,
+                    (SELECT COUNT(*) FROM DetalleVenta dv WHERE dv.IdVenta = v.IdVenta) as CantidadProductos
+                FROM Venta v
+                LEFT JOIN Cliente c ON v.IdCliente = c.IdCliente
+                INNER JOIN Usuario u ON v.IdUsuario = u.IdUsuario
+                WHERE c.IdCliente = @IdCliente
+                ORDER BY v.Fecha DESC";
+
+                    SqlCommand comando = new SqlCommand(query, oconexion);
+                    comando.Parameters.AddWithValue("@IdCliente", idCliente);
+
+                    using (SqlDataReader reader = comando.ExecuteReader())
                     {
-                        while (dr.Read())
+                        while (reader.Read())
                         {
-                            lista.Add(new ReporteVenta()
+                            lista.Add(new ReporteVenta
                             {
-                                IdVenta = Convert.ToInt32(dr["IdVenta"]),
-                                Fecha = Convert.ToDateTime(dr["Fecha"]),
-                                Total = Convert.ToDecimal(dr["Total"])
+                                IdVenta = (int)reader["IdVenta"],
+                                Fecha = (DateTime)reader["Fecha"],
+                                Cliente = reader["Cliente"].ToString(),
+                                DNI = reader["DNI"].ToString(),
+                                Usuario = reader["Usuario"].ToString(),
+                                Total = (decimal)reader["Total"],
+                                IdUsuario = (int)reader["IdUsuario"],
+                                MetodoPago = reader["MetodoPago"] != DBNull.Value ? (int)reader["MetodoPago"] : 1, // ✅ AGREGADO
+                                Productos = reader["Productos"] != DBNull.Value ? reader["Productos"].ToString() : "Sin productos",
+                                CantidadProductos = (int)reader["CantidadProductos"]
                             });
                         }
                     }
                 }
                 catch (Exception ex)
                 {
-                    lista = new List<ReporteVenta>();
+                    throw new Exception("Error al obtener ventas por cliente: " + ex.Message);
                 }
             }
             return lista;
@@ -463,6 +503,97 @@ namespace CapaDatos
                 }
             }
         }
+
+        public List<ReporteVenta> ObtenerVentasPorVendedor(int idUsuario, DateTime fechaInicio, DateTime fechaFin,
+                                                            string dniCliente = "", string nombreProducto = "")
+        {
+            List<ReporteVenta> lista = new List<ReporteVenta>();
+
+            using (SqlConnection oconexion = new SqlConnection(Conexion.cadena))
+            {
+                try
+                {
+                    string query = @"
+                        SELECT 
+                            v.IdVenta, 
+                            v.Fecha, 
+                            c.Nombre + ' ' + c.Apellido as Cliente,
+                            c.Documento as DniCliente,
+                            u.NombreUsuario as Vendedor,
+                            v.Total,
+                            v.IdUsuario,
+                            STUFF((
+                                SELECT ', ' + p.Nombre + ' (' + CAST(dv.Cantidad AS VARCHAR) + ')'
+                                FROM DetalleVenta dv
+                                INNER JOIN Producto p ON dv.IdProducto = p.IdProducto
+                                WHERE dv.IdVenta = v.IdVenta
+                                FOR XML PATH('')
+                            ), 1, 2, '') as Productos
+                        FROM Venta v 
+                        INNER JOIN Cliente c ON v.IdCliente = c.IdCliente
+                        INNER JOIN Usuario u ON v.IdUsuario = u.IdUsuario
+                        WHERE CONVERT(DATE, v.Fecha) BETWEEN @FechaInicio AND @FechaFin
+                        AND v.IdUsuario = @IdVendedor";
+
+                    if (!string.IsNullOrEmpty(dniCliente))
+                    {
+                        query += " AND c.Documento LIKE @DniCliente";
+                    }
+
+                    if (!string.IsNullOrEmpty(nombreProducto))
+                    {
+                        query += @" AND EXISTS (
+                                SELECT 1 FROM DetalleVenta dv
+                                INNER JOIN Producto p ON dv.IdProducto = p.IdProducto
+                                WHERE dv.IdVenta = v.IdVenta AND p.Nombre LIKE @NombreProducto
+                            )";
+                    }
+
+                    query += " ORDER BY v.Fecha DESC";
+
+                    SqlCommand cmd = new SqlCommand(query, oconexion);
+                    cmd.Parameters.AddWithValue("@FechaInicio", fechaInicio.Date);
+                    cmd.Parameters.AddWithValue("@FechaFin", fechaFin.Date);
+                    cmd.Parameters.AddWithValue("@IdVendedor", idUsuario);
+
+                    if (!string.IsNullOrEmpty(dniCliente))
+                    {
+                        cmd.Parameters.AddWithValue("@DniCliente", "%" + dniCliente + "%");
+                    }
+
+                    if (!string.IsNullOrEmpty(nombreProducto))
+                    {
+                        cmd.Parameters.AddWithValue("@NombreProducto", "%" + nombreProducto + "%");
+                    }
+
+                    oconexion.Open();
+
+                    using (SqlDataReader dr = cmd.ExecuteReader())
+                    {
+                        while (dr.Read())
+                        {
+                            lista.Add(new ReporteVenta()
+                            {
+                                IdVenta = Convert.ToInt32(dr["IdVenta"]),
+                                Fecha = Convert.ToDateTime(dr["Fecha"]),
+                                Cliente = dr["Cliente"].ToString(),
+                                DNI = dr["DniCliente"].ToString(),
+                                Usuario = dr["Vendedor"].ToString(),
+                                IdUsuario = Convert.ToInt32(dr["IdUsuario"]),
+                                Total = Convert.ToDecimal(dr["Total"]),
+                                Productos = dr["Productos"] != DBNull.Value ? dr["Productos"].ToString() : "Sin productos"
+                            });
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception($"Error al obtener ventas por vendedor: {ex.Message}");
+                }
+            }
+            return lista;
+        }
+
 
         public List<ConsumoMateriaPrima> ObtenerConsumoMateriaPrimaPorVenta(int idVenta)
         {
@@ -641,5 +772,203 @@ namespace CapaDatos
             }
             return lista;
         }
+
+        // ✅ NUEVO MÉTODO: Obtener una venta específica por ID
+        public ReporteVenta ObtenerVentaPorId(int idVenta)
+        {
+            using (SqlConnection oconexion = new SqlConnection(Conexion.cadena))
+            {
+                try
+                {
+                    oconexion.Open();
+
+                    string query = @"
+                SELECT 
+                    v.IdVenta, 
+                    v.Fecha, 
+                    ISNULL(c.Nombre + ' ' + ISNULL(c.Apellido, ''), 'CONSUMIDOR FINAL') as Cliente,
+                    ISNULL(c.Documento, '') as DNI,
+                    u.NombreUsuario as Usuario,
+                    v.Total,
+                    v.IdUsuario,
+                    v.MetodoPago, -- ✅ INCLUIDO: Método de pago
+                    STUFF((
+                        SELECT ', ' + p.Nombre + ' (' + CAST(dv.Cantidad AS VARCHAR) + ')'
+                        FROM DetalleVenta dv
+                        INNER JOIN Producto p ON dv.IdProducto = p.IdProducto
+                        WHERE dv.IdVenta = v.IdVenta
+                        FOR XML PATH('')
+                    ), 1, 2, '') as Productos,
+                    (SELECT COUNT(*) FROM DetalleVenta dv WHERE dv.IdVenta = v.IdVenta) as CantidadProductos
+                FROM Venta v
+                LEFT JOIN Cliente c ON v.IdCliente = c.IdCliente
+                INNER JOIN Usuario u ON v.IdUsuario = u.IdUsuario
+                WHERE v.IdVenta = @IdVenta";
+
+                    SqlCommand comando = new SqlCommand(query, oconexion);
+                    comando.Parameters.AddWithValue("@IdVenta", idVenta);
+
+                    using (SqlDataReader reader = comando.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            return new ReporteVenta
+                            {
+                                IdVenta = (int)reader["IdVenta"],
+                                Fecha = (DateTime)reader["Fecha"],
+                                Cliente = reader["Cliente"].ToString(),
+                                DNI = reader["DNI"].ToString(),
+                                Usuario = reader["Usuario"].ToString(),
+                                Total = (decimal)reader["Total"],
+                                IdUsuario = (int)reader["IdUsuario"],
+                                MetodoPago = reader["MetodoPago"] != DBNull.Value ? (int)reader["MetodoPago"] : 1,
+                                Productos = reader["Productos"] != DBNull.Value ? reader["Productos"].ToString() : "Sin productos",
+                                CantidadProductos = (int)reader["CantidadProductos"]
+                            };
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Error al obtener venta por ID: " + ex.Message);
+                }
+            }
+            return null;
+        }
+
+        public List<string> ObtenerTiposProducto()
+        {
+            List<string> tipos = new List<string>();
+
+            using (SqlConnection oconexion = new SqlConnection(Conexion.cadena))
+            {
+                try
+                {
+                    string query = @"
+                SELECT DISTINCT t.Descripcion as Tipo
+                FROM Tipo t
+                INNER JOIN Producto p ON t.IdTipo = p.IdTipo
+                WHERE p.Visible = 1
+                ORDER BY t.Descripcion";
+
+                    SqlCommand cmd = new SqlCommand(query, oconexion);
+                    oconexion.Open();
+
+                    using (SqlDataReader dr = cmd.ExecuteReader())
+                    {
+                        while (dr.Read())
+                        {
+                            tipos.Add(dr["Tipo"].ToString());
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error al obtener tipos de producto: {ex.Message}");
+                    // Devolver tipos básicos en caso de error
+                    tipos = new List<string> { "Pastas", "Salsas", "Postres" };
+                }
+            }
+
+            return tipos;
+        }
+
+        // AGREGAR en CD_Reporte.cs
+        public int ObtenerClientesDelPeriodo(DateTime fechaInicio, DateTime fechaFin)
+        {
+            using (SqlConnection oconexion = new SqlConnection(Conexion.cadena))
+            {
+                try
+                {
+                    string query = @"
+                SELECT COUNT(DISTINCT v.IdCliente) as TotalClientes
+                FROM Venta v
+                WHERE v.Fecha BETWEEN @FechaInicio AND @FechaFin
+                AND v.IdCliente IS NOT NULL";
+
+                    SqlCommand cmd = new SqlCommand(query, oconexion);
+                    cmd.Parameters.AddWithValue("@FechaInicio", fechaInicio);
+                    cmd.Parameters.AddWithValue("@FechaFin", fechaFin);
+
+                    oconexion.Open();
+                    var result = cmd.ExecuteScalar();
+                    return result != DBNull.Value ? Convert.ToInt32(result) : 0;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error al obtener clientes del período: {ex.Message}");
+                    return 0;
+                }
+            }
+        }
+
+        // EN CD_Reporte.cs - ACTUALIZAR el método ObtenerProductosMasVendidos
+        public List<ReporteProductoVendido> ObtenerProductosMasVendidos(DateTime fechaInicio, DateTime fechaFin, int top = 5, string tipoProducto = null)
+        {
+            List<ReporteProductoVendido> lista = new List<ReporteProductoVendido>();
+
+            using (SqlConnection oconexion = new SqlConnection(Conexion.cadena))
+            {
+                try
+                {
+                    string query = @"
+        SELECT TOP (@Top) 
+            COALESCE(p.Nombre, CONCAT(s.Descripcion, ' ', t.Descripcion)) as NombreProducto,
+            t.Descripcion as Tipo,
+            SUM(dv.Cantidad) as CantidadVendida,
+            SUM(dv.Cantidad * dv.PrecioUnitario) as TotalVendido
+        FROM DetalleVenta dv
+        INNER JOIN Venta v ON dv.IdVenta = v.IdVenta
+        INNER JOIN Producto p ON dv.IdProducto = p.IdProducto
+        INNER JOIN Tipo t ON p.IdTipo = t.IdTipo
+        INNER JOIN Sabor s ON p.IdSabor = s.IdSabor
+        WHERE v.Fecha BETWEEN @FechaInicio AND @FechaFin";
+
+                    // Agregar filtro por tipo si se especifica
+                    if (!string.IsNullOrEmpty(tipoProducto) && tipoProducto != "Todos los tipos")
+                    {
+                        query += " AND t.Descripcion = @TipoProducto";
+                    }
+
+                    query += @"
+        GROUP BY p.Nombre, s.Descripcion, t.Descripcion
+        HAVING SUM(dv.Cantidad) > 0
+        ORDER BY CantidadVendida DESC";
+
+                    SqlCommand cmd = new SqlCommand(query, oconexion);
+                    cmd.Parameters.AddWithValue("@FechaInicio", fechaInicio);
+                    cmd.Parameters.AddWithValue("@FechaFin", fechaFin);
+                    cmd.Parameters.AddWithValue("@Top", top);
+
+                    // Agregar parámetro de tipo si se especifica
+                    if (!string.IsNullOrEmpty(tipoProducto) && tipoProducto != "Todos los tipos")
+                    {
+                        cmd.Parameters.AddWithValue("@TipoProducto", tipoProducto);
+                    }
+
+                    oconexion.Open();
+
+                    using (SqlDataReader dr = cmd.ExecuteReader())
+                    {
+                        while (dr.Read())
+                        {
+                            lista.Add(new ReporteProductoVendido()
+                            {
+                                NombreProducto = dr["NombreProducto"].ToString(),
+                                Tipo = dr["Tipo"].ToString(),
+                                CantidadVendida = Convert.ToInt32(dr["CantidadVendida"]),
+                                TotalVendido = Convert.ToDecimal(dr["TotalVendido"])
+                            });
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception($"Error en ObtenerProductosMasVendidos: {ex.Message}");
+                }
+            }
+            return lista;
+        }
+
     }
 }

@@ -17,10 +17,17 @@
                 <Border Background="#e2a42d" Padding="10" Margin="0,0,0,10" CornerRadius="5">
                     <StackPanel Orientation="Horizontal">
                         <TextBlock x:Name="txtInfoVendedor" Text="Vendedor: " Foreground="White" FontWeight="Bold" FontSize="14"/>
+
+                        <!-- ✅ BOTÓN DE ACTUALIZAR AGREGADO -->
+                        <Button Content="🔄 Actualizar" 
+                                Background="#28a745" Foreground="White" FontWeight="Bold"
+                                Padding="10,5" Click="BtnActualizar_Click"
+                                Cursor="Hand" Margin="20,0,10,0"/>
+
                         <Button Content="🚪 Cerrar Sesión" 
                                 Background="#6c757d" Foreground="White" FontWeight="Bold"
                                 Padding="10,5" Click="BtnCerrarSesion_Click"
-                                Cursor="Hand" Margin="20,0,0,0"/>
+                                Cursor="Hand"/>
                     </StackPanel>
                 </Border>
 
@@ -66,26 +73,7 @@
                                 </TextBlock>
                             </Border>
                         </WrapPanel>
-                        <Border Background="White" CornerRadius="10" Padding="5"
-                                BorderBrush="#e2a42d" BorderThickness="2">
-                            <DataGrid x:Name="dgvMisVentas" AutoGenerateColumns="False" IsReadOnly="True"
-                                      Height="150" Background="White" BorderThickness="0">
-                                <DataGrid.Columns>
-                                    <DataGridTextColumn Header="Fecha" Binding="{Binding Fecha, StringFormat=dd/MM/yyyy}" Width="100"/>
-                                    <DataGridTextColumn Header="Cliente" Binding="{Binding Cliente}" Width="150"/>
-                                    <DataGridTextColumn Header="Productos" Binding="{Binding CantidadProductos}" Width="80"/>
-                                    <DataGridTextColumn Header="Total" Binding="{Binding Total, StringFormat=C}" Width="100"/>
-                                    <DataGridTemplateColumn Header="Acciones" Width="100">
-                                        <DataGridTemplateColumn.CellTemplate>
-                                            <DataTemplate>
-                                                <Button Content="Ver Detalle" Click="btnVerDetalleVenta_Click"
-                                                        Background="#2196F3" Foreground="White" Padding="5" FontSize="10" Cursor="Hand"/>
-                                            </DataTemplate>
-                                        </DataGridTemplateColumn.CellTemplate>
-                                    </DataGridTemplateColumn>
-                                </DataGrid.Columns>
-                            </DataGrid>
-                        </Border>
+                       
                     </StackPanel>
                 </GroupBox>
 

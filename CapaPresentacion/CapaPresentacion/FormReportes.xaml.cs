@@ -97,6 +97,29 @@ namespace CapaPresentacion
             }
         }
 
+        private string ObtenerTextoMetodoPago(int metodoPago)
+        {
+            return metodoPago switch
+            {
+                1 => "EFECTIVO",
+                2 => "TARJETA DÉBITO",
+                3 => "TARJETA CRÉDITO",
+                4 => "BILLETERA VIRTUAL",
+                _ => "DESCONOCIDO"
+            };
+        }
+
+        private string ObtenerIconoMetodoPago(int metodoPago)
+        {
+            return metodoPago switch
+            {
+                1 => "💵",
+                2 => "💳",
+                3 => "💳",
+                4 => "📱",
+                _ => "💰"
+            };
+        }
         private void btnGenerarReporte_Click(object sender, RoutedEventArgs e)
         {
             if (cboTipoReporte.SelectedItem == null)
@@ -231,9 +254,9 @@ namespace CapaPresentacion
 
             dgvReporte.Columns.Add(new DataGridTextColumn
             {
-                Header = "ID",
+                Header = "ID Venta",
                 Binding = new System.Windows.Data.Binding("IdVenta"),
-                Width = 60
+                Width = 80
             });
 
             dgvReporte.Columns.Add(new DataGridTextColumn
@@ -243,15 +266,6 @@ namespace CapaPresentacion
                 Width = 120
             });
 
-            // ✅ CORRECCIÓN: Usar DNI en lugar de DniCliente
-            dgvReporte.Columns.Add(new DataGridTextColumn
-            {
-                Header = "DNI",
-                Binding = new System.Windows.Data.Binding("DNI"),
-                Width = 100
-            });
-
-            // ✅ AGREGAR COLUMNA DE CLIENTE (que sí existe en tu clase)
             dgvReporte.Columns.Add(new DataGridTextColumn
             {
                 Header = "Cliente",
@@ -261,22 +275,14 @@ namespace CapaPresentacion
 
             dgvReporte.Columns.Add(new DataGridTextColumn
             {
-                Header = "Total",
-                Binding = new System.Windows.Data.Binding("Total") { StringFormat = "C" },
+                Header = "DNI Cliente",
+                Binding = new System.Windows.Data.Binding("DNI"),
                 Width = 100
             });
 
             dgvReporte.Columns.Add(new DataGridTextColumn
             {
-                Header = "Productos",
-                Binding = new System.Windows.Data.Binding("Productos"),
-                Width = 200
-            });
-
-            // ✅ AGREGAR COLUMNA DE USUARIO (nueva propiedad)
-            dgvReporte.Columns.Add(new DataGridTextColumn
-            {
-                Header = "Usuario",
+                Header = "Vendedor",
                 Binding = new System.Windows.Data.Binding("Usuario"),
                 Width = 120
             });
@@ -377,11 +383,15 @@ namespace CapaPresentacion
                     return;
                 }
 
+                // ✅ OBTENER INFORMACIÓN COMPLETA DE LA VENTA PARA EL MÉTODO DE PAGO
+                var ventasRecientes = cnReporte.ObtenerVentasPorFecha(DateTime.Today.AddYears(-1), DateTime.Today);
+                var ventaCompleta = ventasRecientes.FirstOrDefault(v => v.IdVenta == idVenta);
+
                 var ventanaDetalles = new Window
                 {
                     Title = $"Detalles de Venta # {idVenta}",
-                    Width = 600,
-                    Height = 400,
+                    Width = 700, // ✅ Aumentar ancho para más información
+                    Height = 500,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner,
                     Owner = this,
                     Background = Brushes.White,
@@ -392,7 +402,8 @@ namespace CapaPresentacion
                 {
                     AutoGenerateColumns = false,
                     IsReadOnly = true,
-                    Margin = new Thickness(0, 10, 0, 0)
+                    Margin = new Thickness(0, 15, 0, 0),
+                    Background = Brushes.WhiteSmoke
                 };
 
                 dgvDetalles.Columns.Add(new DataGridTextColumn
@@ -423,24 +434,105 @@ namespace CapaPresentacion
                 dgvDetalles.ItemsSource = detalles;
 
                 decimal total = detalles.Sum(d => d.Subtotal);
+                int totalProductos = detalles.Sum(d => d.Cantidad);
 
                 var stackPanel = new StackPanel();
-                stackPanel.Children.Add(new TextBlock
+
+                // ✅ ENCABEZADO MEJORADO CON MÉTODO DE PAGO
+                var gridEncabezado = new Grid();
+                gridEncabezado.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(1, GridUnitType.Star) });
+                gridEncabezado.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(1, GridUnitType.Star) });
+                gridEncabezado.Margin = new Thickness(0, 0, 0, 15);
+
+                // Columna izquierda
+                var stackPanelIzquierdo = new StackPanel();
+                stackPanelIzquierdo.Children.Add(new TextBlock
                 {
-                    Text = $"Detalles de la Venta #{idVenta}",
+                    Text = $"📋 Detalles de Venta #{idVenta}",
                     FontSize = 16,
                     FontWeight = FontWeights.Bold,
-                    Margin = new Thickness(0, 0, 0, 10)
+                    Foreground = Brushes.DarkSlateBlue,
+                    Margin = new Thickness(0, 0, 0, 5)
                 });
-                stackPanel.Children.Add(dgvDetalles);
-                stackPanel.Children.Add(new TextBlock
+
+                if (ventaCompleta != null)
                 {
-                    Text = $"Total: {total:C}",
+                    stackPanelIzquierdo.Children.Add(new TextBlock
+                    {
+                        Text = $"📅 Fecha: {ventaCompleta.Fecha:dd/MM/yyyy HH:mm}",
+                        FontSize = 12,
+                        Margin = new Thickness(0, 2, 0, 2)
+                    });
+
+                    stackPanelIzquierdo.Children.Add(new TextBlock
+                    {
+                        Text = $"👤 Cliente: {ventaCompleta.Cliente ?? "CONSUMIDOR FINAL"}",
+                        FontSize = 12,
+                        Margin = new Thickness(0, 2, 0, 2)
+                    });
+                }
+
+                // Columna derecha
+                var stackPanelDerecho = new StackPanel();
+
+                if (ventaCompleta != null)
+                {
+                    stackPanelDerecho.Children.Add(new TextBlock
+                    {
+                        Text = $"👨‍💼 Vendedor: {ventaCompleta.Usuario}",
+                        FontSize = 12,
+                        Margin = new Thickness(0, 2, 0, 2)
+                    });
+
+                    // ✅ MÉTODO DE PAGO
+                    string iconoMetodoPago = ObtenerIconoMetodoPago(ventaCompleta.MetodoPago);
+                    string textoMetodoPago = ObtenerTextoMetodoPago(ventaCompleta.MetodoPago);
+
+                    stackPanelDerecho.Children.Add(new TextBlock
+                    {
+                        Text = $"{iconoMetodoPago} Método de Pago: {textoMetodoPago}",
+                        FontSize = 12,
+                        FontWeight = FontWeights.Bold,
+                        Margin = new Thickness(0, 2, 0, 2),
+                        Foreground = Brushes.DarkGreen
+                    });
+                }
+
+                Grid.SetColumn(stackPanelIzquierdo, 0);
+                Grid.SetColumn(stackPanelDerecho, 1);
+                gridEncabezado.Children.Add(stackPanelIzquierdo);
+                gridEncabezado.Children.Add(stackPanelDerecho);
+
+                stackPanel.Children.Add(gridEncabezado);
+                stackPanel.Children.Add(dgvDetalles);
+
+                // ✅ PIE DE PÁGINA MEJORADO
+                var stackPanelPie = new StackPanel
+                {
+                    Orientation = Orientation.Horizontal,
+                    HorizontalAlignment = HorizontalAlignment.Right,
+                    Margin = new Thickness(0, 15, 0, 0)
+                };
+
+                stackPanelPie.Children.Add(new TextBlock
+                {
+                    Text = $"📦 Total Productos: {totalProductos} | ",
+                    FontSize = 12,
+                    FontWeight = FontWeights.Bold,
+                    VerticalAlignment = VerticalAlignment.Center,
+                    Margin = new Thickness(0, 0, 10, 0)
+                });
+
+                stackPanelPie.Children.Add(new TextBlock
+                {
+                    Text = $"💰 Total: {total:C}",
                     FontSize = 14,
                     FontWeight = FontWeights.Bold,
-                    Margin = new Thickness(0, 10, 0, 0),
-                    HorizontalAlignment = HorizontalAlignment.Right
+                    Foreground = Brushes.DarkRed,
+                    VerticalAlignment = VerticalAlignment.Center
                 });
+
+                stackPanel.Children.Add(stackPanelPie);
 
                 ventanaDetalles.Content = stackPanel;
                 ventanaDetalles.ShowDialog();
@@ -568,46 +660,74 @@ namespace CapaPresentacion
                 // Diálogo para elegir dónde guardar
                 Microsoft.Win32.SaveFileDialog saveFileDialog = new Microsoft.Win32.SaveFileDialog();
                 saveFileDialog.Filter = "Archivo CSV (*.csv)|*.csv";
-                saveFileDialog.FileName = "Reporte.csv";
+                saveFileDialog.FileName = $"Reporte_{DateTime.Now:yyyyMMdd_HHmmss}.csv";
 
                 if (saveFileDialog.ShowDialog() == true)
                 {
                     using (var writer = new System.IO.StreamWriter(saveFileDialog.FileName, false, System.Text.Encoding.UTF8))
                     {
-                        // Escribir cabeceras (headers)
-                        var headers = dgvReporte.Columns
-                            .Where(c => c.Header != null)
-                            .Select(c => c.Header.ToString())
-                            .ToArray();
+                        // Obtener el tipo de reporte para determinar qué datos exportar
+                        var selectedReport = cboTipoReporte.SelectedItem != null ?
+                            ((ComboBoxItem)cboTipoReporte.SelectedItem).Content.ToString() : "Reporte";
 
-                        writer.WriteLine(string.Join(";", headers));
+                        // Escribir información del reporte
+                        writer.WriteLine($"Reporte: {selectedReport}");
+                        writer.WriteLine($"Fecha de generación: {DateTime.Now:dd/MM/yyyy HH:mm:ss}");
 
-                        // Escribir las filas
-                        foreach (var item in dgvReporte.ItemsSource)
+                        // Información adicional según el tipo de reporte
+                        if (selectedReport == "Ventas por Fecha" && dtpFechaInicio.SelectedDate != null && dtpFechaFin.SelectedDate != null)
                         {
-                            var values = new List<string>();
+                            writer.WriteLine($"Período: {dtpFechaInicio.SelectedDate.Value:dd/MM/yyyy} - {dtpFechaFin.SelectedDate.Value:dd/MM/yyyy}");
+                        }
+                        else if (selectedReport == "Ventas por Cliente" && cboClientes.SelectedItem != null)
+                        {
+                            var cliente = (Cliente)cboClientes.SelectedItem;
+                            writer.WriteLine($"Cliente: {cliente.Nombre}");
+                            writer.WriteLine($"DNI Cliente: {cliente.Documento}");
+                        }
 
-                            foreach (var column in dgvReporte.Columns)
+                        writer.WriteLine(); // Línea en blanco
+
+                        // ✅ NUEVO: Para reportes de ventas, exportar con detalles expandidos
+                        if (selectedReport.Contains("Ventas"))
+                        {
+                            ExportarVentasConDetalles(writer, selectedReport);
+                        }
+                        else
+                        {
+                            // Exportación normal para otros reportes
+                            ExportarReporteNormal(writer);
+                        }
+
+                        // Agregar resumen si es un reporte de ventas
+                        if (selectedReport.Contains("Ventas"))
+                        {
+                            var ventas = dgvReporte.ItemsSource.Cast<ReporteVenta>().ToList();
+                            if (ventas.Any())
                             {
-                                if (column is DataGridBoundColumn boundColumn)
+                                writer.WriteLine();
+                                writer.WriteLine("RESUMEN:");
+                                writer.WriteLine($"Total Ventas: {ventas.Sum(v => v.Total):C}");
+                                writer.WriteLine($"Cantidad de Ventas: {ventas.Count}");
+                                writer.WriteLine($"Ticket Promedio: {(ventas.Sum(v => v.Total) / ventas.Count):C}");
+
+                                // Resumen por método de pago
+                                writer.WriteLine();
+                                writer.WriteLine("DISTRIBUCIÓN POR MÉTODO DE PAGO:");
+                                var ventasPorMetodo = ventas
+                                    .GroupBy(v => v.MetodoPago)
+                                    .Select(g => new {
+                                        Metodo = ObtenerTextoMetodoPago(g.Key),
+                                        Cantidad = g.Count(),
+                                        Total = g.Sum(v => v.Total)
+                                    })
+                                    .OrderByDescending(x => x.Total);
+
+                                foreach (var grupo in ventasPorMetodo)
                                 {
-                                    var binding = boundColumn.Binding as System.Windows.Data.Binding;
-                                    if (binding != null)
-                                    {
-                                        var propertyName = binding.Path.Path;
-                                        var prop = item.GetType().GetProperty(propertyName);
-                                        if (prop != null)
-                                        {
-                                            var value = prop.GetValue(item);
-                                            // Si hay comas o punto y coma, las escapamos entre comillas
-                                            string text = value != null ? value.ToString().Replace(";", ",") : "";
-                                            values.Add($"\"{text}\"");
-                                        }
-                                    }
+                                    writer.WriteLine($"{grupo.Metodo}: {grupo.Cantidad} ventas - {grupo.Total:C}");
                                 }
                             }
-
-                            writer.WriteLine(string.Join(";", values));
                         }
                     }
 
@@ -619,13 +739,189 @@ namespace CapaPresentacion
             {
                 MessageBox.Show($"Error al exportar: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
-
         }
+
+        // ✅ NUEVO MÉTODO: Exportar ventas con detalles expandidos
+        private void ExportarVentasConDetalles(System.IO.StreamWriter writer, string selectedReport)
+        {
+            var ventas = dgvReporte.ItemsSource.Cast<ReporteVenta>().ToList();
+
+            // Cabeceras para ventas con detalles
+            var headers = new List<string>
+    {
+        "ID Venta", "Fecha", "Cliente", "DNI Cliente", "Vendedor", "Método Pago",
+        "Producto", "Cantidad", "Precio Unitario", "Subtotal", "Total Venta"
+    };
+
+            writer.WriteLine(string.Join(";", headers));
+
+            // Escribir datos expandidos
+            foreach (var venta in ventas)
+            {
+                try
+                {
+                    // Obtener detalles de la venta
+                    var detalles = cnVenta.ObtenerDetallesVenta(venta.IdVenta);
+
+                    if (detalles != null && detalles.Count > 0)
+                    {
+                        // Escribir cada producto como una fila separada
+                        foreach (var detalle in detalles)
+                        {
+                            var values = new List<string>
+                    {
+                        venta.IdVenta.ToString(),
+                        venta.Fecha.ToString("dd/MM/yyyy HH:mm"),
+                        FormatearValorParaExportacion(venta.Cliente, "Cliente"),
+                        FormatearValorParaExportacion(venta.DNI, "DNI"),
+                        FormatearValorParaExportacion(venta.Usuario, "Usuario"),
+                        ObtenerTextoMetodoPago(venta.MetodoPago),
+                        FormatearValorParaExportacion(ObtenerPropiedadDetalle(detalle, "NombreProducto"), "NombreProducto"),
+                        FormatearValorParaExportacion(ObtenerPropiedadDetalle(detalle, "Cantidad"), "Cantidad"),
+                        FormatearValorParaExportacion(ObtenerPropiedadDetalle(detalle, "PrecioUnitario"), "PrecioUnitario"),
+                        FormatearValorParaExportacion(ObtenerPropiedadDetalle(detalle, "Subtotal"), "Subtotal"),
+                        FormatearValorParaExportacion(venta.Total, "Total")
+                    };
+
+                            writer.WriteLine(string.Join(";", values));
+                        }
+                    }
+                    else
+                    {
+                        // Si no hay detalles, escribir solo la venta
+                        var values = new List<string>
+                {
+                    venta.IdVenta.ToString(),
+                    venta.Fecha.ToString("dd/MM/yyyy HH:mm"),
+                    FormatearValorParaExportacion(venta.Cliente, "Cliente"),
+                    FormatearValorParaExportacion(venta.DNI, "DNI"),
+                    FormatearValorParaExportacion(venta.Usuario, "Usuario"),
+                    ObtenerTextoMetodoPago(venta.MetodoPago),
+                    "SIN DETALLES",
+                    "0",
+                    "$0.00",
+                    "$0.00",
+                    FormatearValorParaExportacion(venta.Total, "Total")
+                };
+
+                        writer.WriteLine(string.Join(";", values));
+                    }
+                }
+                catch (Exception ex)
+                {
+                    // En caso de error, escribir solo la venta básica
+                    var values = new List<string>
+            {
+                venta.IdVenta.ToString(),
+                venta.Fecha.ToString("dd/MM/yyyy HH:mm"),
+                FormatearValorParaExportacion(venta.Cliente, "Cliente"),
+                FormatearValorParaExportacion(venta.DNI, "DNI"),
+                FormatearValorParaExportacion(venta.Usuario, "Usuario"),
+                ObtenerTextoMetodoPago(venta.MetodoPago),
+                "ERROR AL CARGAR DETALLES",
+                "0",
+                "$0.00",
+                "$0.00",
+                FormatearValorParaExportacion(venta.Total, "Total")
+            };
+
+                    writer.WriteLine(string.Join(";", values));
+                }
+            }
+        }
+
+        // ✅ NUEVO MÉTODO: Exportación normal para otros reportes
+        private void ExportarReporteNormal(System.IO.StreamWriter writer)
+        {
+            // Escribir cabeceras (headers) - excluir columna de detalles
+            var headers = dgvReporte.Columns
+                .Where(c => c.Header != null && c.Header.ToString() != "Detalles")
+                .Select(c => c.Header.ToString())
+                .ToArray();
+
+            writer.WriteLine(string.Join(";", headers));
+
+            // Escribir las filas
+            foreach (var item in dgvReporte.ItemsSource)
+            {
+                var values = new List<string>();
+
+                foreach (var column in dgvReporte.Columns)
+                {
+                    if (column.Header?.ToString() == "Detalles") continue;
+
+                    if (column is DataGridBoundColumn boundColumn)
+                    {
+                        var binding = boundColumn.Binding as System.Windows.Data.Binding;
+                        if (binding != null)
+                        {
+                            var propertyName = binding.Path.Path;
+                            var prop = item.GetType().GetProperty(propertyName);
+                            if (prop != null)
+                            {
+                                var value = prop.GetValue(item);
+                                string text = FormatearValorParaExportacion(value, propertyName);
+                                values.Add(text);
+                            }
+                        }
+                    }
+                }
+
+                writer.WriteLine(string.Join(";", values));
+            }
+        }
+
+        // ✅ NUEVO MÉTODO: Obtener propiedad de detalle de forma segura
+        private object ObtenerPropiedadDetalle(object detalle, string propiedad)
+        {
+            try
+            {
+                var prop = detalle.GetType().GetProperty(propiedad);
+                return prop?.GetValue(detalle) ?? "";
+            }
+            catch
+            {
+                return "";
+            }
+        }
+
+        private string FormatearValorParaExportacion(object valor, string propiedad)
+{
+    if (valor == null) return "";
+
+    string texto = ""; // ✅ DECLARAR UNA SOLA VEZ
+
+    if (propiedad == "Fecha" && valor is DateTime)
+    {
+        texto = ((DateTime)valor).ToString("dd/MM/yyyy HH:mm");
+    }
+    else if ((propiedad == "Total" || propiedad == "PrecioVenta") && valor is decimal)
+    {
+        texto = ((decimal)valor).ToString("C");
+    }
+    else if (propiedad == "MetodoPagoTexto")
+    {
+        // Para método de pago, usar el texto sin emojis para CSV
+        texto = valor.ToString();
+        // Remover emojis para CSV
+        texto = System.Text.RegularExpressions.Regex.Replace(texto, @"[^\u0000-\u007F]+", "").Trim();
+    }
+    else
+    {
+        texto = valor.ToString(); // ✅ USAR LA VARIABLE YA DECLARADA
+    }
+    
+    // Escapar caracteres especiales para CSV
+    if (texto.Contains(";") || texto.Contains("\"") || texto.Contains("\n") || texto.Contains("\r"))
+    {
+        texto = $"\"{texto.Replace("\"", "\"\"")}\"";
+    }
+    
+    return texto;
+}
 
         private void btnImprimir_Click(object sender, RoutedEventArgs e)
         {
-            // MessageBox.Show("Imprimir - Funcionalidad en desarrollo", "Información", MessageBoxButton.OK, MessageBoxImage.Information);
-
             try
             {
                 if (dgvReporte.ItemsSource == null)
@@ -635,84 +931,58 @@ namespace CapaPresentacion
                     return;
                 }
 
+                // Obtener información del reporte
+                var selectedReport = cboTipoReporte.SelectedItem != null ?
+                    ((ComboBoxItem)cboTipoReporte.SelectedItem).Content.ToString() : "Reporte";
+
                 // Crear documento
                 FlowDocument doc = new FlowDocument();
-                doc.PagePadding = new Thickness(50);
+                doc.PagePadding = new Thickness(40);
                 doc.FontFamily = new FontFamily("Segoe UI");
-                doc.FontSize = 13;
+                doc.FontSize = 10; // ✅ Reducir tamaño de fuente para más información
                 doc.TextAlignment = TextAlignment.Left;
 
-                // Título principal
-                Paragraph titulo = new Paragraph(new Run("📋 Reporte generado"))
+                // Encabezado principal
+                Paragraph header = new Paragraph();
+                header.Inlines.Add(new Run("PASTAS ELVIRA\n")
                 {
-                    FontSize = 20,
+                    FontSize = 18,
                     FontWeight = FontWeights.Bold,
-                    TextAlignment = TextAlignment.Center,
-                    Margin = new Thickness(0, 0, 0, 20)
-                };
-                doc.Blocks.Add(titulo);
-
-                // Crear tabla
-                Table tabla = new Table();
-                doc.Blocks.Add(tabla);
-
-                // Detectar columnas visibles del DataGrid
-                var columnas = dgvReporte.Columns.Where(c => c.Header != null).ToList();
-
-                // Crear columnas en el documento
-                foreach (var c in columnas)
+                    Foreground = Brushes.DarkOrange
+                });
+                header.Inlines.Add(new Run("SISTEMA DE REPORTES\n\n")
                 {
-                    tabla.Columns.Add(new TableColumn());
+                    FontSize = 14,
+                    FontWeight = FontWeights.Bold
+                });
+
+                // Información específica del reporte
+                header.Inlines.Add(new Run($"Tipo de Reporte: {selectedReport}\n"));
+                header.Inlines.Add(new Run($"Fecha de generación: {DateTime.Now:dd/MM/yyyy HH:mm:ss}\n"));
+
+                if (selectedReport == "Ventas por Fecha" && dtpFechaInicio.SelectedDate != null && dtpFechaFin.SelectedDate != null)
+                {
+                    header.Inlines.Add(new Run($"Período: {dtpFechaInicio.SelectedDate.Value:dd/MM/yyyy} - {dtpFechaFin.SelectedDate.Value:dd/MM/yyyy}\n"));
+                }
+                else if (selectedReport == "Ventas por Cliente" && cboClientes.SelectedItem != null)
+                {
+                    var cliente = (Cliente)cboClientes.SelectedItem;
+                    header.Inlines.Add(new Run($"Cliente: {cliente.Nombre}\n"));
+                    header.Inlines.Add(new Run($"DNI: {cliente.Documento}\n"));
                 }
 
-                // Encabezado
-                TableRowGroup encabezado = new TableRowGroup();
-                tabla.RowGroups.Add(encabezado);
-                TableRow filaEncabezado = new TableRow();
-                encabezado.Rows.Add(filaEncabezado);
+                header.Inlines.Add(new Run("\n" + new string('=', 100) + "\n\n"));
+                doc.Blocks.Add(header);
 
-                foreach (var c in columnas)
+                // ✅ NUEVO: Para reportes de ventas, imprimir con detalles expandidos
+                if (selectedReport.Contains("Ventas"))
                 {
-                    var celda = new TableCell(new Paragraph(new Bold(new Run(c.Header.ToString()))))
-                    {
-                        Padding = new Thickness(4),
-                        Background = new SolidColorBrush(Color.FromRgb(52, 73, 94)), // gris oscuro
-                        Foreground = Brushes.White
-                    };
-                    filaEncabezado.Cells.Add(celda);
+                    ImprimirVentasConDetalles(doc, selectedReport);
                 }
-
-                // Cuerpo
-                TableRowGroup cuerpo = new TableRowGroup();
-                tabla.RowGroups.Add(cuerpo);
-
-                // Recorrer los elementos del DataGrid
-                foreach (var item in dgvReporte.ItemsSource)
+                else
                 {
-                    TableRow fila = new TableRow();
-
-                    foreach (var col in columnas)
-                    {
-                        string texto = "";
-
-                        if (col is DataGridBoundColumn boundCol)
-                        {
-                            var binding = boundCol.Binding as System.Windows.Data.Binding;
-                            if (binding != null)
-                            {
-                                var prop = item.GetType().GetProperty(binding.Path.Path);
-                                if (prop != null)
-                                {
-                                    var valor = prop.GetValue(item);
-                                    texto = valor != null ? valor.ToString() : "";
-                                }
-                            }
-                        }
-
-                        fila.Cells.Add(new TableCell(new Paragraph(new Run(texto))) { Padding = new Thickness(3) });
-                    }
-
-                    cuerpo.Rows.Add(fila);
+                    // Impresión normal para otros reportes
+                    ImprimirReporteNormal(doc);
                 }
 
                 // Mostrar diálogo de impresión
@@ -721,7 +991,8 @@ namespace CapaPresentacion
                 {
                     doc.PageHeight = printDialog.PrintableAreaHeight;
                     doc.PageWidth = printDialog.PrintableAreaWidth;
-                    printDialog.PrintDocument(((IDocumentPaginatorSource)doc).DocumentPaginator, "Reporte de Sistema Verona");
+                    printDialog.PrintDocument(((IDocumentPaginatorSource)doc).DocumentPaginator,
+                                            $"Reporte Pastas Elvira - {selectedReport}");
                 }
             }
             catch (Exception ex)
@@ -729,6 +1000,259 @@ namespace CapaPresentacion
                 MessageBox.Show($"Error al imprimir: {ex.Message}", "Error",
                                 MessageBoxButton.OK, MessageBoxImage.Error);
             }
+        }
+
+        // ✅ NUEVO MÉTODO: Imprimir ventas con detalles expandidos
+        private void ImprimirVentasConDetalles(FlowDocument doc, string selectedReport)
+        {
+            var ventas = dgvReporte.ItemsSource.Cast<ReporteVenta>().ToList();
+
+            foreach (var venta in ventas)
+            {
+                try
+                {
+                    // Encabezado de cada venta
+                    Paragraph ventaHeader = new Paragraph();
+                    ventaHeader.Inlines.Add(new Run($"VENTA # {venta.IdVenta}\n")
+                    {
+                        FontWeight = FontWeights.Bold,
+                        FontSize = 12,
+                        Foreground = Brushes.DarkBlue
+                    });
+
+                    ventaHeader.Inlines.Add(new Run($"Fecha: {venta.Fecha:dd/MM/yyyy HH:mm} | "));
+                    ventaHeader.Inlines.Add(new Run($"Cliente: {venta.Cliente} | "));
+                    ventaHeader.Inlines.Add(new Run($"Vendedor: {venta.Usuario} | "));
+                    ventaHeader.Inlines.Add(new Run($"Método: {ObtenerTextoMetodoPago(venta.MetodoPago)}\n"));
+
+                    doc.Blocks.Add(ventaHeader);
+
+                    // Obtener detalles de la venta
+                    var detalles = cnVenta.ObtenerDetallesVenta(venta.IdVenta);
+
+                    if (detalles != null && detalles.Count > 0)
+                    {
+                        // Crear tabla de detalles
+                        Table tablaDetalles = new Table();
+
+                        // Configurar columnas
+                        tablaDetalles.Columns.Add(new TableColumn { Width = new GridLength(200) }); // Producto
+                        tablaDetalles.Columns.Add(new TableColumn { Width = new GridLength(60) });  // Cantidad
+                        tablaDetalles.Columns.Add(new TableColumn { Width = new GridLength(80) });  // Precio Unit.
+                        tablaDetalles.Columns.Add(new TableColumn { Width = new GridLength(80) });  // Subtotal
+
+                        TableRowGroup rowGroup = new TableRowGroup();
+
+                        // Encabezado de tabla de detalles
+                        TableRow headerRow = new TableRow { Background = Brushes.LightGray };
+                        headerRow.Cells.Add(new TableCell(new Paragraph(new Run("Producto")) { FontWeight = FontWeights.Bold }));
+                        headerRow.Cells.Add(new TableCell(new Paragraph(new Run("Cant")) { FontWeight = FontWeights.Bold }));
+                        headerRow.Cells.Add(new TableCell(new Paragraph(new Run("Precio Unit.")) { FontWeight = FontWeights.Bold }));
+                        headerRow.Cells.Add(new TableCell(new Paragraph(new Run("Subtotal")) { FontWeight = FontWeights.Bold }));
+                        rowGroup.Rows.Add(headerRow);
+
+                        // Productos
+                        foreach (var detalle in detalles)
+                        {
+                            TableRow row = new TableRow();
+                            row.Cells.Add(new TableCell(new Paragraph(new Run(ObtenerPropiedadDetalle(detalle, "NombreProducto")?.ToString() ?? ""))));
+                            row.Cells.Add(new TableCell(new Paragraph(new Run(ObtenerPropiedadDetalle(detalle, "Cantidad")?.ToString() ?? ""))));
+                            row.Cells.Add(new TableCell(new Paragraph(new Run(FormatearDecimalParaImpresion(ObtenerPropiedadDetalle(detalle, "PrecioUnitario"))))));
+                            row.Cells.Add(new TableCell(new Paragraph(new Run(FormatearDecimalParaImpresion(ObtenerPropiedadDetalle(detalle, "Subtotal"))))));
+                            rowGroup.Rows.Add(row);
+                        }
+
+                        tablaDetalles.RowGroups.Add(rowGroup);
+                        doc.Blocks.Add(tablaDetalles);
+
+                        // Total de la venta
+                        Paragraph totalVenta = new Paragraph();
+                        totalVenta.Inlines.Add(new Run($"Total Venta: {venta.Total:C}")
+                        {
+                            FontWeight = FontWeights.Bold,
+                            Foreground = Brushes.DarkRed
+                        });
+                        totalVenta.TextAlignment = TextAlignment.Right;
+                        doc.Blocks.Add(totalVenta);
+                    }
+                    else
+                    {
+                        doc.Blocks.Add(new Paragraph(new Run("SIN DETALLES DISPONIBLES")));
+                    }
+
+                    // Separador entre ventas
+                    doc.Blocks.Add(new Paragraph(new Run(new string('-', 100))));
+                    doc.Blocks.Add(new Paragraph()); // Espacio en blanco
+                }
+                catch (Exception ex)
+                {
+                    doc.Blocks.Add(new Paragraph(new Run($"ERROR AL CARGAR DETALLES DE VENTA #{venta.IdVenta}: {ex.Message}")));
+                }
+            }
+
+            // Agregar resumen general
+            AgregarResumenVentas(doc, ventas);
+        }
+
+        // ✅ NUEVO MÉTODO: Impresión normal para otros reportes
+        private void ImprimirReporteNormal(FlowDocument doc)
+        {
+            // Crear tabla
+            Table tabla = new Table();
+            doc.Blocks.Add(tabla);
+
+            // Detectar columnas visibles del DataGrid (excluir columna de detalles)
+            var columnas = dgvReporte.Columns
+                .Where(c => c.Header != null && c.Header.ToString() != "Detalles")
+                .ToList();
+
+            // Crear columnas en el documento
+            foreach (var c in columnas)
+            {
+                tabla.Columns.Add(new TableColumn());
+            }
+
+            // Encabezado de tabla
+            TableRowGroup encabezado = new TableRowGroup();
+            tabla.RowGroups.Add(encabezado);
+            TableRow filaEncabezado = new TableRow();
+            encabezado.Rows.Add(filaEncabezado);
+
+            foreach (var c in columnas)
+            {
+                var celda = new TableCell(new Paragraph(new Bold(new Run(c.Header.ToString()))))
+                {
+                    Padding = new Thickness(6),
+                    Background = new SolidColorBrush(Color.FromRgb(42, 157, 143)),
+                    Foreground = Brushes.White,
+                    BorderBrush = Brushes.White,
+                    BorderThickness = new Thickness(1)
+                };
+                filaEncabezado.Cells.Add(celda);
+            }
+
+            // Cuerpo de la tabla
+            TableRowGroup cuerpo = new TableRowGroup();
+            tabla.RowGroups.Add(cuerpo);
+
+            // Recorrer los elementos del DataGrid
+            foreach (var item in dgvReporte.ItemsSource)
+            {
+                TableRow fila = new TableRow();
+
+                foreach (var col in columnas)
+                {
+                    string texto = "";
+
+                    if (col is DataGridBoundColumn boundCol)
+                    {
+                        var binding = boundCol.Binding as System.Windows.Data.Binding;
+                        if (binding != null)
+                        {
+                            var prop = item.GetType().GetProperty(binding.Path.Path);
+                            if (prop != null)
+                            {
+                                var valor = prop.GetValue(item);
+                                if (valor != null)
+                                {
+                                    texto = FormatearValorParaImpresion(valor, prop.Name);
+                                }
+                            }
+                        }
+                    }
+
+                    var celda = new TableCell(new Paragraph(new Run(texto)))
+                    {
+                        Padding = new Thickness(4),
+                        BorderBrush = Brushes.LightGray,
+                        BorderThickness = new Thickness(0.5)
+                    };
+                    fila.Cells.Add(celda);
+                }
+
+                cuerpo.Rows.Add(fila);
+            }
+        }
+
+        // ✅ NUEVO MÉTODO: Formatear decimal para impresión
+        private string FormatearDecimalParaImpresion(object valor)
+        {
+            if (valor is decimal decimalValor)
+            {
+                return decimalValor.ToString("C");
+            }
+            return valor?.ToString() ?? "";
+        }
+
+        // ✅ NUEVO MÉTODO: Formatear valor para impresión
+        private string FormatearValorParaImpresion(object valor, string propiedad)
+        {
+            if (valor == null) return "";
+
+            if (propiedad == "Fecha" && valor is DateTime)
+            {
+                return ((DateTime)valor).ToString("dd/MM/yyyy HH:mm");
+            }
+            else if ((propiedad == "Total" || propiedad == "PrecioVenta") && valor is decimal)
+            {
+                return ((decimal)valor).ToString("C");
+            }
+            else if (propiedad == "MetodoPagoTexto")
+            {
+                return valor.ToString();
+            }
+
+            return valor.ToString();
+        }
+
+        // ✅ NUEVO MÉTODO: Agregar resumen de ventas
+        private void AgregarResumenVentas(FlowDocument doc, List<ReporteVenta> ventas)
+        {
+            if (ventas.Any())
+            {
+                Paragraph resumen = new Paragraph();
+                resumen.Inlines.Add(new Run("\n" + new string('=', 100) + "\n"));
+                resumen.Inlines.Add(new Run("RESUMEN GENERAL DEL REPORTE\n")
+                {
+                    FontWeight = FontWeights.Bold,
+                    FontSize = 14
+                });
+                resumen.Inlines.Add(new Run($"Total Ventas: {ventas.Sum(v => v.Total):C}\n"));
+                resumen.Inlines.Add(new Run($"Cantidad de Ventas: {ventas.Count}\n"));
+                resumen.Inlines.Add(new Run($"Ticket Promedio: {(ventas.Sum(v => v.Total) / ventas.Count):C}\n"));
+
+                // Resumen por método de pago
+                resumen.Inlines.Add(new Run("\nDISTRIBUCIÓN POR MÉTODO DE PAGO:\n")
+                {
+                    FontWeight = FontWeights.Bold
+                });
+
+                var ventasPorMetodo = ventas
+                    .GroupBy(v => v.MetodoPago)
+                    .Select(g => new {
+                        Metodo = ObtenerTextoMetodoPago(g.Key),
+                        Icono = ObtenerIconoMetodoPago(g.Key),
+                        Cantidad = g.Count(),
+                        Total = g.Sum(v => v.Total),
+                        Porcentaje = (g.Sum(v => v.Total) / ventas.Sum(v => v.Total)) * 100
+                    })
+                    .OrderByDescending(x => x.Total);
+
+                foreach (var grupo in ventasPorMetodo)
+                {
+                    resumen.Inlines.Add(new Run($"{grupo.Icono} {grupo.Metodo}: {grupo.Cantidad} ventas - {grupo.Total:C} ({grupo.Porcentaje:F1}%)\n"));
+                }
+
+                resumen.Inlines.Add(new Run(new string('=', 100)));
+                doc.Blocks.Add(resumen);
+            }
+
+            // Pie de página
+            Paragraph footer = new Paragraph();
+            footer.Inlines.Add(new Run("\n\n--- Fin del Reporte ---"));
+            footer.TextAlignment = TextAlignment.Center;
+            footer.FontStyle = FontStyles.Italic;
+            doc.Blocks.Add(footer);
         }
 
         private void dgvReporte_SelectionChanged(object sender, SelectionChangedEventArgs e)

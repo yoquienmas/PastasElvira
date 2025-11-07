@@ -73,6 +73,47 @@
                         <TabItem Header="Dashboard">
                             <ScrollViewer VerticalScrollBarVisibility="Auto">
                                 <StackPanel Margin="10">
+                                    <!-- Sección de Filtros -->
+                                    <Border Background="#f5f5f5" CornerRadius="8" Padding="15" Margin="0,0,0,20"
+                                            BorderBrush="#e2a42d" BorderThickness="1">
+                                        <StackPanel>
+                                            <TextBlock Text="🔍 FILTROS" FontWeight="Bold" 
+                                                       Foreground="#a36b00" Margin="0,0,0,10" 
+                                                       FontSize="14" HorizontalAlignment="Center"/>
+                                            <WrapPanel HorizontalAlignment="Center">
+                                                <StackPanel Orientation="Horizontal" Margin="0,0,20,0">
+                                                    <TextBlock Text="Fecha Inicio:" 
+                                                               VerticalAlignment="Center" 
+                                                               Margin="0,0,5,0"
+                                                               FontWeight="SemiBold"/>
+                                                    <DatePicker x:Name="dpFechaInicio" 
+                                                               Width="120" 
+                                                               SelectedDateChanged="Filtro_Changed"/>
+                                                </StackPanel>
+                                                <StackPanel Orientation="Horizontal" Margin="0,0,20,0">
+                                                    <TextBlock Text="Fecha Fin:" 
+                                                               VerticalAlignment="Center" 
+                                                               Margin="0,0,5,0"
+                                                               FontWeight="SemiBold"/>
+                                                    <DatePicker x:Name="dpFechaFin" 
+                                                               Width="120" 
+                                                               SelectedDateChanged="Filtro_Changed"/>
+                                                </StackPanel>
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBlock Text="Tipo Producto:" 
+                                                               VerticalAlignment="Center" 
+                                                               Margin="0,0,5,0"
+                                                               FontWeight="SemiBold"/>
+                                                    <ComboBox x:Name="cbTipoProducto" 
+                                                             Width="150" 
+                                                             SelectionChanged="Filtro_Changed">
+                                                        <ComboBoxItem Content="Todos los tipos" IsSelected="True"/>
+                                                    </ComboBox>
+                                                </StackPanel>
+                                            </WrapPanel>
+                                        </StackPanel>
+                                    </Border>
+
                                     <!-- Estadísticas Rápidas -->
                                     <WrapPanel Margin="0,0,0,20">
                                         <Border Background="#e8f5e8" CornerRadius="10" Padding="20" Margin="5" Width="250">
@@ -114,7 +155,7 @@
                                                 Style="{StaticResource RoundedButton}"
                                                 Background="#9C27B0"
                                                 Click="btnReportesGenerales_Click"/>
-                                        
+
                                     </WrapPanel>
 
                                     <!-- Primera Fila de Gráficos -->
@@ -166,13 +207,14 @@
                                         </Border>
                                     </WrapPanel>
 
-                                    <!-- Segunda Fila de Gráficos -->
+                                    <!-- Segunda Fila de Gráficos - REEMPLAZA la sección completa -->
                                     <WrapPanel Margin="0,0,0,20" HorizontalAlignment="Center">
-                                        <!-- Gráfico Productos Vendidos -->
+
+                                        <!-- Gráfico EXISTENTE de Productos Vendidos (por cantidad) -->
                                         <Border Background="White" CornerRadius="10" Padding="15" Margin="10,5" Width="500"
                                                 BorderBrush="#e2a42d" BorderThickness="2" Height="350">
                                             <StackPanel>
-                                                <TextBlock Text="📦 PRODUCTOS MÁS VENDIDOS" FontWeight="Bold" 
+                                                <TextBlock Text="📦 PRODUCTOS MÁS VENDIDOS (CANTIDAD)" FontWeight="Bold" 
                                                           Foreground="#a36b00" Margin="0,0,0,10" FontSize="14" HorizontalAlignment="Center"/>
                                                 <lvc:CartesianChart x:Name="chartProductosVendidos" 
                                                                    Series="{Binding SeriesProductosVendidos}"
@@ -191,7 +233,35 @@
                                             </StackPanel>
                                         </Border>
 
-                                        <!-- Gráfico Stock Crítico -->
+                                        <!-- NUEVO Gráfico de Productos por Ingresos -->
+                                        <Border Background="White" CornerRadius="10" Padding="15" Margin="10,5" Width="500"
+                                                BorderBrush="#e2a42d" BorderThickness="2" Height="350">
+                                            <StackPanel>
+                                                <TextBlock Text="💰 PRODUCTOS MÁS RENTABLES (INGRESOS)" FontWeight="Bold" 
+                                                          Foreground="#a36b00" Margin="0,0,0,10" FontSize="14" HorizontalAlignment="Center"/>
+                                                <lvc:CartesianChart x:Name="chartProductosPorIngresos" 
+                                                                   Series="{Binding SeriesProductosPorIngresos}"
+                                                                   LegendLocation="Right" Height="250" Width="450">
+                                                    <lvc:CartesianChart.AxisX>
+                                                        <lvc:Axis Title="Productos" Labels="{Binding LabelsProductosPorIngresos}">
+                                                            <lvc:Axis.Separator>
+                                                                <lvc:Separator Step="1"/>
+                                                            </lvc:Axis.Separator>
+                                                        </lvc:Axis>
+                                                    </lvc:CartesianChart.AxisX>
+                                                    <lvc:CartesianChart.AxisY>
+                                                        <lvc:Axis Title="Ingresos ($)" LabelFormatter="{Binding Formatter}"/>
+                                                    </lvc:CartesianChart.AxisY>
+                                                </lvc:CartesianChart>
+                                            </StackPanel>
+                                        </Border>
+
+                                    </WrapPanel>
+
+                                    <!-- Tercera Fila de Gráficos - Stock Crítico y otro gráfico si quieres -->
+                                    <WrapPanel Margin="0,0,0,20" HorizontalAlignment="Center">
+
+                                        <!-- Gráfico EXISTENTE de Stock Crítico -->
                                         <Border Background="White" CornerRadius="10" Padding="15" Margin="10,5" Width="500"
                                                 BorderBrush="#e2a42d" BorderThickness="2" Height="350">
                                             <StackPanel>
@@ -213,6 +283,8 @@
                                                 </lvc:CartesianChart>
                                             </StackPanel>
                                         </Border>
+
+                                 
                                     </WrapPanel>
 
                                     <!-- Tablas Originales (Opcionales) -->
