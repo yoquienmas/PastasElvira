@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\danie\\Source\\Repos\\PastasElvira\\CapaEntidad\\CapaEntidad\\CapaEntidad.csproj": {}
+    "C:\\Users\\danie.DANIELUCHIS\\source\\repos\\yoquienmas\\PastasElvira\\CapaEntidad\\CapaEntidad\\CapaEntidad.csproj": {}
   },
   "projects": {
-    "C:\\Users\\danie\\Source\\Repos\\PastasElvira\\CapaEntidad\\CapaEntidad\\CapaEntidad.csproj": {
+    "C:\\Users\\danie.DANIELUCHIS\\source\\repos\\yoquienmas\\PastasElvira\\CapaEntidad\\CapaEntidad\\CapaEntidad.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\danie\\Source\\Repos\\PastasElvira\\CapaEntidad\\CapaEntidad\\CapaEntidad.csproj",
+        "projectUniqueName": "C:\\Users\\danie.DANIELUCHIS\\source\\repos\\yoquienmas\\PastasElvira\\CapaEntidad\\CapaEntidad\\CapaEntidad.csproj",
         "projectName": "CapaEntidad",
-        "projectPath": "C:\\Users\\danie\\Source\\Repos\\PastasElvira\\CapaEntidad\\CapaEntidad\\CapaEntidad.csproj",
-        "packagesPath": "C:\\Users\\danie\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\danie\\Source\\Repos\\PastasElvira\\CapaEntidad\\CapaEntidad\\obj\\",
+        "projectPath": "C:\\Users\\danie.DANIELUCHIS\\source\\repos\\yoquienmas\\PastasElvira\\CapaEntidad\\CapaEntidad\\CapaEntidad.csproj",
+        "packagesPath": "C:\\Users\\danie.DANIELUCHIS\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\danie.DANIELUCHIS\\source\\repos\\yoquienmas\\PastasElvira\\CapaEntidad\\CapaEntidad\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\danie\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\danie.DANIELUCHIS\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -68,7 +68,7 @@
               "privateAssets": "none"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.304/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.306/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

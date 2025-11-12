@@ -1707,23 +1707,23 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\danie\\.nuget\\packages\\": {},
+    "C:\\Users\\danie.DANIELUCHIS\\.nuget\\packages\\": {},
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\danie\\Source\\Repos\\PastasElvira\\CapaNegocio\\CapaNegocio\\CapaNegocio.csproj",
+      "projectUniqueName": "C:\\Users\\danie.DANIELUCHIS\\source\\repos\\yoquienmas\\PastasElvira\\CapaNegocio\\CapaNegocio\\CapaNegocio.csproj",
       "projectName": "CapaNegocio",
-      "projectPath": "C:\\Users\\danie\\Source\\Repos\\PastasElvira\\CapaNegocio\\CapaNegocio\\CapaNegocio.csproj",
-      "packagesPath": "C:\\Users\\danie\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\danie\\Source\\Repos\\PastasElvira\\CapaNegocio\\CapaNegocio\\obj\\",
+      "projectPath": "C:\\Users\\danie.DANIELUCHIS\\source\\repos\\yoquienmas\\PastasElvira\\CapaNegocio\\CapaNegocio\\CapaNegocio.csproj",
+      "packagesPath": "C:\\Users\\danie.DANIELUCHIS\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\danie.DANIELUCHIS\\source\\repos\\yoquienmas\\PastasElvira\\CapaNegocio\\CapaNegocio\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
       ],
       "configFilePaths": [
-        "C:\\Users\\danie\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\danie.DANIELUCHIS\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
@@ -1738,11 +1738,11 @@
         "net8.0-windows7.0": {
           "targetAlias": "net8.0-windows",
           "projectReferences": {
-            "C:\\Users\\danie\\Source\\Repos\\PastasElvira\\CapaDatos\\CapaDatos\\CapaDatos.csproj": {
-              "projectPath": "C:\\Users\\danie\\Source\\Repos\\PastasElvira\\CapaDatos\\CapaDatos\\CapaDatos.csproj"
+            "C:\\Users\\danie.DANIELUCHIS\\source\\repos\\yoquienmas\\PastasElvira\\CapaDatos\\CapaDatos\\CapaDatos.csproj": {
+              "projectPath": "C:\\Users\\danie.DANIELUCHIS\\source\\repos\\yoquienmas\\PastasElvira\\CapaDatos\\CapaDatos\\CapaDatos.csproj"
             },
-            "C:\\Users\\danie\\Source\\Repos\\PastasElvira\\CapaEntidad\\CapaEntidad\\CapaEntidad.csproj": {
-              "projectPath": "C:\\Users\\danie\\Source\\Repos\\PastasElvira\\CapaEntidad\\CapaEntidad\\CapaEntidad.csproj"
+            "C:\\Users\\danie.DANIELUCHIS\\source\\repos\\yoquienmas\\PastasElvira\\CapaEntidad\\CapaEntidad\\CapaEntidad.csproj": {
+              "projectPath": "C:\\Users\\danie.DANIELUCHIS\\source\\repos\\yoquienmas\\PastasElvira\\CapaEntidad\\CapaEntidad\\CapaEntidad.csproj"
             }
           }
         }
@@ -1781,7 +1781,7 @@
             "privateAssets": "none"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.304/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.306/PortableRuntimeIdentifierGraph.json"
       }
     }
   }

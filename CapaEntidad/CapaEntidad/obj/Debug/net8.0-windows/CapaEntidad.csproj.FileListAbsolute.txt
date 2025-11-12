@@ -10,3 +10,15 @@ C:\Users\danie\Source\Repos\PastasElvira\CapaEntidad\CapaEntidad\obj\Debug\net8.
 C:\Users\danie\Source\Repos\PastasElvira\CapaEntidad\CapaEntidad\obj\Debug\net8.0-windows\refint\CapaEntidad.dll
 C:\Users\danie\Source\Repos\PastasElvira\CapaEntidad\CapaEntidad\obj\Debug\net8.0-windows\CapaEntidad.pdb
 C:\Users\danie\Source\Repos\PastasElvira\CapaEntidad\CapaEntidad\obj\Debug\net8.0-windows\ref\CapaEntidad.dll
+C:\Users\danie.DANIELUCHIS\source\repos\yoquienmas\PastasElvira\CapaEntidad\CapaEntidad\bin\Debug\net8.0-windows\CapaEntidad.deps.json
+C:\Users\danie.DANIELUCHIS\source\repos\yoquienmas\PastasElvira\CapaEntidad\CapaEntidad\bin\Debug\net8.0-windows\CapaEntidad.dll
+C:\Users\danie.DANIELUCHIS\source\repos\yoquienmas\PastasElvira\CapaEntidad\CapaEntidad\bin\Debug\net8.0-windows\CapaEntidad.pdb
+C:\Users\danie.DANIELUCHIS\source\repos\yoquienmas\PastasElvira\CapaEntidad\CapaEntidad\obj\Debug\net8.0-windows\CapaEntidad.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\danie.DANIELUCHIS\source\repos\yoquienmas\PastasElvira\CapaEntidad\CapaEntidad\obj\Debug\net8.0-windows\CapaEntidad.AssemblyInfoInputs.cache
+C:\Users\danie.DANIELUCHIS\source\repos\yoquienmas\PastasElvira\CapaEntidad\CapaEntidad\obj\Debug\net8.0-windows\CapaEntidad.AssemblyInfo.cs
+C:\Users\danie.DANIELUCHIS\source\repos\yoquienmas\PastasElvira\CapaEntidad\CapaEntidad\obj\Debug\net8.0-windows\CapaEntidad.csproj.CoreCompileInputs.cache
+C:\Users\danie.DANIELUCHIS\source\repos\yoquienmas\PastasElvira\CapaEntidad\CapaEntidad\obj\Debug\net8.0-windows\CapaEntidad.sourcelink.json
+C:\Users\danie.DANIELUCHIS\source\repos\yoquienmas\PastasElvira\CapaEntidad\CapaEntidad\obj\Debug\net8.0-windows\CapaEntidad.dll
+C:\Users\danie.DANIELUCHIS\source\repos\yoquienmas\PastasElvira\CapaEntidad\CapaEntidad\obj\Debug\net8.0-windows\refint\CapaEntidad.dll
+C:\Users\danie.DANIELUCHIS\source\repos\yoquienmas\PastasElvira\CapaEntidad\CapaEntidad\obj\Debug\net8.0-windows\CapaEntidad.pdb
+C:\Users\danie.DANIELUCHIS\source\repos\yoquienmas\PastasElvira\CapaEntidad\CapaEntidad\obj\Debug\net8.0-windows\ref\CapaEntidad.dll

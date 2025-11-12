@@ -40,7 +40,7 @@ namespace CapaPresentacion
             {
                 var listaProductos = cnProducto.Listar();
                 cboProductos.ItemsSource = listaProductos;
-                cboProductos.DisplayMemberPath = "NombreProducto";
+                cboProductos.DisplayMemberPath = "Nombre";
                 cboProductos.SelectedValuePath = "IdProducto";
 
                 if (listaProductos.Count == 0)
@@ -348,6 +348,11 @@ namespace CapaPresentacion
             {
                 e.Handled = true;
             }
+        }
+
+        private void cboProductos_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        {
+
         }
     }
 }

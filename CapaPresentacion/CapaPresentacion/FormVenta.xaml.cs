@@ -172,7 +172,7 @@ namespace CapaPresentacion
                 ItemVenta nuevoItem = new ItemVenta
                 {
                     IdProducto = productoSeleccionado.IdProducto,
-                    NombreProducto = $"{productoSeleccionado.Tipo} {productoSeleccionado.Nombre}",
+                    NombreProducto = $"{productoSeleccionado.Nombre}",
                     Cantidad = cantidad,
                     PrecioUnitario = productoSeleccionado.PrecioVenta
                 };
@@ -408,6 +408,11 @@ namespace CapaPresentacion
 
             ActualizarTotalVenta();
             CargarInformacionVenta();
+        }
+
+        private void dgvItemsVenta_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
         }
     }
 }

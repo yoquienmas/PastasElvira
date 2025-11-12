@@ -288,13 +288,12 @@
                                 <ComboBox.ItemTemplate>
                                     <DataTemplate>
                                         <StackPanel Orientation="Horizontal" Margin="4">
-                                            <TextBlock Text="{Binding Tipo}" 
+                                            <TextBlock Text="{Binding Nombre}" 
                                                        FontWeight="Bold" 
                                                        Foreground="#a36b00" 
                                                        Margin="0,0,8,0"
                                                        MinWidth="60"/>
-                                            <TextBlock Text="{Binding Nombre}" 
-                                                       Foreground="#5c3a00"/>
+                                            
                                         </StackPanel>
                                     </DataTemplate>
                                 </ComboBox.ItemTemplate>
@@ -394,7 +393,7 @@
                                   VerticalGridLinesBrush="#f0f0f0"
                                   VerticalAlignment="Stretch"
                                   HorizontalAlignment="Stretch"
-                                  ScrollViewer.VerticalScrollBarVisibility="Auto">
+                                  ScrollViewer.VerticalScrollBarVisibility="Auto" SelectionChanged="dgvItemsVenta_SelectionChanged">
                             <DataGrid.Columns>
                                 <DataGridTextColumn Header="PRODUCTO" 
                                                     Binding="{Binding NombreProducto}" 

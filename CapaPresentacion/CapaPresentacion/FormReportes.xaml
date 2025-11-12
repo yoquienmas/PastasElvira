@@ -25,7 +25,6 @@
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="10">
                     <TextBlock Text="Seleccionar Reporte:" VerticalAlignment="Center" Margin="0,0,10,0" Foreground="#5c3a00"/>
                     <ComboBox x:Name="cboTipoReporte" Width="300" SelectionChanged="cboTipoReporte_SelectionChanged">
-                        <ComboBoxItem Content="Consumo Materia Prima"/>
                         <ComboBoxItem Content="Ventas por Fecha"/>
                         <ComboBoxItem Content="Ventas por Cliente"/>
                         <ComboBoxItem Content="Stock Crítico"/>
